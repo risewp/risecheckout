@@ -8,47 +8,49 @@
 	--texts-font-bold: 700;
 	--bs-body-font-family: Rubik, sans-serif;
 	--bs-body-font-size: .8125rem;
+	--texts-font-medium: 500;
+	--bs-testiary-bg: #f4f6f8;
+	--btn-uppercase: uppercase;
+	--default-radius: 30px;
+	--bs-form-invalid-border-color: #e50f38;
 
 	& body {
 		font-family: var(--bs-body-font-family);
 		background-color: var(--bs-body-bg);
 	}
 
-	& input[type=text],
-	& input[type=number],
-	& input[type=email],
-	& input[type=tel],
-	& input[type=url],
-	& input[type=password],
-	& input[type=search],
-	& textarea,
-	& .input-text {
+	.form-control {
 		padding: 16px 20px 15px;
 		color: #333;
 		border: var(--bs-border-width) solid #d0d0d0;
 		box-shadow: none;
-		border-radius: 30px;
-	}
-	
-	& input[type=text],
-	& input[type=number],
-	& input[type=email],
-	& input[type=tel],
-	& input[type=url],
-	& input[type=password],
-	& input[type=search],
-	& textarea,
-	& .input-text,
-	& input[type=text]:focus,
-	& input[type=number]:focus,
-	& input[type=email]:focus,
-	& input[type=tel]:focus,
-	& input[type=url]:focus,
-	& input[type=password]:focus,
-	& input[type=search]:focus,
-	& textarea:focus,
-	& .input-text:focus {
+		border-radius: var(--default-radius);
 		background-color: #fff;
+
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus,
+		&:focus {
+			background-color: #f4f6f8;
+			border-color: #333;
+		}
+	}
+
+	.form-control.is-invalid,
+	.was-validated .form-control:invalid {
+		background-color: #feecef;
+		border-color: var(--bs-form-invalid-border-color);
+	}
+
+	.form-control.is-valid,
+	.was-validated .form-control:valid {
+		border-color: var(--bs-form-valid-border-color);
+		box-shadow: none;
 	}
 }
 
@@ -130,7 +132,7 @@
 	--bs-card-spacer-x: 30px;
 	--bs-card-border-width: 2px;
 	--bs-card-bg: #fff;
-	--bs-card-border-radius: 30px;
+	--bs-card-border-radius: var(--default-radius);
 	--bs-card-title-color: var(--bs-dark);
 	--bs-card-color: #666;
 
@@ -192,6 +194,7 @@
 	line-height: 14px;
 	height: 45px;
 
+	&:focus::placeholder,
 	&::placeholder {
 		color: #ccc;
 	}
@@ -199,4 +202,33 @@
 
 .input-group-text {
 	border-radius: 30px;
+	border-color: #d0d0d0;
+	color: #333;
+	font-weight: var(--texts-font-medium);
+}
+
+.btn {
+	padding: 12px 20px;
+	font-weight: var(--texts-font-bold);
+	text-transform: var(--btn-uppercase, initial);
+
+	& svg {
+		fill: currentColor;
+		margin-left: 5px;
+	}
+
+	&:focus-visible {
+		box-shadow: none;
+	}
+}
+
+.d-grid > .btn {
+	padding-right: 0;
+	padding-left: 0;
+	border-radius: var(--default-radius);
+}
+
+.form-control.is-invalid:focus,
+.was-validated .form-control:invalid:focus {
+	box-shadow: none;
 }

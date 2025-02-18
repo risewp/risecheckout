@@ -73,25 +73,20 @@ risecheckout_get_header( 'checkout' );
 				<form class="needs-validation" novalidate>
 					<div class="maybe-row">
 						<div class="maybe-col">
-							<div class="card mb-3 active">
+							<div class="card mb-4 active">
 								<div class="card-body">
 									<h4 class="card-title mb-3"><?php esc_html_e( 'Identify yourself', 'risecheckout' ); ?></h4>
 									<p><?php esc_html_e( 'We will use your email to: Identify your profile, purchase history, order notification and shopping cart.', 'risecheckout' ); ?></p>
-									<div class="row g-3">
+									<div class="row g-3" style="--bs-gutter-y:1.125rem">
 
-										<?php if ( 'yes' === get_option( 'risecheckout_fullname', 'yes' ) ) : ?>
+										<?php if ( 'yes' === get_option( 'risecheckout_fullname', 'no' ) ) : ?>
 
 										<div class="col-12">
 											<label for="fullname" class="form-label"><?php esc_html_e( 'Full name', 'risecheckout' ); ?></label>
 											<input type="text" class="form-control" id="fullname" placeholder="<?php
 											/* translators: %s: Example */
 											echo esc_attr( sprintf( __( 'e.g.: %s', 'risecheckout' ), __( 'Mary Anne Johnson', 'risecheckout' ) ) ); ?>" value="" required>
-											<div class="invalid-feedback">
-												<?php
-												/* translators: %s: Field label */
-												echo esc_html( sprintf( __( 'Valid %s is required.', 'risecheckout' ), mb_strtolower( __( 'Full name', 'risecheckout' ) ) ) );
-												?>
-											</div>
+											<div class="invalid-feedback"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 										</div>
 
 										<?php else : ?>
@@ -101,12 +96,7 @@ risecheckout_get_header( 'checkout' );
 											<input type="text" class="form-control" id="firstName" placeholder="<?php
 											/* translators: %s: Example */
 											echo esc_attr( sprintf( __( 'e.g.: %s', 'risecheckout' ), __( 'Mary', 'risecheckout' ) ) ); ?>" value="" required>
-											<div class="invalid-feedback">
-												<?php
-												/* translators: %s: Field label */
-												echo esc_html( sprintf( __( 'Valid %s is required.', 'risecheckout' ), mb_strtolower( __( 'First name', 'risecheckout' ) ) ) );
-												?>
-											</div>
+											<div class="invalid-feedback"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 										</div>
 
 										<div class="col-6">
@@ -114,12 +104,7 @@ risecheckout_get_header( 'checkout' );
 											<input type="text" class="form-control" id="lastName" placeholder="<?php
 											/* translators: %s: Example */
 											echo esc_attr( sprintf( __( 'e.g.: %s', 'risecheckout' ), __( 'Johnson', 'risecheckout' ) ) ); ?>" value="" required>
-											<div class="invalid-feedback">
-												<?php
-												/* translators: %s: Field label */
-												echo esc_html( sprintf( __( 'Valid %s is required.', 'risecheckout' ), mb_strtolower( __( 'Last name', 'risecheckout' ) ) ) );
-												?>
-											</div>
+											<div class="invalid-feedback"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 										</div>
 
 										<?php endif; ?>
@@ -129,12 +114,7 @@ risecheckout_get_header( 'checkout' );
 											<input type="email" class="form-control" id="email" placeholder="<?php
 											/* translators: %s: Example */
 											echo esc_attr( sprintf( __( 'e.g.: %s', 'risecheckout' ), sprintf( '%s@gmail.com', sanitize_title( __( 'Mary', 'risecheckout' ) ) ) ) ); ?>" required>
-											<div class="invalid-feedback">
-												<?php
-												/* translators: %s: Field label */
-												echo esc_html( sprintf( __( 'Valid %s is required.', 'risecheckout' ), mb_strtolower( __( 'Email', 'risecheckout' ) ) ) );
-												?>
-											</div>
+											<div class="invalid-feedback"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 										</div>
 
 										<div class="col-12">
@@ -142,22 +122,25 @@ risecheckout_get_header( 'checkout' );
 											<div class="input-group has-validation">
 												<span class="input-group-text">+55</span>
 												<input type="text" class="form-control" id="mobile" placeholder="(00) 00000-0000" required>
-												<div class="invalid-feedback">
-													<?php
-													/* translators: %s: Field label */
-													echo esc_html( sprintf( __( 'Valid %s is required.', 'risecheckout' ), mb_strtolower( __( 'Mobile', 'risecheckout' ) ) ) );
-													?>
-												</div>
+												<div class="invalid-feedback" data-empty="<?php echo esc_attr( __( 'Required field.', 'risecheckout' ) ); ?>" data-invalid="<?php
+												/* translators: %s: Field label */
+												echo esc_attr( sprintf( __( 'Enter a valid %s', 'risecheckout' ), mb_strtolower( __( 'Mobile', 'risecheckout' ) ) ) );
+												?>"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 											</div>
 										</div>
 
-										<div class="d-grid gap-2">
-											<button type="button" class="btn btn-primary"><?php esc_html_e( 'Continue', 'risecheckout' ); ?></button>
+										<div class="d-grid gap-2 g-4">
+											<button type="button" class="btn btn-primary">
+												<?php esc_html_e( 'Continue', 'risecheckout' ); ?>
+												<svg width="17" height="13" viewBox="0 0 17 13" fill="white" xmlns="http://www.w3.org/2000/svg">
+													<path d="M10.4913 0.083736L8.9516 1.66506C8.84623 1.7729 8.84652 1.94512 8.95215 2.05271L11.5613 4.71372L0.277266 4.71372C0.124222 4.71372 -3.2782e-07 4.83794 -3.21005e-07 4.99098L-2.22234e-07 7.20921C-2.1542e-07 7.36225 0.124222 7.48648 0.277266 7.48648L11.5613 7.48648L8.95216 10.1475C8.84678 10.2551 8.84652 10.427 8.9516 10.5348L10.4913 12.1162C10.5435 12.1699 10.615 12.2002 10.6899 12.2002C10.7647 12.2002 10.8363 12.1697 10.8884 12.1162L16.5579 6.29335C16.6103 6.23958 16.6366 6.16968 16.6366 6.10008C16.6366 6.03022 16.6103 5.96062 16.5579 5.90655L10.8884 0.083736C10.8363 0.0302186 10.7647 4.91753e-07 10.6899 4.94966e-07C10.615 4.98178e-07 10.5435 0.0302186 10.4913 0.083736Z"/>
+												</svg>
+											</button>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="card mb-3">
+							<div class="card mb-4">
 								<div class="card-body">
 									<h4 class="card-title mb-3"><?php esc_html_e( 'Delivery', 'risecheckout' ); ?></h4>
 									<p><?php esc_html_e( 'Fill in your personal information to continue', 'risecheckout' ); ?></p>
@@ -217,7 +200,7 @@ risecheckout_get_header( 'checkout' );
 							</div>
 						</div>
 						<div class="maybe-col">
-							<div class="card mb-3">
+							<div class="card mb-4">
 								<div class="card-body">
 									<h4 class="card-title mb-3"><?php esc_html_e( 'Payment', 'risecheckout' ); ?></h4>
 									<p><?php esc_html_e( 'Fill in your shipping information to continue', 'risecheckout' ); ?></p>
