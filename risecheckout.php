@@ -4,4 +4,50 @@
  * Description: Enhanced WooCommerce checkout with a seamless single-page multi-step with tracking for abandoned carts.
  * Version: 1.0.0
  * Author: RiseWP
+ * Author URI: https://risewp.github.io
+ * Requires at least: 6.7.2
+ * Requires PHP: 7.4
  */
+
+defined( 'ABSPATH' ) || exit;
+
+if ( ! defined( 'RISECHECKOUT_PLUGIN_FILE' ) ) {
+	define( 'RISECHECKOUT_PLUGIN_FILE', __FILE__ );
+}
+
+function risecheckout_init() {
+	if ( ! function_exists( 'get_plugin_data' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	$risecheckout = get_plugin_data( RISECHECKOUT_PLUGIN_FILE );
+
+	if ( ! defined( 'RISECHECKOUT_VERSION' ) ) {
+		define( 'RISECHECKOUT_VERSION', $risecheckout['Version'] );
+	}
+}
+add_action( 'init', 'risecheckout_init' );
+
+function crpidx_load_plugin_textdomain() {
+	$locale = determine_locale();
+
+	$locale = apply_filters( 'plugin_locale', $locale, 'risecheckout' );
+
+	unload_textdomain( 'risecheckout', true );
+	load_textdomain( 'risecheckout', dirname( RISECHECKOUT_PLUGIN_FILE ) . '/languages/' . $locale . '.mo' );
+	load_plugin_textdomain( 'risecheckout', false, plugin_basename( dirname( RISECHECKOUT_PLUGIN_FILE ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'crpidx_load_plugin_textdomain' );
+
+function risecheckout_plugin_url() {
+	return untrailingslashit( plugins_url( '/', RISECHECKOUT_PLUGIN_FILE ) );
+}
+
+function risecheckout_plugin_path() {
+	return untrailingslashit( plugin_dir_path( RISECHECKOUT_PLUGIN_FILE ) );
+}
+
+require __DIR__ . '/includes/conditionals.php';
+require __DIR__ . '/includes/template.php';
+require __DIR__ . '/includes/frontend-scripts.php';
+require __DIR__ . '/includes/svg.php';
