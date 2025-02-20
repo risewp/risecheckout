@@ -162,6 +162,10 @@
 		& .row-form-address {
 			display: none;
 		}
+
+		.info {
+			display: none;
+		}
 	}
 
 	&.disabled {
@@ -183,6 +187,10 @@
 			> .card-title + p {
 				margin-bottom: 0;
 			}
+		}
+
+		.info {
+			display: none;
 		}
 	}
 

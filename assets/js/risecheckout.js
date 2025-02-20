@@ -18,7 +18,10 @@
 
 		fields.forEach(field => {
 			field.addEventListener('input', () => {
-				field.classList.remove('is-valid', 'is-invalid');
+				field.classList.remove('is-valid');
+				if (field.checkValidity()) {
+					field.classList.add('is-valid');
+				}
 			});
 
 			field.addEventListener('blur', () => {
@@ -96,19 +99,25 @@
 				if (value.length > 11) {
 					value = value.slice(0, 11);
 				}
+
 				let formatted = '';
 				if (value.length > 0) {
-					formatted = '(' + value.substring(0, 1);
+					formatted = '(' + value.substring(0, 2) + ')';
 				}
-				if (value.length >= 2) {
-					formatted += value.substring(1, 2) + ')';
-				}
+
+				let isMobile = false;
+				let slicePoint = 6;
+
 				if (value.length >= 3) {
-					formatted += ' ' + value.substring(2, value.length >= 11 ? 7 : 6);
+					isMobile = 9 === parseInt(value[2]);
+					slicePoint = isMobile || value.length > 10 ? 7 : 6;
+					formatted += ' ' + value.substring(2, slicePoint);
 				}
-				if (value.length >= 7) {
-					formatted += '-' + value.substring(value.length >= 11 ? 7 : 6, value.length);
+
+				if (value.length >= slicePoint) {
+					formatted += '-' + value.substring(slicePoint, value.length);
 				}
+
 				e.target.value = formatted;
 				phoneField.classList.remove('is-valid', 'is-invalid');
 			});
@@ -122,9 +131,7 @@
 						e.preventDefault();
 						return;
 					}
-
-					let value = phoneField.value.replace(/\D/g, '');
-					value = value.slice(0, -1); // Remove last digit
+					let value = phoneField.value.replace(/\D/g, '').slice(0, -1);
 					let formatted = '';
 					if (value.length > 0) {
 						formatted = '(' + value.substring(0, 1);
@@ -132,11 +139,15 @@
 					if (value.length >= 2) {
 						formatted += value.substring(1, 2) + ')';
 					}
+					let isMobile = false;
+					let slicePoint = 6;
 					if (value.length >= 3) {
-						formatted += ' ' + value.substring(2, value.length >= 11 ? 7 : 6);
+						isMobile = 9 === parseInt(value[2]);
+						slicePoint = isMobile || value.length > 10 ? 7 : 6;
+						formatted += ' ' + value.substring(2, slicePoint);
 					}
-					if (value.length >= 7) {
-						formatted += '-' + value.substring(value.length >= 11 ? 7 : 6, value.length);
+					if (value.length >= slicePoint) {
+						formatted += '-' + value.substring(slicePoint, value.length);
 					}
 					phoneField.value = formatted;
 					e.preventDefault();
@@ -205,7 +216,7 @@
 			const invalidFeedback = zipField.nextElementSibling;
 
 			const formatZip = (value) => {
-				value = value.replace(/\D/g, ''); // Remove não numéricos
+				value = value.replace(/\D/g, '');
 				if (value.length > 8) {
 					value = value.slice(0, 8);
 				}

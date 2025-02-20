@@ -73,7 +73,7 @@ risecheckout_get_header( 'checkout' );
 				<form class="needs-validation" novalidate>
 					<div class="maybe-row">
 						<div class="maybe-col">
-							<div class="card mb-4">
+							<div class="card mb-4 active">
 								<div class="card-body">
 									<h4 class="card-title mb-3"><?php esc_html_e( 'Identify yourself', 'risecheckout' ); ?></h4>
 									<p class="desc desc-form"><?php esc_html_e( 'We will use your email to: Identify your profile, purchase history, order notification and shopping cart.', 'risecheckout' ); ?></p>
