@@ -15,12 +15,12 @@
 
 	document.addEventListener('DOMContentLoaded', () => {
 		const fields = document.querySelectorAll('.needs-validation .form-control');
-		
+
 		fields.forEach(field => {
 			field.addEventListener('input', () => {
 				field.classList.remove('is-valid', 'is-invalid');
 			});
-			
+
 			field.addEventListener('blur', () => {
 				if (!field.checkValidity()) {
 					field.classList.remove('is-valid');
@@ -36,12 +36,63 @@
 			});
 		});
 
+        const fullnameField = document.getElementById('fullname');
+        if (fullnameField) {
+            const invalidFeedback = fullnameField.nextElementSibling;
+
+            fullnameField.addEventListener('blur', () => {
+                const names = fullnameField.value.trim().split(' ');
+                if (fullnameField.value.trim() === '' || names.length < 2) {
+                    fullnameField.classList.remove('is-valid');
+                    fullnameField.classList.add('is-invalid');
+                    if (invalidFeedback) {
+                        invalidFeedback.textContent = invalidFeedback.dataset.invalid;
+                    }
+                } else {
+                    fullnameField.classList.remove('is-invalid');
+                    fullnameField.classList.add('is-valid');
+                }
+            });
+
+            fullnameField.addEventListener('focus', () => {
+                fullnameField.classList.remove('is-invalid', 'is-valid');
+            });
+        }
+
+		const emailField = document.getElementById('email');
+		if (emailField) {
+			const invalidFeedback = emailField.nextElementSibling;
+
+			emailField.addEventListener('blur', () => {
+				if (emailField.value.trim() === '') {
+					emailField.classList.remove('is-valid');
+					emailField.classList.add('is-invalid');
+					if (invalidFeedback) {
+						invalidFeedback.textContent = invalidFeedback.dataset.empty;
+					}
+				} else if (!emailField.checkValidity()) {
+					emailField.classList.remove('is-valid');
+					emailField.classList.add('is-invalid');
+					if (invalidFeedback) {
+						invalidFeedback.textContent = invalidFeedback.dataset.invalid;
+					}
+				} else {
+					emailField.classList.remove('is-invalid');
+					emailField.classList.add('is-valid');
+				}
+			});
+
+			emailField.addEventListener('focus', () => {
+				emailField.classList.remove('is-invalid', 'is-valid');
+			});
+		}
+
 		const phoneField = document.getElementById('mobile');
 		if (phoneField) {
 			const invalidFeedback = phoneField.nextElementSibling;
-			
+
 			phoneField.addEventListener('input', (e) => {
-				let value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+				let value = e.target.value.replace(/\D/g, '');
 				if (value.length > 11) {
 					value = value.slice(0, 11);
 				}
@@ -71,7 +122,7 @@
 						e.preventDefault();
 						return;
 					}
-					
+
 					let value = phoneField.value.replace(/\D/g, '');
 					value = value.slice(0, -1); // Remove last digit
 					let formatted = '';
@@ -95,11 +146,13 @@
 			phoneField.addEventListener('blur', () => {
 				const value = phoneField.value.replace(/\D/g, '');
 				if (value.length === 0) {
+					phoneField.classList.remove('is-valid');
 					phoneField.classList.add('is-invalid');
 					if (invalidFeedback) {
 						invalidFeedback.textContent = invalidFeedback.dataset.empty;
 					}
 				} else if (value.length < 10 || value.length > 11) {
+					phoneField.classList.remove('is-valid');
 					phoneField.classList.add('is-invalid');
 					if (invalidFeedback) {
 						invalidFeedback.textContent = invalidFeedback.dataset.invalid;
@@ -114,5 +167,33 @@
 				phoneField.classList.remove('is-invalid', 'is-valid');
 			});
 		}
+
+		const fullnameInput = document.getElementById('fullname');
+		const firstNameInput = document.getElementById('firstName');
+		const lastNameInput = document.getElementById('lastName');
+		const emailInput = document.getElementById('email');
+
+		const fullnameDisplay = document.querySelector('.info .fullname');
+		const emailDisplay = document.querySelector('.info .email');
+
+		function updateFullname() {
+			fullnameDisplay.textContent = fullnameInput.value.trim();
+		}
+
+		function updateFullnameFromParts() {
+			const firstName = firstNameInput.value.trim();
+			const lastName = lastNameInput.value.trim();
+			fullnameInput.value = `${firstName} ${lastName}`.trim();
+			updateFullname();
+		}
+
+		function updateEmail() {
+			emailDisplay.textContent = emailInput.value.trim();
+		}
+
+		fullnameInput.addEventListener('input', updateFullname);
+		firstNameInput.addEventListener('input', updateFullnameFromParts);
+		lastNameInput.addEventListener('input', updateFullnameFromParts);
+		emailInput.addEventListener('input', updateEmail);
 	});
 })();
