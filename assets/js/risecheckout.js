@@ -36,28 +36,28 @@
 			});
 		});
 
-        const fullnameField = document.getElementById('fullname');
-        if (fullnameField) {
-            const invalidFeedback = fullnameField.nextElementSibling;
+		const fullnameField = document.getElementById('fullname');
+		if (fullnameField) {
+			const invalidFeedback = fullnameField.nextElementSibling;
 
-            fullnameField.addEventListener('blur', () => {
-                const names = fullnameField.value.trim().split(' ');
-                if (fullnameField.value.trim() === '' || names.length < 2) {
-                    fullnameField.classList.remove('is-valid');
-                    fullnameField.classList.add('is-invalid');
-                    if (invalidFeedback) {
-                        invalidFeedback.textContent = invalidFeedback.dataset.invalid;
-                    }
-                } else {
-                    fullnameField.classList.remove('is-invalid');
-                    fullnameField.classList.add('is-valid');
-                }
-            });
+			fullnameField.addEventListener('blur', () => {
+				const names = fullnameField.value.trim().split(' ');
+				if (fullnameField.value.trim() === '' || names.length < 2) {
+					fullnameField.classList.remove('is-valid');
+					fullnameField.classList.add('is-invalid');
+					if (invalidFeedback) {
+						invalidFeedback.textContent = invalidFeedback.dataset.invalid;
+					}
+				} else {
+					fullnameField.classList.remove('is-invalid');
+					fullnameField.classList.add('is-valid');
+				}
+			});
 
-            fullnameField.addEventListener('focus', () => {
-                fullnameField.classList.remove('is-invalid', 'is-valid');
-            });
-        }
+			fullnameField.addEventListener('focus', () => {
+				fullnameField.classList.remove('is-invalid', 'is-valid');
+			});
+		}
 
 		const emailField = document.getElementById('email');
 		if (emailField) {
@@ -191,9 +191,76 @@
 			emailDisplay.textContent = emailInput.value.trim();
 		}
 
-		fullnameInput.addEventListener('input', updateFullname);
-		firstNameInput.addEventListener('input', updateFullnameFromParts);
-		lastNameInput.addEventListener('input', updateFullnameFromParts);
+		if (fullnameInput) {
+			fullnameInput.addEventListener('input', updateFullname);
+		}
+		if (firstNameInput && lastNameInput) {
+			firstNameInput.addEventListener('input', updateFullnameFromParts);
+			lastNameInput.addEventListener('input', updateFullnameFromParts);
+		}
 		emailInput.addEventListener('input', updateEmail);
+
+		const zipField = document.getElementById('zip');
+		if (zipField) {
+			const invalidFeedback = zipField.nextElementSibling;
+
+			const formatZip = (value) => {
+				value = value.replace(/\D/g, ''); // Remove não numéricos
+				if (value.length > 8) {
+					value = value.slice(0, 8);
+				}
+				if (value.length > 5) {
+					return value.substring(0, 5) + '-' + value.substring(5);
+				}
+				return value;
+			};
+
+			zipField.addEventListener('input', (e) => {
+				e.target.value = formatZip(e.target.value);
+				zipField.classList.remove('is-valid', 'is-invalid');
+			});
+
+			zipField.addEventListener('paste', (e) => {
+				e.preventDefault();
+				let pastedData = (e.clipboardData || window.clipboardData).getData('text');
+				zipField.value = formatZip(pastedData);
+			});
+
+			zipField.addEventListener('keydown', (e) => {
+				if (e.key === 'Backspace' || e.key === 'Delete') {
+					const selectionStart = zipField.selectionStart;
+					const selectionEnd = zipField.selectionEnd;
+					if (selectionStart !== selectionEnd) {
+						zipField.value = '';
+						e.preventDefault();
+						return;
+					}
+				}
+			});
+
+			zipField.addEventListener('blur', () => {
+				const value = zipField.value.replace(/\D/g, '');
+				if (value.length === 0) {
+					zipField.classList.remove('is-valid');
+					zipField.classList.add('is-invalid');
+					if (invalidFeedback) {
+						invalidFeedback.textContent = invalidFeedback.dataset.empty;
+					}
+				} else if (value.length !== 8) {
+					zipField.classList.remove('is-valid');
+					zipField.classList.add('is-invalid');
+					if (invalidFeedback) {
+						invalidFeedback.textContent = invalidFeedback.dataset.invalid;
+					}
+				} else {
+					zipField.classList.remove('is-invalid');
+					zipField.classList.add('is-valid');
+				}
+			});
+
+			zipField.addEventListener('focus', () => {
+				zipField.classList.remove('is-invalid', 'is-valid');
+			});
+		}
 	});
 })();

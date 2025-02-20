@@ -133,7 +133,7 @@ risecheckout_get_header( 'checkout' );
 											<label for="mobile" class="form-label"><?php esc_html_e( 'Mobile', 'risecheckout' ); ?></label>
 											<div class="input-group has-validation">
 												<span class="input-group-text">+55</span>
-												<input type="text" class="form-control" id="mobile" placeholder="(00) 00000-0000" maxlenght="15" required>
+												<input type="text" class="form-control" id="mobile" placeholder="(00) 00000-0000" minlength="15" maxlength="15" required>
 												<div class="invalid-feedback" data-empty="<?php echo esc_attr( __( 'Required field.', 'risecheckout' ) ); ?>" data-invalid="<?php
 												/* translators: %s: Field label */
 												echo esc_attr( sprintf( __( 'Enter a valid %s', 'risecheckout' ), mb_strtolower( __( 'Mobile', 'risecheckout' ) ) ) );
@@ -168,7 +168,7 @@ risecheckout_get_header( 'checkout' );
 
 										<div class="col-7" style="width:57%">
 											<label for="zip" class="form-label"><?php esc_html_e( 'Zip', 'risecheckout' ); ?></label>
-											<input type="text" class="form-control" id="zip" maxlenght="9" required>
+											<input type="text" class="form-control" id="zip" minlength="9" maxlength="9" required>
 											<div class="invalid-feedback"><?php esc_html_e( 'Required field.', 'risecheckout' ); ?></div>
 										</div>
 
