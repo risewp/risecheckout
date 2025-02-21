@@ -15,7 +15,7 @@ if ( ! defined( 'RISECHECKOUT_PLUGIN_FILE' ) ) {
 	define( 'RISECHECKOUT_PLUGIN_FILE', __FILE__ );
 }
 
-function risecheckout_init() {
+function risecheckout_define_version_constant() {
 	if ( ! function_exists( 'get_plugin_data' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
@@ -26,7 +26,6 @@ function risecheckout_init() {
 		define( 'RISECHECKOUT_VERSION', $risecheckout['Version'] );
 	}
 }
-add_action( 'init', 'risecheckout_init' );
 
 function crpidx_load_plugin_textdomain() {
 	$locale = determine_locale();
@@ -47,7 +46,15 @@ function risecheckout_plugin_path() {
 	return untrailingslashit( plugin_dir_path( RISECHECKOUT_PLUGIN_FILE ) );
 }
 
+function risecheckout_define_constants() {
+	define( 'RISECHECKOUT_ABSPATH', dirname( RISECHECKOUT_PLUGIN_FILE ) . '/' );
+
+	add_action( 'init', 'risecheckout_define_version_constant' );
+}
+risecheckout_define_constants();
+
 require __DIR__ . '/includes/conditionals.php';
+require __DIR__ . '/includes/theme-support.php';
 require __DIR__ . '/includes/template.php';
 require __DIR__ . '/includes/frontend-scripts.php';
 require __DIR__ . '/includes/svg.php';
