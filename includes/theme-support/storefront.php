@@ -17,9 +17,7 @@ function risecheckout_storefront_dequeue_styles( $styles ) {
 }
 
 function risecheckout_storefront_dequeue_scripts( $scripts ) {
-	foreach ( $scripts as $script ) {
-		wp_dequeue_script( 'storefront-' . $script );
-	}
+	risecheckout_dequeue_scripts( $scripts, $prefix = 'storefront-' );
 }
 
 function risecheckout_storefront_block_assets() {

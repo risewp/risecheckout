@@ -53,7 +53,22 @@ function risecheckout_define_constants() {
 }
 risecheckout_define_constants();
 
+function risecheckout_steps_rewrite_rule() {
+	if ( ! function_exists( 'wc_get_page_id' ) ) {
+		return;
+	}
+    $checkout_page_id = wc_get_page_id('checkout');
+    $checkout_slug = get_post_field('post_name', $checkout_page_id);
+
+    if ($checkout_slug) {
+        add_rewrite_rule("^{$checkout_slug}/delivery/?$", "index.php?pagename={$checkout_slug}&step=delivery", 'top');
+        add_rewrite_rule("^{$checkout_slug}/payment/?$", "index.php?pagename={$checkout_slug}&step=payment", 'top');
+    }
+}
+add_action('init', 'risecheckout_steps_rewrite_rule');
+
 require __DIR__ . '/includes/conditionals.php';
+require __DIR__ . '/includes/performance.php';
 require __DIR__ . '/includes/theme-support.php';
 require __DIR__ . '/includes/template.php';
 require __DIR__ . '/includes/frontend-scripts.php';

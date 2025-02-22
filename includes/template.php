@@ -3,10 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function risecheckout_template_loader( $template ) {
-	$current_theme_supports_woocommerce = risecheckout_current_theme_supports_woocommerce();
-	$is_checkout                        = risecheckout_is_checkout();
-	$is_order_received_page             = risecheckout_is_order_received_page();
-	if ( $current_theme_supports_woocommerce && $is_checkout && ! $is_order_received_page ) {
+	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() ) {
 		$template = risecheckout_plugin_path() . '/templates/checkout.php';
 	}
 	return $template;

@@ -6,10 +6,13 @@
 	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 	function addFeedback(field, message) {
-		const feedback = document.createElement('div');
-		feedback.classList.add('invalid-feedback');
-		feedback.textContent = message;
-		field.insertAdjacentElement('afterend', feedback);
+		let feedback = field.nextElementSibling;
+		if ( feedback && feedback.classList.contains( 'invalid-feedback' ) ) {
+			if ( ! field.dataset.invalid ) {
+				field.dataset.invalid = feedback.textContent;
+			}
+			feedback.textContent = message;
+		}
 	}
 
 	function validateField(field, invalid = true) {
@@ -23,11 +26,6 @@
 				message = field.dataset.invalid || '';
 			}
 
-			const invalidFeedback = field.nextElementSibling;
-			if (invalidFeedback) {
-				invalidFeedback.textContent = message;
-			}
-
 			field.classList.remove('is-invalid');
 			field.classList.remove('is-valid');
 			if ('email' === field.type && emailRegex.test(field.value) || 'email' !== field.type && field.checkValidity()) {
@@ -36,9 +34,8 @@
 				field.classList.add('is-invalid');
 			}
 
-			if (!invalidFeedback) {
-				addFeedback(field, message);
-			}
+			addFeedback(field, message);
+
 		}
 	}
 

@@ -21,7 +21,7 @@ if ( ! function_exists( 'risecheckout_dequeue_styles' ) ) {
 	}
 }
 
-if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
+if ( ! function_exists( 'risecheckout_dequeue_script' ) ) {
 	function risecheckout_dequeue_script( $script, $prefix = '' ) {
 		if ( ! risecheckout_is_checkout() || risecheckout_is_order_received_page() ) {
 			return;
@@ -31,7 +31,7 @@ if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
 	}
 }
 
-if ( ! function_exists( 'risecheckout_dequeue_script' ) ) {
+if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
 	function risecheckout_dequeue_scripts( $scripts, $prefix = '' ) {
 		foreach ( $scripts as $script ) {
 			risecheckout_dequeue_script( $script, $prefix );
@@ -39,29 +39,27 @@ if ( ! function_exists( 'risecheckout_dequeue_script' ) ) {
 	}
 }
 
-function risecheckout_is_active_theme( $theme ) {
-	return is_array( $theme ) ? in_array( get_template(), $theme, true ) : get_template() === $theme;
-}
-
-function risecheckout_is_know_theme_active() {
-	return risecheckout_is_active_theme(
-		array(
-			'storefront',
-			'Impreza',
-		)
+function risecheckout_wc_load_scripts() {
+	$scripts = array(
+		'wc-add-to-cart',
+		'selectWoo',
+		'select2',
+		'wc-checkout',
+		'woocommerce',
 	);
-}
+	risecheckout_dequeue_scripts( $scripts );
 
-function risecheckout_theme_support_includes() {
-	if ( risecheckout_is_know_theme_active() ) {
-		switch ( get_template() ) {
-			case 'storefront':
-				include_once RISECHECKOUT_ABSPATH . 'includes/theme-support/storefront.php';
-				break;
-			case 'Impreza':
-				include_once RISECHECKOUT_ABSPATH . 'includes/theme-support/Impreza.php';
-				break;
-		}
-	}
+	$styles = array(
+		'select2'                 => false,
+		'woocommerce-layout'      => false,
+		'woocommerce-smallscreen' => false,
+		'woocommerce-general'     => false,
+	);
+	risecheckout_dequeue_styles( $styles );
 }
-risecheckout_theme_support_includes();
+add_action( 'wp_enqueue_scripts', 'risecheckout_wc_load_scripts', 11 );
+
+function risecheckout_wp_common_block_scripts_and_styles() {
+	risecheckout_dequeue_style( 'block-library', false, 'wp-' );
+}
+add_action( 'wp_enqueue_scripts', 'risecheckout_wp_common_block_scripts_and_styles', 11 );
