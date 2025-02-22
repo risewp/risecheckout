@@ -75,3 +75,31 @@ function risecheckout_locate_template( $template_names, $load = false, $load_onc
 
 	return $located;
 }
+
+function risecheckout_site_title_or_logo() {
+	ob_start();
+	?>
+
+	<a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+		<?php
+		if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
+			$allowed_html = array(
+				'img' => array(
+					'src'      => array(),
+					'alt'      => array(),
+					'decoding' => array(),
+					'width'    => array(),
+					'height'   => array(),
+				),
+			);
+			$custom_logo  = str_replace( '>', ' width="125" height="54">', get_custom_logo() );
+			echo wp_kses( $custom_logo, $allowed_html );
+		} else {
+			echo esc_html( get_bloginfo( 'name' ) );
+		}
+		?>
+	</a>
+
+	<?php
+	echo wp_kses_post( ob_get_clean() );
+}

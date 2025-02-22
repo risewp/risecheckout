@@ -27,7 +27,7 @@ function risecheckout_define_version_constant() {
 	}
 }
 
-function crpidx_load_plugin_textdomain() {
+function risecheckout_load_plugin_textdomain() {
 	$locale = determine_locale();
 
 	$locale = apply_filters( 'plugin_locale', $locale, 'risecheckout' );
@@ -36,7 +36,7 @@ function crpidx_load_plugin_textdomain() {
 	load_textdomain( 'risecheckout', dirname( RISECHECKOUT_PLUGIN_FILE ) . '/languages/' . $locale . '.mo' );
 	load_plugin_textdomain( 'risecheckout', false, plugin_basename( dirname( RISECHECKOUT_PLUGIN_FILE ) ) . '/languages' );
 }
-add_action( 'plugins_loaded', 'crpidx_load_plugin_textdomain' );
+add_action( 'plugins_loaded', 'risecheckout_load_plugin_textdomain' );
 
 function risecheckout_plugin_url() {
 	return untrailingslashit( plugins_url( '/', RISECHECKOUT_PLUGIN_FILE ) );
@@ -57,15 +57,15 @@ function risecheckout_steps_rewrite_rule() {
 	if ( ! function_exists( 'wc_get_page_id' ) ) {
 		return;
 	}
-    $checkout_page_id = wc_get_page_id('checkout');
-    $checkout_slug = get_post_field('post_name', $checkout_page_id);
+	$checkout_page_id = wc_get_page_id( 'checkout' );
+	$checkout_slug    = get_post_field( 'post_name', $checkout_page_id );
 
-    if ($checkout_slug) {
-        add_rewrite_rule("^{$checkout_slug}/delivery/?$", "index.php?pagename={$checkout_slug}&step=delivery", 'top');
-        add_rewrite_rule("^{$checkout_slug}/payment/?$", "index.php?pagename={$checkout_slug}&step=payment", 'top');
-    }
+	if ( $checkout_slug ) {
+		add_rewrite_rule( "^{$checkout_slug}/delivery/?$", "index.php?pagename={$checkout_slug}&step=delivery", 'top' );
+		add_rewrite_rule( "^{$checkout_slug}/payment/?$", "index.php?pagename={$checkout_slug}&step=payment", 'top' );
+	}
 }
-add_action('init', 'risecheckout_steps_rewrite_rule');
+add_action( 'init', 'risecheckout_steps_rewrite_rule' );
 
 require __DIR__ . '/includes/conditionals.php';
 require __DIR__ . '/includes/performance.php';

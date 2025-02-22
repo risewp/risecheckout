@@ -73,7 +73,7 @@ risecheckout_get_header( 'checkout' );
 					$customer_fields = array_merge(
 						$customer_fields,
 						array(
-							'email' => array(
+							'email'  => array(
 								'label'       => __( 'Email', 'risecheckout' ),
 								'type'        => 'email',
 								'placeholder' => sprintf(
@@ -92,6 +92,21 @@ risecheckout_get_header( 'checkout' );
 									'%s@gmail.com',
 									sanitize_title( __( 'Mary', 'risecheckout' ) )
 								),
+							),
+							'cpf' => array(
+								'label'       => 'CPF',
+								'placeholder' => '000.000.000-00',
+								'minlength'   => 11,
+								'maxlength'   => 14,
+								'pattern'     => '\d{3}\.?\d{3}\.?\d{3}-?\d{2}',
+								'mask'        => 'cpf',
+								'invalid'     => sprintf(
+									/* translators: %s: Field label */
+									__( 'Enter a valid %s', 'risecheckout' ),
+									'CPF'
+								),
+								'required'    => true,
+								'value'       => '154.505.032-53',
 							),
 							'mobile' => array(
 								'label'       => __( 'Mobile', 'risecheckout' ),
@@ -112,7 +127,7 @@ risecheckout_get_header( 'checkout' );
 							),
 						)
 					);
-					$steps = array(
+					$steps           = array(
 						'customer' => array(
 							'title'       => __( 'Identify yourself', 'risecheckout' ),
 							'description' => __(
@@ -120,8 +135,8 @@ risecheckout_get_header( 'checkout' );
 								'notification and shopping cart.',
 								'risecheckout'
 							),
-							'continue' => __( 'Continue', 'risecheckout' ),
-							'edit'     => __( 'Edit', 'risecheckout' ),
+							'continue'    => __( 'Continue', 'risecheckout' ),
+							'edit'        => __( 'Edit', 'risecheckout' ),
 							'fields'      => $customer_fields,
 						),
 						'delivery' => array(
@@ -134,40 +149,69 @@ risecheckout_get_header( 'checkout' );
 								'Fill in your personal information to continue',
 								'risecheckout'
 							),
-							'continue' => __( 'Continue', 'risecheckout' ),
-							'edit'     => __( 'Edit', 'risecheckout' ),
 							'fields'      => array(
 								'zip' => array(
 									'wrapper_class' => 'col-7 zip',
-									'label'       => __( 'Zip', 'risecheckout' ),
-									'minlength'   => 8,
-									'maxlength'   => 9,
-									'pattern'     => '\d{5}-?\d{3}',
-									'mask'        => 'zip-br',
-									'invalid'     => sprintf(
+									'label'         => __( 'Zip', 'risecheckout' ),
+									'minlength'     => 8,
+									'maxlength'     => 9,
+									'pattern'       => '\d{5}-?\d{3}',
+									'mask'          => 'zip-br',
+									'invalid'       => sprintf(
 										/* translators: %s: Field label */
 										__( 'Enter a valid %s', 'risecheckout' ),
 										mb_strtolower( __( 'Zip', 'risecheckout' ) )
 									),
-									'required'    => true,
+									'required'      => true,
 								),
 							),
+						),
+						'payment'  => array(
+							'title'       => __( 'Payment', 'risecheckout' ),
+							'placeholder' => __( 'Fill in your shipping information to continue', 'risecheckout' ),
 						),
 					);
 
 					foreach ( $steps as $slug => $step ) :
 						$step = (object) $step;
 
+						$fieldset = (object) array(
+							'class' => 'checkout-step card mb-4 card-body',
+							'id'    => "step-{$slug}",
+						);
+						if ( isset( $step->placeholder ) ) {
+							$fieldset->data_placeholder = $step->placeholder;
+						}
+						if ( isset( $step->continue ) ) {
+							$fieldset->data_continue = $step->continue;
+						}
+						if ( isset( $step->edit ) ) {
+							$fieldset->data_edit = $step->edit;
+						}
+						$fieldset = (array) $fieldset;
+						foreach ( $fieldset as $key => &$value ) {
+							$key = preg_replace( '/^(data)_/', '$1-', $key );
+							$value = sprintf(
+								'%s="%s"',
+								esc_attr( $key ),
+								esc_attr( $value )
+							);
+						}
+						$fieldset = sprintf( '<fieldset %s>', implode( ' ', array_values( $fieldset ) ) );
+
+						echo wp_kses_post( $fieldset );
 						?>
 
-					<fieldset
-						class="checkout-step card mb-4 card-body"
-						id="<?php echo esc_attr( "step-{$slug}" ); ?>"
-						data-continue="<?php echo esc_attr( $step->continue ); ?>"
-						data-edit="<?php echo esc_attr( $step->edit ); ?>">
-
 						<legend><?php echo esc_html( $step->title ); ?></legend>
-						<p class="desc"><?php echo esc_html( $step->description ); ?></p>
+
+						<?php if ( isset( $step->description ) ) : ?>
+
+						<p class="desc desc-form"><?php echo esc_html( $step->description ); ?></p>
+
+						<?php endif; ?>
+
+						<?php if ( isset( $step->fields ) ) : ?>
+
 						<div class="fields row g-3">
 
 							<?php
@@ -175,7 +219,7 @@ risecheckout_get_header( 'checkout' );
 								$field = (object) $field;
 
 								$wrapper_class = isset( $field->wrapper_class ) ? $field->wrapper_class : 'col-12';
-								$type = isset( $field->type ) ? $field->type : 'text';
+								$type          = isset( $field->type ) ? $field->type : 'text';
 								?>
 
 							<div class="<?php echo esc_attr( $wrapper_class ); ?>">
@@ -222,14 +266,14 @@ risecheckout_get_header( 'checkout' );
 								$input = array_values( $input );
 
 								if ( isset( $field->prefix ) ) :
-								?>
+									?>
 
 								<div class="input-group has-validation">
 									<span class="input-group-text"><?php echo esc_html( $field->prefix ); ?></span>
 
 								<?php endif; ?>
 
-								<input <?php echo implode( ' ', $input ) ?>>
+								<input <?php echo implode( ' ', $input ); ?>>
 
 								<?php if ( isset( $field->invalid ) ) : ?>
 
@@ -247,9 +291,13 @@ risecheckout_get_header( 'checkout' );
 							<?php endforeach; ?>
 
 						</div>
+
+						<?php endif; ?>
+
 					</fieldset>
 
 					<?php endforeach; ?>
+
 				</form>
 			</div>
 		</div>

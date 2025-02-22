@@ -47,4 +47,7 @@
 			<property name="blank_line_check" value="true"/>
 		</properties>
 	</rule>
+	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+		<exclude-pattern>/includes/theme-support/Impreza.php</exclude-pattern>
+	</rule>
 </ruleset>

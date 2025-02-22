@@ -141,18 +141,29 @@
 		padding-left: calc(var(--bs-gutter-x)* .5);
 		margin-top: var(--bs-gutter-y);
 	}
+
+	& form {
+		display: grid;
+		grid-template-columns: 48.56% 1fr;
+		grid-template-rows: auto auto;
+		gap: 2.99%;
+	}
+
+	& fieldset {
+
+		&:nth-child(2) {
+			grid-row: 2;
+		}
+
+		&:nth-child(3) {
+			align-self: start;
+		}
+	}
 }
 
 @media (min-width: 768px) {
 	.checkout-cols-3 .maybe-col {
 		flex: 1 0 0%;
-	}
-}
-
-@media (max-width: 520px) {
-	form {
-		margin-right: calc(-1 * 1.5rem * .5);
-		margin-left: calc(-1 * 1.5rem * .5);
 	}
 }
 

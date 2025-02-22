@@ -13,8 +13,6 @@
 			if ('phone-br' === mask) {
 				const phoneField = el;
 				if (phoneField) {
-					const invalidFeedback = phoneField.nextElementSibling;
-
 					phoneField.addEventListener('input', (e) => {
 						let value = e.target.value.replace(/\D/g, '');
 						if (value.length > 11) {
@@ -81,12 +79,14 @@
 			} else if ('zip-br' === mask) {
 				const zipField = el;
 				if (zipField) {
-					const invalidFeedback = zipField.nextElementSibling;
-
 					const formatZip = (value) => {
 						value = value.replace(/\D/g, '');
 						if (value.length > 8) {
 							value = value.slice(0, 8);
+						}
+						let formated = '';
+						if (value.length >= 4) {
+							formated = value.substring(0, 3) + '.' + value.substring(3, );
 						}
 						if (value.length > 5) {
 							return value.substring(0, 5) + '-' + value.substring(5);
@@ -116,6 +116,50 @@
 						}
 					});
 				}
+			} else if ('cpf' === mask) {
+				const cpfField = el;
+				if (cpfField) {
+					const formatCPF = (value) => {
+						value = value.replace(/\D/g, '');
+						if (value.length > 11) {
+							value = value.slice(0, 11);
+						}
+						let formatted = value;
+						if (value.length > 3) {
+							formatted = value.substring(0, 3) + '.' + value.substring(3);
+						}
+						if (value.length > 6) {
+							formatted = formatted.substring(0, 7) + '.' + formatted.substring(7);
+						}
+						if (value.length > 9) {
+							formatted = formatted.substring(0, 11) + '-' + formatted.substring(11);
+						}
+						return formatted;
+					};
+
+					cpfField.addEventListener('input', (e) => {
+						e.target.value = formatCPF(e.target.value);
+					});
+
+					cpfField.addEventListener('paste', (e) => {
+						e.preventDefault();
+						let pastedData = (e.clipboardData || window.clipboardData).getData('text');
+						cpfField.value = formatCPF(pastedData);
+					});
+
+					cpfField.addEventListener('keydown', (e) => {
+						if (e.key === 'Backspace' || e.key === 'Delete') {
+							const selectionStart = cpfField.selectionStart;
+							const selectionEnd = cpfField.selectionEnd;
+							if (selectionStart !== selectionEnd) {
+								cpfField.value = '';
+								e.preventDefault();
+								return;
+							}
+						}
+					});
+				}
+
 			}
 		});
 	};
