@@ -510,7 +510,7 @@ legend {
 		}
 	}
 
-	& .fullname {
+	& .name {
 		font-size: 1.14285714em;
 		font-weight: var(--texts-font-medium);
 		margin-bottom: .625rem;

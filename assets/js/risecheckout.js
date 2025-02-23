@@ -1,5 +1,5 @@
 /* global risecheckoutParams */
-let risecheckoutForm = {
+const risecheckoutForm = {
 	init: function () {
 		if (typeof risecheckoutParams === 'undefined') {
 			return false;
@@ -16,7 +16,7 @@ let risecheckoutForm = {
 
 		this.fieldsets.forEach((fieldset, index) => {
 			this.setupFieldset(fieldset, index);
-			this.setupInfoFields(fieldset);
+			// this.setupInfoFields();
 			this.setupEditButton(fieldset);
 			this.setupContinueButton(fieldset);
 			this.appendOverlaySpinner(fieldset);
@@ -31,11 +31,13 @@ let risecheckoutForm = {
 			fieldset.querySelector('legend')?.after(desc);
 		}
 
-		fieldset.appendChild(this.createElement('div', 'info'));
+		// fieldset.appendChild(this.createElement('div', 'info'));
 	},
-	setupInfoFields: function (fieldset) {
-		fieldset.querySelectorAll('[data-info], [data-info-prefix]').forEach(info => {
-			const infoDiv = fieldset.querySelector('.info');
+	setupInfoFields: function () {
+		const step = this.currentStep();
+		step.appendChild(this.createElement('div', 'info'));
+		step.querySelectorAll('[data-info], [data-info-prefix]').forEach(info => {
+			const infoDiv = step.querySelector('.info');
 			const infoId = info.dataset.info || info.id;
 
 			if (!document.getElementById(`info-${infoId}`)) {
@@ -51,8 +53,8 @@ let risecheckoutForm = {
 				infoDiv.appendChild(infoP);
 			}
 
-			this.updateInfoText(info);
-			['input', 'paste'].forEach(event => info.addEventListener(event, () => this.updateInfoText(info)));
+			// this.updateInfoText(info);
+			// ['input', 'paste'].forEach(event => info.addEventListener(event, () => this.updateInfoText(info)));
 		});
 	},
 	updateInfoText: function (info) {
@@ -88,9 +90,6 @@ let risecheckoutForm = {
 	setupContinueButton: function (fieldset) {
 		if (!fieldset.dataset.continue) return;
 
-		const stepHidden = this.createElement('input', '', '', { type: 'hidden', name: 'step', value: 'customer' });
-		fieldset.appendChild(stepHidden);
-
 		const next = this.createElement(
 			'button',
 			'btn btn-primary d-block w-100 btn-pill btn-send mt-4',
@@ -100,7 +99,7 @@ let risecheckoutForm = {
 		const svg = this.createSvgIcon();
 		next.appendChild(svg);
 
-		this.form.addEventListener('submit', event => this.handleNextClick(event));
+		this.form.addEventListener('submit', event => this.submit(event));
 		fieldset.appendChild(next);
 	},
 	cleanFormData: function (formData) {
@@ -116,6 +115,11 @@ let risecheckoutForm = {
 						break;
 				}
 			}
+			const maybePrefix = field.previousElementSibling;
+			if (maybePrefix && maybePrefix.classList.contains('input-group-text')) {
+				const prefix = maybePrefix.textContent.trim();
+				value = prefix + value;
+			}
 			cleanedFormData.append(key, value);
 		}
 
@@ -124,19 +128,23 @@ let risecheckoutForm = {
 	formData: function () {
 		return this.cleanFormData(new FormData(this.form));
 	},
-	handleNextClick: function (event) {
+	currentStep: function () {
+		return this.form.querySelector('fieldset:not(:disabled)');
+	},
+	submit: function (event) {
 		event.preventDefault();
 
-		// const next = event.target;
-		// const step = next.closest('fieldset');
-		// if (!form.checkValidity()) return form.classList.add('was-validated');
+		const step = this.currentStep();
+		if (!this.form.checkValidity()) return this.form.classList.add('was-validated');
 
-		// step.querySelectorAll('.form-control').forEach(field => field.setAttribute('disabled', ''));
-		// next.classList.add('sending');
+		const body = this.formData();
+
+		step.querySelectorAll('.form-control').forEach(field => field.setAttribute('disabled', ''));
+		step.querySelector('.btn-send').classList.add('sending');
 
 		fetch(this.params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_customer'), {
 			method: 'POST',
-			body: this.formData(),
+			body,
 			headers: {
 				'X-WPNONCE': this.params.customerNonce
 			}
@@ -148,15 +156,55 @@ let risecheckoutForm = {
 			}
 			return JSON.parse(text);
 		})
-		.then(data => {
-			console.log('Server response:', data);
-		})
-		.catch(error => {
-			console.error('Request error:', error);
-		});
+		.then(response => {
 
-		// toggleStep('#step-customer', false);
-		// toggleStep('#step-delivery', true);
+			if (response.success) {
+				this.responseInfo(response.data);
+
+				this.nextStep();
+
+				// step.querySelector('.fields').remove();
+			}
+		});
+		// .catch(error => {
+		// 	console.error('Request error:', error);
+		// });
+	},
+	responseInfo: function(info) {
+		this.setupInfoFields();
+
+		document.getElementById('info-name').textContent = info.name;
+		document.getElementById('info-email').textContent = info.email;
+		document.querySelector('#info-cpf span').textContent = risecheckoutMask.formatCPF(info.cpf);
+	},
+	nextStep: function () {
+		this.toggleStep('#step-customer', false);
+		this.toggleStep('#step-delivery', true);
+	},
+	checkMail: function () {
+		// fetch(this.params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_check_email'), {
+		// 	method: 'POST',
+		// })
+		// REQUIRED 422
+		// {
+		// 	"message": "The given data was invalid.",
+		// 	"errors": {
+		// 	  "email": [
+		// 		"Campo obrigat\u00f3rio."
+		// 	  ]
+		// 	}
+		//   }
+		// INVALID 422
+		// {
+		// 	"message": "The given data was invalid.",
+		// 	"errors": {
+		// 	  "email": [
+		// 		"O campo email n\u00e3o cont\u00e9m um endere\u00e7o de email v\u00e1lido."
+		// 	  ]
+		// 	}
+		// }
+		// EXIST 200
+		// {"has_email":false}
 	},
 	toggleStep: function (selector, isActive) {
 		const step = document.querySelector(selector);

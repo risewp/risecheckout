@@ -1,7 +1,84 @@
-(() => {
-	'use strict';
+const risecheckoutMask = {
+	init: function () {
+		const fields = document.querySelectorAll('[data-mask]');
+		fields.forEach(field => {
+			const mask = field.dataset.mask;
+			this.mask(field, mask);
+		});
+	},
+	format: function (value, mask) {
+		const formated = value;
+		switch (mask) {
+			case 'phone-br':
+				formated = this.formatPhoneBr(value);
+				break;
+			case 'zip-br':
+				formated = this.formatZipBr(value);
+				break;
+			case 'cpf':
+				formated = this.formatCPF(value);
+				break;
+		}
+		return formated;
+	},
+	formatPhoneBr: function (value) {
+		value = value.replace(/\D/g, '');
+		if (value.length > 11) {
+			value = value.slice(0, 11);
+		}
 
-	const Mask = (selector, mask) => {
+		let formatted = '';
+		if (value.length > 0) {
+			formatted = '(' + value.substring(0, 1);
+		}
+
+		if (value.length >= 2) {
+			formatted += value.substring(1, 2) + ')';
+		}
+
+		let isMobile = false;
+		let slicePoint = 6;
+
+		if (value.length >= 3) {
+			isMobile = 9 === parseInt(value[2]);
+			slicePoint = isMobile || value.length > 10 ? 7 : 6;
+			formatted += ' ' + value.substring(2, slicePoint);
+		}
+
+		if (value.length >= slicePoint) {
+			formatted += '-' + value.substring(slicePoint, value.length);
+		}
+		return formatted;
+	},
+	formatZipBr: function (value) {
+		value = value.replace(/\D/g, '');
+		if (value.length > 8) {
+			value = value.slice(0, 8);
+		}
+		let formatted = value;
+		if (value.length > 5) {
+			formatted = value.substring(0, 5) + '-' + value.substring(5);
+		}
+		return formatted;
+	},
+	formatCPF: function (value) {
+		value = value.replace(/\D/g, '');
+		if (value.length > 11) {
+			value = value.slice(0, 11);
+		}
+		let formatted = value;
+		if (value.length > 3) {
+			formatted = value.substring(0, 3) + '.' + value.substring(3);
+		}
+		if (value.length > 6) {
+			formatted = formatted.substring(0, 7) + '.' + formatted.substring(7);
+		}
+		if (value.length > 9) {
+			formatted = formatted.substring(0, 11) + '-' + formatted.substring(11);
+		}
+		return formatted;
+	},
+	mask: function (selector, mask) {
 		let elements;
 		if ( 'string' === typeof selector ) {
 			elements = document.querySelectorAll(selector);
@@ -14,34 +91,7 @@
 				const phoneField = el;
 				if (phoneField) {
 					phoneField.addEventListener('input', (e) => {
-						let value = e.target.value.replace(/\D/g, '');
-						if (value.length > 11) {
-							value = value.slice(0, 11);
-						}
-
-						let formatted = '';
-						if (value.length > 0) {
-							formatted = '(' + value.substring(0, 1);
-						}
-
-						if (value.length >= 2) {
-							formatted += value.substring(1, 2) + ')';
-						}
-
-						let isMobile = false;
-						let slicePoint = 6;
-
-						if (value.length >= 3) {
-							isMobile = 9 === parseInt(value[2]);
-							slicePoint = isMobile || value.length > 10 ? 7 : 6;
-							formatted += ' ' + value.substring(2, slicePoint);
-						}
-
-						if (value.length >= slicePoint) {
-							formatted += '-' + value.substring(slicePoint, value.length);
-						}
-
-						e.target.value = formatted;
+						e.target.value = this.format(e.target.value);
 					});
 
 					phoneField.addEventListener('keydown', (e) => {
@@ -53,25 +103,7 @@
 								e.preventDefault();
 								return;
 							}
-							let value = phoneField.value.replace(/\D/g, '').slice(0, -1);
-							let formatted = '';
-							if (value.length > 0) {
-								formatted = '(' + value.substring(0, 1);
-							}
-							if (value.length >= 2) {
-								formatted += value.substring(1, 2) + ')';
-							}
-							let isMobile = false;
-							let slicePoint = 6;
-							if (value.length >= 3) {
-								isMobile = 9 === parseInt(value[2]);
-								slicePoint = isMobile || value.length > 10 ? 7 : 6;
-								formatted += ' ' + value.substring(2, slicePoint);
-							}
-							if (value.length >= slicePoint) {
-								formatted += '-' + value.substring(slicePoint, value.length);
-							}
-							phoneField.value = formatted;
+							phoneField.value = this.format(phoneField.value.replace(/\D/g, '').slice(0, -1));
 							e.preventDefault();
 						}
 					});
@@ -79,29 +111,14 @@
 			} else if ('zip-br' === mask) {
 				const zipField = el;
 				if (zipField) {
-					const formatZip = (value) => {
-						value = value.replace(/\D/g, '');
-						if (value.length > 8) {
-							value = value.slice(0, 8);
-						}
-						let formated = '';
-						if (value.length >= 4) {
-							formated = value.substring(0, 3) + '.' + value.substring(3, );
-						}
-						if (value.length > 5) {
-							return value.substring(0, 5) + '-' + value.substring(5);
-						}
-						return value;
-					};
-
 					zipField.addEventListener('input', (e) => {
-						e.target.value = formatZip(e.target.value);
+						e.target.value = this.formatZipBr(e.target.value);
 					});
 
 					zipField.addEventListener('paste', (e) => {
 						e.preventDefault();
 						let pastedData = (e.clipboardData || window.clipboardData).getData('text');
-						zipField.value = formatZip(pastedData);
+						zipField.value = this.formatZipBr(pastedData);
 					});
 
 					zipField.addEventListener('keydown', (e) => {
@@ -119,32 +136,14 @@
 			} else if ('cpf' === mask) {
 				const cpfField = el;
 				if (cpfField) {
-					const formatCPF = (value) => {
-						value = value.replace(/\D/g, '');
-						if (value.length > 11) {
-							value = value.slice(0, 11);
-						}
-						let formatted = value;
-						if (value.length > 3) {
-							formatted = value.substring(0, 3) + '.' + value.substring(3);
-						}
-						if (value.length > 6) {
-							formatted = formatted.substring(0, 7) + '.' + formatted.substring(7);
-						}
-						if (value.length > 9) {
-							formatted = formatted.substring(0, 11) + '-' + formatted.substring(11);
-						}
-						return formatted;
-					};
-
 					cpfField.addEventListener('input', (e) => {
-						e.target.value = formatCPF(e.target.value);
+						e.target.value = this.formatCPF(e.target.value);
 					});
 
 					cpfField.addEventListener('paste', (e) => {
 						e.preventDefault();
 						let pastedData = (e.clipboardData || window.clipboardData).getData('text');
-						cpfField.value = formatCPF(pastedData);
+						cpfField.value = this.formatCPF(pastedData);
 					});
 
 					cpfField.addEventListener('keydown', (e) => {
@@ -162,11 +161,7 @@
 
 			}
 		});
-	};
+	}
+}
 
-	const fields = document.querySelectorAll('[data-mask]');
-	fields.forEach(field => {
-		const mask = field.dataset.mask;
-		Mask(field, mask);
-	});
-})();
+document.addEventListener('DOMContentLoaded', () => risecheckoutMask.init());

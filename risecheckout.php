@@ -13,8 +13,8 @@ defined( 'ABSPATH' ) || exit;
 
 function risecheckout_fields() {
 	$fields = array();
-	if ( 'yes' === get_option( 'risecheckout_fullname', 'no' ) ) {
-		$fields['fullname'] = array(
+	if ( 'yes' === get_option( 'risecheckout_fullname', 'yes' ) ) {
+		$fields['name'] = array(
 			'label'       => __( 'Full name', 'risecheckout' ),
 			'placeholder' => sprintf(
 				/* translators: %s: Example */
@@ -38,7 +38,7 @@ function risecheckout_fields() {
 		$fields = array_merge(
 			$fields,
 			array(
-				'firstName' => array(
+				'firstname' => array(
 					'wrapper_class' => 'col-6',
 					'label'         => __( 'First name', 'risecheckout' ),
 					'placeholder'   => sprintf(
@@ -57,10 +57,10 @@ function risecheckout_fields() {
 					'value'         => __( 'Mary', 'risecheckout' ),
 					'step'          => 'customer',
 					'priority'      => 5,
-					'info'          => 'fullname',
+					'info'          => 'name',
 					'info_label'    => __( 'Full name', 'risecheckout' ),
 				),
-				'lastName'  => array(
+				'lastname'  => array(
 					'wrapper_class' => 'col-6',
 					'label'         => __( 'Last name', 'risecheckout' ),
 					'placeholder'   => sprintf(
@@ -79,7 +79,7 @@ function risecheckout_fields() {
 					'value'         => __( 'Johnson', 'risecheckout' ),
 					'step'          => 'customer',
 					'priority'      => 10,
-					'info'          => 'fullname',
+					'info'          => 'name',
 					'info_label'    => __( 'Full name', 'risecheckout' ),
 				),
 			)

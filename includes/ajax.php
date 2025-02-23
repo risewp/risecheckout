@@ -20,5 +20,18 @@ function risecheckout_ajax_customer() {
 		wp_die( -1, 403 );
 	}
 
-	wp_send_json_success( $_POST );
+	// TODO: Server validation, like required fields not empty.
+	$name = isset( $_POST['name'] ) ? sanitize_text_field( $_POST['name'] ) : '';
+	$email = isset( $_POST['email'] ) ? sanitize_text_field( $_POST['email'] ) : '';
+	$cpf = isset( $_POST['cpf'] ) ? sanitize_text_field( $_POST['cpf'] ) : '';
+	$mobile = isset( $_POST['mobile'] ) ? sanitize_text_field( $_POST['mobile'] ) : '';
+
+	wp_send_json_success(
+		array(
+			'name' => $name,
+			'email' => $email,
+			'cpf' => $cpf,
+			// 'mobile' => $mobile,
+		)
+	);
 }
