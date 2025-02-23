@@ -143,7 +143,7 @@ let risecheckoutForm = {
 		})
 		.then(response => response.text())
 		.then(text => {
-			if (!text) {
+			if (!text || -1 === parseInt(text)) {
 				text = '{"success":false}';
 			}
 			return JSON.parse(text);
