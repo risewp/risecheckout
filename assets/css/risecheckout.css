@@ -121,6 +121,10 @@
 	}
 }
 
+fieldset {
+	position: relative;
+}
+
 .checkout-cols-3 {
 
 	& .maybe-row {
@@ -146,17 +150,19 @@
 		display: grid;
 		grid-template-columns: 48.56% 1fr;
 		grid-template-rows: auto auto;
-		gap: 2.99%;
+		row-gap: 1.5rem;
+		column-gap: 2.99%;
 	}
 
 	& fieldset {
+		align-self: start;
 
 		&:nth-child(2) {
 			grid-row: 2;
 		}
 
 		&:nth-child(3) {
-			align-self: start;
+			grid-row: 1 / span 2;
 		}
 	}
 }
@@ -167,6 +173,48 @@
 	}
 }
 
+.fields {
+	--bs-gutter-y: 1.125rem;
+}
+
+.card-title,
+legend {
+	color: var(--bs-card-title-color);
+	font-size: 1.125rem;
+	text-transform: var(--titles-uppercase);
+	font-weight: var(--titles-font-bold);
+	padding-left: 1.75rem;
+	position: relative;
+	margin-bottom: var(--card-header-mb);
+	line-height: 1.16666667;
+
+	& + .desc {
+		margin-top: calc(var(--card-header-title-mb) - var(--card-header-mb));
+		margin-bottom: var(--card-header-mb);
+	}
+}
+
+.btn-edit {
+	--bs-btn-edit-color: #999;
+	--bs-btn-edit-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 15' fill='%23999'%3e%3cpath d='M.823 14.177a.614.614 0 0 0 .603.154l4.162-1.187a.61.61 0 0 0 .261-.154l8.066-7.985a1.504 1.504 0 0 0 0-2.127l-1.793-1.793a1.504 1.504 0 0 0-2.127 0L2.01 9.151a.61.61 0 0 0-.154.26L.67 13.575a.614.614 0 0 0 .154.603zm1.325-1.325.084-.294.21.21zm1.64-.47-1.17-1.17.29-1.014h.347l.426.85a.611.611 0 0 0 .273.274l.85.424-.002.347zm1.474-1.777 5.175-5.175.648.648-5.165 5.116c-.054-.144-.09-.304-.231-.375zm-.867-.867L4.18 9.31c-.07-.14-.231-.177-.375-.23l5.116-5.166.648.648zm7.563-4.519L9.78 3.042l1.081-1.08a.279.279 0 0 1 .395 0l1.782 1.78c.11.11.11.287 0 .396z'/%3e%3c/svg%3e");
+	--bs-btn-edit-white-filter: invert(1) grayscale(100%) brightness(200%);
+	/* --btn-edit-padding-x: .692307692em; */
+	--btn-edit-padding-x: 2px;
+	--btn-edit-padding-y: var(--btn-edit-padding-x);
+	box-sizing: content-box;
+	width: 1.15384615em;
+	height: 1.15384615em;
+	padding: var(--btn-edit-padding-y) var(--btn-edit-padding-y);
+	color: var(--bs-btn-edit-color);
+	background: transparent var(--bs-btn-edit-bg) center / 1.15384615em auto no-repeat;
+	border: 0;
+	position: absolute;
+	top: calc(22px - var(--btn-edit-padding-x, 0px));
+	right: calc(17px - var(--btn-edit-padding-y, 0px));
+	cursor: pointer;
+	display: none;
+}
+
 .card {
 	--bs-card-spacer-y: 30px;
 	--bs-card-spacer-x: 30px;
@@ -175,6 +223,8 @@
 	--bs-card-border-radius: var(--default-radius);
 	--bs-card-title-color: #666;
 	--bs-card-color: var(--description-color);
+	--card-header-title-mb: .5rem;
+	--card-header-mb: 1.8125rem;
 
 	line-height: 1.4;
 
@@ -241,18 +291,25 @@
 	&.done {
 		--step-bg: var(--bs-green);
 		--bs-card-title-color: var(--bs-green);
+		--bs-card-bg: #f9fdf7;
 
-		& .card-title::after,
-		& legend::after {
-			content: "";
-			width: 1em;
-			height: 1em;
-			display: inline-block;
-			margin-left: 5px;
-			background-repeat: no-repeat;
-			background-size: 1em 1em;
-			background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2336b376' d='M6.424 1.205c.12 0 .221.042.305.125l.607.607c.082.08.127.189.125.303 0 .12-.042.222-.125.305L4.104 5.777l-.608.608a.415.415 0 0 1-.305.125.411.411 0 0 1-.302-.125l-.608-.608L.664 4.16a.411.411 0 0 1-.125-.303c0-.118.042-.219.125-.302l.607-.61a.415.415 0 0 1 .305-.125c.119 0 .22.042.303.125L3.19 4.264 6.12 1.33a.412.412 0 0 1 .303-.125Z'/%3e%3c/svg%3e");
-			vertical-align: -.166666667em;
+		cursor: pointer;
+
+		& .card-title,
+		& legend {
+			margin-bottom: 1.5625rem;
+
+			&::after {
+				content: "";
+				width: 1em;
+				height: 1em;
+				display: inline-block;
+				margin-left: 5px;
+				background-repeat: no-repeat;
+				background-size: 1em 1em;
+				background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2336b376' d='M6.424 1.205c.12 0 .221.042.305.125l.607.607c.082.08.127.189.125.303 0 .12-.042.222-.125.305L4.104 5.777l-.608.608a.415.415 0 0 1-.305.125.411.411 0 0 1-.302-.125l-.608-.608L.664 4.16a.411.411 0 0 1-.125-.303c0-.118.042-.219.125-.302l.607-.61a.415.415 0 0 1 .305-.125c.119 0 .22.042.303.125L3.19 4.264 6.12 1.33a.412.412 0 0 1 .303-.125Z'/%3e%3c/svg%3e");
+				vertical-align: -.166666667em;
+			}
 		}
 
 		& .fields,
@@ -262,6 +319,10 @@
 		}
 
 		& .info {
+			display: block;
+		}
+
+		.btn-edit {
 			display: block;
 		}
 	}
@@ -277,23 +338,6 @@
 		margin-bottom: 1.25rem;
 		padding-right: var(--px);
 		padding-left: var(--px);
-	}
-}
-
-.card-title,
-legend {
-	color: var(--bs-card-title-color);
-	font-size: 1.125rem;
-	text-transform: var(--titles-uppercase);
-	font-weight: var(--titles-font-bold);
-	padding-left: 1.75rem;
-	position: relative;
-	margin-bottom: 1.25rem;
-	line-height: 1.16666667;
-
-	& .desc {
-		margin-top: -9px;
-		margin-bottom: 28px;
 	}
 }
 
@@ -331,7 +375,7 @@ legend {
 .form-label {
 	color: #333;
 	line-height: 1;
-	margin-bottom: 6px;
+	margin-bottom: .25rem;
 }
 
 .form-control {
@@ -354,7 +398,7 @@ legend {
 
 .btn {
 	border: 0;
-	padding: 12px 20px;
+	padding: 13px 20px;
 	font-weight: var(--texts-font-bold);
 	text-transform: var(--btn-uppercase, initial);
 
@@ -400,6 +444,7 @@ legend {
 
 	&.sending {
 		color: transparent;
+		pointer-events: none;
 
 		&:after {
 			animation: loading-bar-spinner .4s linear infinite;
@@ -446,6 +491,9 @@ legend {
 }
 
 .info {
+	color: #333;
+	line-height: 1.3;
+	font-size: 1.07692308em;
 
 	& p {
 		margin-bottom: .3125rem;
@@ -455,8 +503,8 @@ legend {
 		}
 	}
 
-	.strong {
-		font-size: 1.23076923em;
+	& .fullname {
+		font-size: 1.14285714em;
 		font-weight: var(--texts-font-medium);
 		margin-bottom: .625rem;
 	}
@@ -489,4 +537,21 @@ legend {
 	.zip {
 		width: 57%;
 	}
+}
+
+.tooltip {
+	--bs-tooltip-bg: #333;
+	--bs-tooltip-border-radius: 3px;
+	--bs-tooltip-font-size: 10px;
+	--bs-tooltip-padding-x: 10px;
+  	--bs-tooltip-padding-y: 8px;
+	--bs-tooltip-arrow-width: 16px;
+  	--bs-tooltip-arrow-height: 8px;
+	--bs-tooltip-opacity: 1;
+	--bs-tooltip-color: #fff;
+
+	font-family: inherit;
+	font-weight: 700;
+	line-height: 13px;
+	box-shadow: 0 2px 5px rgba(95, 95, 95, .3);
 }

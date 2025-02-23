@@ -3,12 +3,39 @@
 
 	const forms = document.querySelectorAll('form');
 
-	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	function isValidCPF(cpf) {
+		cpf = cpf.replace(/\D/g, '');
+		if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+			return false;
+		}
+
+		let sum = 0, remainder;
+		for (let i = 1; i <= 9; i++) {
+			sum += parseInt(cpf[i - 1]) * (11 - i);
+		}
+		remainder = (sum * 10) % 11;
+		if (remainder === 10 || remainder === 11) remainder = 0;
+		if (remainder !== parseInt(cpf[9])) return false;
+
+		sum = 0;
+		for (let i = 1; i <= 10; i++) {
+			sum += parseInt(cpf[i - 1]) * (12 - i);
+		}
+		remainder = (sum * 10) % 11;
+		if (remainder === 10 || remainder === 11) remainder = 0;
+		if (remainder !== parseInt(cpf[10])) return false;
+
+		return true;
+	}
+
+	function isValidEmail(email) {
+		return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+	}
 
 	function addFeedback(field, message) {
 		let feedback = field.nextElementSibling;
-		if ( feedback && feedback.classList.contains( 'invalid-feedback' ) ) {
-			if ( ! field.dataset.invalid ) {
+		if (feedback && feedback.classList.contains('invalid-feedback')) {
+			if (!field.dataset.invalid) {
 				field.dataset.invalid = feedback.textContent;
 			}
 			feedback.textContent = message;
@@ -22,20 +49,19 @@
 
 			if (field.hasAttribute('required') && field.validity.valueMissing) {
 				message = form?.dataset.required || '';
-			} else if (field.validity.patternMismatch) {
+			} else if (('cpf' === field.dataset.validation && field.value && !isValidCPF(field.value)) || field.validity.patternMismatch) {
 				message = field.dataset.invalid || '';
 			}
 
 			field.classList.remove('is-invalid');
 			field.classList.remove('is-valid');
-			if ('email' === field.type && emailRegex.test(field.value) || 'email' !== field.type && field.checkValidity()) {
+			if ((field.type === 'email' && isValidEmail(field.value)) || (field.type !== 'email' && field.checkValidity() && ('cpf' !== field.dataset.validation || isValidCPF(field.value)))) {
 				field.classList.add('is-valid');
 			} else if (invalid) {
 				field.classList.add('is-invalid');
 			}
 
 			addFeedback(field, message);
-
 		}
 	}
 
