@@ -71,6 +71,22 @@ function risecheckout_frontend_load_scripts() {
 	foreach ( $scripts as $script ) {
 		risecheckout_register_script( $script );
 	}
+
+	$l10n = array();
+	if ( function_exists( 'WC' ) ) {
+		$l10n['ajax_url'] = WC()->ajax_url();
+	}
+	if ( class_exists( 'WC_AJAX' ) ) {
+		$l10n['wc_ajax_url'] = WC_AJAX::get_endpoint( '%%endpoint%%' );
+	}
+	$l10n = array_merge(
+		$l10n,
+		array(
+			'customerNonce' => wp_create_nonce( 'risecheckout-customer' ),
+		)
+	);
+	wp_localize_script( 'risecheckout', 'risecheckoutParams', $l10n );
+
 	wp_enqueue_script( 'risecheckout' );
 }
 add_action( 'wp_enqueue_scripts', 'risecheckout_frontend_load_scripts' );

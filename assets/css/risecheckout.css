@@ -187,11 +187,6 @@ legend {
 	position: relative;
 	margin-bottom: var(--card-header-mb);
 	line-height: 1.16666667;
-
-	& + .desc {
-		margin-top: calc(var(--card-header-title-mb) - var(--card-header-mb));
-		margin-bottom: var(--card-header-mb);
-	}
 }
 
 .btn-edit {
@@ -227,6 +222,11 @@ legend {
 	--card-header-mb: 1.8125rem;
 
 	line-height: 1.4;
+
+	& .desc {
+		margin-top: calc(var(--card-header-title-mb) - var(--card-header-mb));
+		margin-bottom: var(--card-header-mb);
+	}
 
 	&.active {
 		--bs-card-border-color: #999;
@@ -272,7 +272,15 @@ legend {
 				}
 			}
 
-			.info {
+			& .info {
+				display: none;
+			}
+
+			& .desc {
+				margin-bottom: 0;
+			}
+
+			& .fields {
 				display: none;
 			}
 		}
@@ -282,8 +290,7 @@ legend {
 		border-color: transparent;
 
 		& .desc-form,
-		& .row-form,
-		& .fields {
+		& .row-form, {
 			display: none;
 		}
 	}
