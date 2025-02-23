@@ -180,6 +180,8 @@ const risecheckoutForm = {
 	nextStep: function () {
 		this.toggleStep('#step-customer', false);
 		this.toggleStep('#step-delivery', true);
+
+		this.form.classList.remove('was-validated');
 	},
 	checkMail: function () {
 		// fetch(this.params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_check_email'), {
@@ -211,7 +213,11 @@ const risecheckoutForm = {
 		step.classList.toggle('done', !isActive);
 		step.classList.toggle('active', isActive);
 		step.toggleAttribute('disabled', !isActive);
-		if (isActive) step.querySelector('.form-control')?.focus();
+		if (isActive) {
+			const firstField = step.querySelector('.form-control');
+			firstField?.classList.remove('is-invalid');
+			firstField?.focus();
+		}
 	},
 	appendOverlaySpinner: function (fieldset) {
 		const overlay = this.createElement('div', 'overlay-spinner overlay-spinner-box');
