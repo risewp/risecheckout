@@ -156,7 +156,7 @@ function risecheckout_step_fields( $fields, $slug ) {
 		$field = (object) $field;
 
 		if ( isset( $field->step ) && $slug === $field->step ) {
-			$step_fields[$id] = (array) $field;
+			$step_fields[ $id ] = (array) $field;
 		}
 	}
 	return $step_fields;
@@ -198,6 +198,9 @@ function risecheckout_field( $field ) {
 		}
 		if ( isset( $field->mask ) ) {
 			$input->data_mask = $field->mask;
+		}
+		if ( isset( $field->clean ) ) {
+			$input->data_clean = $field->clean;
 		}
 		if ( isset( $field->required ) && $field->required ) {
 			$input->required = true;

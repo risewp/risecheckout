@@ -5,7 +5,7 @@ risecheckout_get_header( 'checkout' );
 ?>
 <div class="row" style="--bs-gutter-x:2.5rem">
 	<div class="col-md-7 col-lg-8 checkout-steps checkout-cols-3">
-		<form method="GET" class="needs-validation" novalidate data-required="<?php echo esc_attr( __( 'Required field.', 'risecheckout' ) ); ?>">
+		<form method="GET" class="checkout needs-validation" novalidate data-required="<?php echo esc_attr( __( 'Required field.', 'risecheckout' ) ); ?>">
 
 			<?php
 			$fields = risecheckout_fields();
@@ -13,7 +13,7 @@ risecheckout_get_header( 'checkout' );
 			$steps = risecheckout_steps();
 
 			foreach ( $steps as $slug => $step ) :
-				$step = (object) $step;
+				$step       = (object) $step;
 				$step->slug = $slug;
 
 				echo wp_kses_post( risecheckout_step_open( $step ) );
@@ -29,11 +29,10 @@ risecheckout_get_header( 'checkout' );
 
 					<?php
 					foreach ( $step_fields as $id => $field ) {
-						$field = (object) $field;
+						$field     = (object) $field;
 						$field->id = $id;
 
 						risecheckout_field( $field );
-
 					}
 					?>
 

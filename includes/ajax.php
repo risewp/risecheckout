@@ -15,7 +15,10 @@ function risecheckout_add_ajax_events() {
 risecheckout_add_ajax_events();
 
 function risecheckout_ajax_customer() {
-	check_ajax_referer( 'risecheckout-customer' );
+	$nonce = isset( $_SERVER['HTTP_X_WPNONCE'] ) ? sanitize_text_field( $_SERVER['HTTP_X_WPNONCE'] ) : '';
+	if ( ! wp_verify_nonce( $nonce, 'risecheckout-customer' ) ) {
+		wp_die( -1, 403 );
+	}
 
-	wp_send_json_success($_POST);
+	wp_send_json_success( $_POST );
 }

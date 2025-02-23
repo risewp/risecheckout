@@ -117,8 +117,9 @@ function risecheckout_fields() {
 				'minlength'   => 11,
 				'maxlength'   => 14,
 				'pattern'     => '\d{3}\.?\d{3}\.?\d{3}-?\d{2}',
-				'mask'        => 'cpf',
 				'validation'  => 'cpf',
+				'mask'        => 'cpf',
+				'clean'       => 'numbers',
 				'invalid'     => sprintf(
 					/* translators: %s: Field label */
 					__( 'Enter a valid %s', 'risecheckout' ),
@@ -126,7 +127,7 @@ function risecheckout_fields() {
 				),
 				'required'    => true,
 				'value'       => '154.505.032-53',
-				'step'        => 'payment',
+				'step'        => 'customer',
 				'priority'    => 30,
 				'info_prefix' => true,
 			),
@@ -139,6 +140,7 @@ function risecheckout_fields() {
 				'pattern'     => '\(?\d{2}\)?\s?\d{4,5}-?\d{4}',
 				// 'pattern'     => '[\(\d\)\s-]+',
 				'mask'        => 'phone-br',
+				'clean'       => 'numbers',
 				'invalid'     => sprintf(
 					/* translators: %s: Field label */
 					__( 'Enter a valid %s', 'risecheckout' ),

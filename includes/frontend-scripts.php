@@ -77,7 +77,7 @@ function risecheckout_frontend_load_scripts() {
 		$l10n['ajax_url'] = WC()->ajax_url();
 	}
 	if ( class_exists( 'WC_AJAX' ) ) {
-		$l10n['wc_ajax_url'] = WC_AJAX::get_endpoint( '%%endpoint%%' );
+		$l10n['wcAjaxUrl'] = WC_AJAX::get_endpoint( '%%endpoint%%' );
 	}
 	$l10n = array_merge(
 		$l10n,
