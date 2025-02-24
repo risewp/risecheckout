@@ -7,22 +7,22 @@ const risecheckoutMask = {
 		});
 	},
 	format: function (value, mask) {
-		const formated = value;
+		let formated = value;
 		switch (mask) {
 			case 'phone-br':
 				formated = this.formatPhoneBr(value);
 				break;
-			case 'zip-br':
-				formated = this.formatZipBr(value);
+			case 'postcode-br':
+				formated = this.formatPostcodeBr(value);
 				break;
 			case 'cpf':
-				formated = this.formatCPF(value);
+				formated = this.formatCpf(value);
 				break;
 		}
 		return formated;
 	},
 	formatPhoneBr: function (value) {
-		value = value.replace(/\D/g, '');
+		value = value.replace(/^\+55/, '').replace(/\D/g, '');
 		if (value.length > 11) {
 			value = value.slice(0, 11);
 		}
@@ -50,7 +50,7 @@ const risecheckoutMask = {
 		}
 		return formatted;
 	},
-	formatZipBr: function (value) {
+	formatPostcodeBr: function (value) {
 		value = value.replace(/\D/g, '');
 		if (value.length > 8) {
 			value = value.slice(0, 8);
@@ -61,7 +61,7 @@ const risecheckoutMask = {
 		}
 		return formatted;
 	},
-	formatCPF: function (value) {
+	formatCpf: function (value) {
 		value = value.replace(/\D/g, '');
 		if (value.length > 11) {
 			value = value.slice(0, 11);
@@ -108,25 +108,25 @@ const risecheckoutMask = {
 						}
 					});
 				}
-			} else if ('zip-br' === mask) {
-				const zipField = el;
-				if (zipField) {
-					zipField.addEventListener('input', (e) => {
-						e.target.value = this.formatZipBr(e.target.value);
+			} else if ('postcode-br' === mask) {
+				const postcodeField = el;
+				if (postcodeField) {
+					postcodeField.addEventListener('input', (e) => {
+						e.target.value = this.formatPostcodeBr(e.target.value);
 					});
 
-					zipField.addEventListener('paste', (e) => {
+					postcodeField.addEventListener('paste', (e) => {
 						e.preventDefault();
 						let pastedData = (e.clipboardData || window.clipboardData).getData('text');
-						zipField.value = this.formatZipBr(pastedData);
+						postcodeField.value = this.formatPostcodeBr(pastedData);
 					});
 
-					zipField.addEventListener('keydown', (e) => {
+					postcodeField.addEventListener('keydown', (e) => {
 						if (e.key === 'Backspace' || e.key === 'Delete') {
-							const selectionStart = zipField.selectionStart;
-							const selectionEnd = zipField.selectionEnd;
+							const selectionStart = postcodeField.selectionStart;
+							const selectionEnd = postcodeField.selectionEnd;
 							if (selectionStart !== selectionEnd) {
-								zipField.value = '';
+								postcodeField.value = '';
 								e.preventDefault();
 								return;
 							}
@@ -137,13 +137,13 @@ const risecheckoutMask = {
 				const cpfField = el;
 				if (cpfField) {
 					cpfField.addEventListener('input', (e) => {
-						e.target.value = this.formatCPF(e.target.value);
+						e.target.value = this.formatCpf(e.target.value);
 					});
 
 					cpfField.addEventListener('paste', (e) => {
 						e.preventDefault();
 						let pastedData = (e.clipboardData || window.clipboardData).getData('text');
-						cpfField.value = this.formatCPF(pastedData);
+						cpfField.value = this.formatCpf(pastedData);
 					});
 
 					cpfField.addEventListener('keydown', (e) => {

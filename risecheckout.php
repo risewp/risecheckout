@@ -11,6 +11,106 @@
 
 defined( 'ABSPATH' ) || exit;
 
+function risecheckout_wc_fields( $fields ) {
+	$new_fields = array();
+
+	$renames = array(
+		'billing_country' => 'country',
+		'billing_name' => 'name',
+		'billing_first_name' => 'firstname',
+		'billing_last_name' => 'lastname',
+		'billing_email' => 'email',
+		'billing_cpf' => 'cpf',
+		'billing_phone' => 'phone',
+		'shipping_postcode' => 'postcode',
+		'shipping_city' => 'city',
+		'shipping_state' => 'state',
+		'shipping_address_1' => 'address1',
+		'shipping_number' => 'number',
+		'shipping_neighborhood' => 'neighborhood',
+		'shipping_address_2' => 'address2',
+		'shipping_name' => 'receiver',
+		'shipping_first_name' => 'receiver_firstname',
+		'shipping_last_name' => 'receiver_lastname',
+	);
+
+	$steps = array(
+		'customer' => array(
+			'firstname',
+			'lastname',
+			'email',
+			'cpf',
+			'phone',
+		),
+		'shipping' => array(
+			'postcode',
+			'city',
+			'state',
+			'address1',
+			'number',
+			'neighborhood',
+			'address2',
+			'receiver',
+		),
+	);
+
+	if ( 'yes' === get_option( 'risecheckout_fullname', 'yes' ) ) {
+		$fields['billing']['billing_name'] = array(
+			'autocomplete' => 'name',
+		);
+		unset( $fields['billing']['billing_first_name'], $fields['billing']['billing_last_name'] );
+		$fields['shipping']['shipping_name'] = array(
+			'autocomplete' => 'name',
+		);
+		unset( $fields['shipping']['shipping_first_name'], $fields['shipping']['shipping_last_name'] );
+	}
+
+	foreach ( $fields as $type => $type_fields ) {
+		foreach ( $type_fields as $name => $field ) {
+			if ( isset( $renames[$name] ) ) {
+				$field['renamed'] = $name;
+				$name = $renames[$name];
+			}
+			foreach ( $steps as $step => $step_fields ) {
+				if ( in_array( $name, $step_fields, true ) ) {
+					$field['step'] = $step;
+					break;
+				}
+			}
+			$new_fields[$name] = $field;
+		}
+	}
+	$fields = $new_fields;
+
+	$merge_fields = risecheckout_fields();
+
+	foreach ( $fields as $name => &$field ) {
+		if ( isset( $merge_fields[$name] ) ) {
+			$field = array_merge( $field, $merge_fields[$name] );
+		}
+	}
+
+	$new_fields = array();
+
+	foreach ( $fields as $name => $field ) {
+		if ( isset( $field['step'] ) ) {
+			$field_step = $field['step'];
+			unset( $field['step'] );
+			$new_fields[$field_step][$name] = $field;
+		}
+	}
+
+	$fields = $new_fields;
+	unset( $field );
+
+	foreach ( $fields as $field_step => $step_fields ) {
+		uasort( $fields[$field_step], 'wc_checkout_fields_uasort_comparison' );
+	}
+
+	return $fields;
+}
+add_filter( 'woocommerce_checkout_fields', 'risecheckout_wc_fields' );
+
 function risecheckout_fields() {
 	$fields = array();
 	if ( 'yes' === get_option( 'risecheckout_fullname', 'yes' ) ) {
@@ -39,7 +139,7 @@ function risecheckout_fields() {
 			$fields,
 			array(
 				'firstname' => array(
-					'wrapper_class' => 'col-6',
+					'class' => array( 'col-6' ),
 					'label'         => __( 'First name', 'risecheckout' ),
 					'placeholder'   => sprintf(
 						/* translators: %s: Example */
@@ -61,7 +161,7 @@ function risecheckout_fields() {
 					'info_label'    => __( 'Full name', 'risecheckout' ),
 				),
 				'lastname'  => array(
-					'wrapper_class' => 'col-6',
+					'class' => array( 'col-6' ),
 					'label'         => __( 'Last name', 'risecheckout' ),
 					'placeholder'   => sprintf(
 						/* translators: %s: Example */
@@ -90,6 +190,7 @@ function risecheckout_fields() {
 		array(
 			'email'  => array(
 				'label'       => __( 'Email', 'risecheckout' ),
+				'class' => array( 'col-12' ),
 				'type'        => 'email',
 				'placeholder' => sprintf(
 					/* translators: %s: Example */
@@ -113,11 +214,12 @@ function risecheckout_fields() {
 			),
 			'cpf'    => array(
 				'label'       => 'CPF',
+				'class' => array( 'col-12' ),
 				'placeholder' => '000.000.000-00',
 				'minlength'   => 11,
 				'maxlength'   => 14,
 				'pattern'     => '\d{3}\.?\d{3}\.?\d{3}-?\d{2}',
-				'validation'  => 'cpf',
+				'validate'  => array( 'cpf' ),
 				'mask'        => 'cpf',
 				'clean'       => 'numbers',
 				'invalid'     => sprintf(
@@ -131,8 +233,9 @@ function risecheckout_fields() {
 				'priority'    => 30,
 				'info_prefix' => true,
 			),
-			'mobile' => array(
+			'phone' => array(
 				'label'       => __( 'Mobile', 'risecheckout' ),
+				'class' => array( 'col-12' ),
 				'prefix'      => '+55',
 				'placeholder' => '(00) 000000-0000',
 				'minlength'   => 11,
@@ -151,21 +254,77 @@ function risecheckout_fields() {
 				'step'        => 'customer',
 				'priority'    => 40,
 			),
-			'zip'    => array(
-				'wrapper_class' => 'col-7 zip',
-				'label'         => __( 'Zip', 'risecheckout' ),
+			'postcode'    => array(
+				'class' => array( 'col-7', 'postcode-field' ),
+				// 'label'         => __( 'Postcode', 'risecheckout' ),
 				'minlength'     => 8,
 				'maxlength'     => 9,
 				'pattern'       => '\d{5}-?\d{3}',
-				'mask'          => 'zip-br',
+				'mask'          => 'postcode-br',
 				'invalid'       => sprintf(
 					/* translators: %s: Field label */
 					__( 'Enter a valid %s', 'risecheckout' ),
 					mb_strtolower( __( 'Zip', 'risecheckout' ) )
 				),
 				'required'      => true,
-				'step'          => 'delivery',
+				'step'          => 'shipping',
 				'priority'      => 50,
+				'loading'       => true,
+				// 'value'         => '89240-000',
+				'value'         => '79814-054',
+			),
+			'city' => array(
+				'class' => array( 'col-8', 'address-field' ),
+				'priority' => 60,
+				// 'value'    => 'São Francisco do Sul',
+				'column_break' => true,
+			),
+			'state' => array(
+				'class' => array( 'col-4', 'address-field'  ),
+				'priority' => 65,
+				// 'value'    => 'SC',
+			),
+			'address1' => array(
+				'class' => array( 'col-12', 'address-field'  ),
+				'placeholder' => '',
+				'priority' => 70,
+				'value' => 'Rua Edgar Xavier de Matos',
+			),
+			'number' => array(
+				'class' => array( 'col-4', 'address-field'  ),
+				'priority' => 80,
+				'value' => 256,
+			),
+			'neighborhood' => array(
+				'class' => array( 'col-8', 'address-field'  ),
+				'priority' => 85,
+				'value' => 'Jardim Itália',
+			),
+			'address2' => array(
+				'class' => array( 'col-12', 'address-field'  ),
+				'placeholder' => '',
+				'priority' => 90,
+				'value' => 'Ap101',
+			),
+			'receiver' => array(
+				'label'       => __( 'Receiver', 'risecheckout' ),
+				'class' => array( 'col-12', 'address-field'  ),
+				'placeholder' => sprintf(
+					/* translators: %s: Example */
+					__( 'e.g.: %s', 'risecheckout' ),
+					__( 'Mary Anne Johnson', 'risecheckout' )
+				),
+				'minlength'   => 5,
+				'pattern'     => '[A-Za-zÀ-ÖØ-öø-ÿ]{2,}(\s+[A-Za-zÀ-ÖØ-öø-ÿ]{2,})+',
+				'invalid'     => sprintf(
+					/* translators: %s: Field label */
+					__( 'Enter %s', 'risecheckout' ),
+					mb_strtolower( __( 'Receiver', 'risecheckout' ) )
+				),
+				'value'       => __( 'Mary Anne Johnson', 'risecheckout' ),
+				'step'        => 'shipping',
+				'required'    => true,
+				'priority'    => 100,
 			),
 		)
 	);
@@ -192,16 +351,21 @@ function risecheckout_steps() {
 			'continue'    => __( 'Continue', 'risecheckout' ),
 			'edit'        => __( 'Edit', 'risecheckout' ),
 		),
-		'delivery' => array(
-			'title'       => __( 'Delivery', 'risecheckout' ),
+		'shipping' => array(
+			'title'       => __( 'Shipping', 'risecheckout' ),
+			// 'description' => __(
+			// 	'Register or select an address',
+			// 	'risecheckout'
+			// ),
 			'description' => __(
-				'Register or select an address',
+				'Register an address',
 				'risecheckout'
 			),
 			'placeholder' => __(
 				'Fill in your personal information to continue',
 				'risecheckout'
 			),
+			'save'    => __( 'Save', 'risecheckout' ),
 		),
 		'payment'  => array(
 			'title'       => __( 'Payment', 'risecheckout' ),

@@ -3,7 +3,7 @@
 
 	const forms = document.querySelectorAll('form');
 
-	function isValidCPF(cpf) {
+	function isValidCpf(cpf) {
 		cpf = cpf.replace(/\D/g, '');
 		if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
 			return false;
@@ -49,16 +49,19 @@
 
 			if (field.hasAttribute('required') && field.validity.valueMissing) {
 				message = form?.dataset.required || '';
-			} else if (('cpf' === field.dataset.validation && field.value && !isValidCPF(field.value)) || field.validity.patternMismatch) {
+			} else if (('cpf' === field.dataset.validation && field.value && !isValidCpf(field.value)) || field.validity.patternMismatch) {
 				message = field.dataset.invalid || '';
 			}
 
 			field.classList.remove('is-invalid');
 			field.classList.remove('is-valid');
-			if ((field.type === 'email' && isValidEmail(field.value)) || (field.type !== 'email' && field.checkValidity() && ('cpf' !== field.dataset.validation || isValidCPF(field.value)))) {
+			if ((field.type === 'email' && isValidEmail(field.value)) || (field.type !== 'email' && field.checkValidity() && ('cpf' !== field.dataset.validation || isValidCpf(field.value)))) {
 				field.classList.add('is-valid');
 			} else if (invalid) {
 				field.classList.add('is-invalid');
+			}
+			if (!field.hasAttribute('required') && '' === field.textContent) {
+				field.classList.remove('is-valid');
 			}
 
 			addFeedback(field, message);

@@ -108,7 +108,7 @@ function risecheckout_step_open( $step ) {
 	$slug = $step->slug;
 
 	$fieldset = (object) array(
-		'class' => 'checkout-step card card-body',
+		'class' => "{$slug}-step card card-body",
 		'id'    => "step-{$slug}",
 	);
 	if ( isset( $step->placeholder ) ) {
@@ -116,6 +116,9 @@ function risecheckout_step_open( $step ) {
 	}
 	if ( isset( $step->continue ) ) {
 		$fieldset->data_continue = $step->continue;
+	}
+	if ( isset( $step->save ) ) {
+		$fieldset->data_save = $step->save;
 	}
 	if ( isset( $step->edit ) ) {
 		$fieldset->data_edit = $step->edit;
@@ -143,6 +146,75 @@ function risecheckout_step_open( $step ) {
 
 	<?php endif; ?>
 
+	<?php if ( 'xcustomer' === $slug ) : ?>
+
+	<div class="infos">
+		<p class="name" id="info-name" data-label="Nome completo">Maria de Almeida Cruz</p>
+		<p class="email" id="info-email" data-label="E-mail">maria@gmail.com</p>
+		<p class="cpf" id="info-cpf" data-label="CPF">CPF <span>154.505.032-53</span></p>
+	</div>
+
+	<?php elseif ( 'xshipping' === $slug ) : ?>
+
+		<?php if (true) : ?>
+
+	<div class="container-addresses ">
+		<div class="box-address selected">
+			<label for="address-189074050" class="inner-box holder-icheck">
+				<div class="iradio_minimal checked" style="position: relative;">
+					<input type="radio" name="address" id="address-189074050" class="input-icheck select-customer-address" value="189074050" checked="" data-url="https://seguro.mrmaverick.com.br/cart/address" data-zipcode="79814054" style="position: absolute; visibility: hidden;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+				</div>
+				<span class="inner-label black-80 f11">
+					<span class="medium">Rua Edgar Xavier de Matos, 256 - Jardim Itália</span> <br>
+					Dourados-MS | CEP <span class="zipcode">79814-054</span>
+				</span>
+			</label>
+		</div>
+		<div class="container-shipment">
+			<hr>
+			<div class="black-80 mt15 mb15 --primary-text">Escolha uma forma de entrega:</div>
+				<div class="shipment-options">
+					<label for="shipment-m-1" class="option clearfix selected">
+						<div class="iradio_minimal checked" style="position: relative;">
+							<input type="radio" name="shipment-service" class="input-icheck select-shipment-service" value="JADLOG - DE 4 A 7 DIAS ÚTEIS" checked style="position: absolute; visibility: hidden;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+						</div>
+						<div class="inner-label">
+							<div class="text pull-left black-80 f12">
+								<span class="medium block">JADLOG - de 4 a 7 dias úteis</span>
+								<span class="shipping-time">Entrega garantida</span>
+							</div>
+							<div class="price pull-right f12 text-right">R$ 9,90</div>
+						</div>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt25">
+			<button type="submit" class="btn btn-primary btn-block btn-send link-box-checkout">
+				Continuar
+			</button>
+		</div>
+	</div>
+
+		<?php else : ?>
+
+	<button class="btn-edit" type="submit" data-action="edit" aria-label="Editar" data-bs-toggle="tooltip" data-bs-title="Editar"></button>
+	<dl class="infos">
+		<dt>Endereço para entrega</dt>
+		<dd>
+			<span data-info="address1">Rua Edgar Xavier de Matos</span>, <span data-info="number">256</span> - <span data-info="neighborhood">Jardim Itália</span><br>
+			<span>Complemento: <span data-info="address2">Ap101</span><br>
+			<span><span data-info="city">Dourados</span>-<span data-info="state">SC</span> | <span>CEP <span data-info="postcode">79814-054</span></span>
+		</dd>
+		<dt>Forma de entrega</dt>
+		<dd>JADLOG - de 4 a 7 dias úteis R$ 9,90</dd>
+	</dl>
+
+		<?php endif; ?>
+
+	<?php endif; ?>
+
 	<?php
 
 	$html .= ob_get_clean();
@@ -165,13 +237,23 @@ function risecheckout_step_fields( $fields, $slug ) {
 function risecheckout_field( $field ) {
 	$id = $field->id;
 
-	$wrapper_class = isset( $field->wrapper_class ) ? $field->wrapper_class : 'col-12';
+	$class = isset( $field->class ) ? $field->class : array( 'col-12' );
 	$type          = isset( $field->type ) ? $field->type : 'text';
+	if ( isset( $field->column_break ) ) {
+		echo '<div class="w-100"></div>';
+	}
 	?>
 
-	<div class="<?php echo esc_attr( $wrapper_class ); ?>">
+	<div class="<?php echo esc_attr( implode( ' ', $class ) ); ?>">
 		<label for="<?php echo esc_attr( $id ); ?>" class="form-label">
 			<?php echo esc_html( $field->label ); ?>
+
+			<?php if (!isset($field->required) || !$field->required) :?>
+
+			<span class="text-body-secondary"><?php echo esc_html( sprintf( '(%s)', __( 'Optional', 'risecheckout' ) ) ); ?></span>
+
+			<?php endif; ?>
+
 		</label>
 
 		<?php
@@ -193,8 +275,8 @@ function risecheckout_field( $field ) {
 		if ( isset( $field->pattern ) ) {
 			$input->pattern = $field->pattern;
 		}
-		if ( isset( $field->validation ) ) {
-			$input->data_validation = $field->validation;
+		if ( isset( $field->validate ) ) {
+			$input->data_validate = implode( ',', $field->validate );
 		}
 		if ( isset( $field->mask ) ) {
 			$input->data_mask = $field->mask;
@@ -217,12 +299,27 @@ function risecheckout_field( $field ) {
 		if ( isset( $field->info_label ) ) {
 			$input->data_info_label = $field->info_label;
 		}
+		if ( isset( $field->loading ) ) {
+			$input->data_loading = $field->loading;
+		}
+		if ( isset( $field->autocomplete ) ) {
+			$input->autocomplete = $field->autocomplete;
+		}
+		if ( isset( $field->priority ) ) {
+			$input->data_priority = $field->priority;
+		}
 		$input = (array) $input;
 		foreach ( $input as $key => &$value ) {
 			if ( preg_match( '/^(data)_/', $key ) ) {
 				$key = str_replace( '_', '-', $key );
 			}
-			if ( in_array( $key, array( 'required', 'data-info', 'data-info-prefix' ), true ) && true === $value ) {
+			$true_without_value = array(
+				'required',
+				'data-info',
+				'data-info-prefix',
+				'data-loading',
+			);
+			if ( in_array( $key, $true_without_value, true ) && true === $value ) {
 				$value = esc_attr( $key );
 			} else {
 				$value = esc_attr( $key ) . '="' . esc_attr( $value ) . '"';

@@ -8,7 +8,12 @@ risecheckout_get_header( 'checkout' );
 		<form method="GET" class="checkout needs-validation" novalidate data-required="<?php echo esc_attr( __( 'Required field.', 'risecheckout' ) ); ?>">
 
 			<?php
-			$fields = risecheckout_fields();
+			// $fields = risecheckout_fields();
+
+			// echo '<pre>';
+			// $fields = WC()->checkout()->get_checkout_fields();
+			// print_r($fields);
+			// die;
 
 			$steps = risecheckout_steps();
 
@@ -20,7 +25,12 @@ risecheckout_get_header( 'checkout' );
 				?>
 
 				<?php
-				$step_fields = risecheckout_step_fields( $fields, $slug );
+				// $step_fields = risecheckout_step_fields( $fields, $slug );
+				$step_fields = WC()->checkout()->get_checkout_fields( $slug );
+
+				// echo '<pre>';
+				// print_r($step_fields);
+				// die;
 
 				if ( isset( $step_fields ) ) :
 					?>

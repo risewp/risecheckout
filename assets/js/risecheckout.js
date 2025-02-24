@@ -18,8 +18,15 @@ const risecheckoutForm = {
 			this.setupFieldset(fieldset, index);
 			// this.setupInfoFields();
 			this.setupEditButton(fieldset);
-			this.setupContinueButton(fieldset);
-			this.appendOverlaySpinner(fieldset);
+			this.setupLoadingFields();
+			this.setupCityStateInfo();
+		});
+
+		this.setupContinueButton();
+		this.appendOverlaySpinner();
+
+		['input', 'paste'].forEach(type => {
+			this.form.querySelector('[name=postcode]').addEventListener(type, this.updatePostcode);
 		});
 	},
 	setupFieldset: function (fieldset, index) {
@@ -35,13 +42,13 @@ const risecheckoutForm = {
 	},
 	setupInfoFields: function () {
 		const step = this.currentStep();
-		step.appendChild(this.createElement('div', 'info'));
+		step.appendChild(this.createElement('div', 'infos'));
 		step.querySelectorAll('[data-info], [data-info-prefix]').forEach(info => {
-			const infoDiv = step.querySelector('.info');
+			const infoDiv = step.querySelector('.infos');
 			const infoId = info.dataset.info || info.id;
 
 			if (!document.getElementById(`info-${infoId}`)) {
-				const label = info.dataset.infoLabel || (info.previousElementSibling?.textContent.trim() || '');
+				const label = info.dataset.infoLabel || (step.querySelector(`label[for=${info.id}`)	.textContent.trim() || '');
 				const content = info.hasAttribute('data-info-prefix') ? `${label} ` : '';
 				const infoP = this.createElement('p', infoId, content, { id: `info-${infoId}`, 'data-label': label });
 
@@ -87,20 +94,37 @@ const risecheckoutForm = {
 		new bootstrap.Tooltip(edit);
 		fieldset.querySelector('legend')?.after(edit);
 	},
-	setupContinueButton: function (fieldset) {
-		if (!fieldset.dataset.continue) return;
+	setupContinueButton: function () {
+		const step = this.currentStep();
+		if (!step.dataset.continue) return;
 
 		const next = this.createElement(
 			'button',
-			'btn btn-primary d-block w-100 btn-pill btn-send mt-4',
-			fieldset.dataset.continue,
+			'btn btn-primary btn-send',
+			(step.dataset.continue || step.dataset.save),
 			{ type: 'submit' }
 		);
-		const svg = this.createSvgIcon();
-		next.appendChild(svg);
+		if (step.dataset.continue) {
+			const svg = this.createSvgIcon();
+			next.appendChild(svg);
+		}
 
 		this.form.addEventListener('submit', event => this.submit(event));
-		fieldset.appendChild(next);
+		step.appendChild(next);
+	},
+	setupSaveButton: function () {
+		const step = this.currentStep();
+		if (!step.dataset.save) return;
+
+		const next = this.createElement(
+			'button',
+			'btn btn-primary btn-send',
+			(step.dataset.continue || step.dataset.save),
+			{ type: 'submit' }
+		);
+
+		this.form.addEventListener('submit', event => this.submit(event));
+		step.appendChild(next);
 	},
 	cleanFormData: function (formData) {
 		const cleanedFormData = new FormData();
@@ -173,15 +197,275 @@ const risecheckoutForm = {
 	responseInfo: function(info) {
 		this.setupInfoFields();
 
-		document.getElementById('info-name').textContent = info.name;
-		document.getElementById('info-email').textContent = info.email;
-		document.querySelector('#info-cpf span').textContent = risecheckoutMask.formatCPF(info.cpf);
+		Object.keys(info).forEach(name => {
+			let value = info[name];
+			let field = this.form.querySelector(`[name=${name}]`);
+			if (!field) {
+				field = this.form.querySelector(`[data-info=${name}]`);
+			}
+
+			const mask = field?.dataset.mask;
+			value = risecheckoutMask.format(value, mask);
+			let infoPlace;
+			if (field && field.hasAttribute('data-info-prefix')) {
+				infoPlace = document.querySelector(`#info-${name} span`);
+			} else {
+				infoPlace = document.getElementById(`info-${name}`);
+			}
+			if (infoPlace) {
+				infoPlace.textContent = value;
+			}
+		});
 	},
 	nextStep: function () {
 		this.toggleStep('#step-customer', false);
-		this.toggleStep('#step-delivery', true);
+		this.toggleStep('#step-shipping', true);
 
 		this.form.classList.remove('was-validated');
+	},
+	fillAddress: function (postcode) {
+		const step = this.currentStep();
+		const field = this.form.querySelector('[name=postcode]');
+		const wrapper = field.parentNode.parentNode;
+		const invalidFeedback = wrapper.querySelector('.invalid-feedback');
+		postcode = postcode.replace(/\D/g, '');
+		if (postcode.length !== 8) {
+			step.classList.remove('filled-address');
+			field.focus();
+		} else {
+			field.classList.remove('is-valid');
+			wrapper.classList.add('loading');
+			const params = risecheckoutParams;
+			fetch(params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_postcode_br'), {
+				method: 'POST',
+				body: postcode,
+				headers: {
+					'Content-Type': 'text/plain',
+					'X-WPNONCE': params.postcodeBrNonce
+				}
+			})
+			.then(response => response.text())
+			.then(text => {
+				if (!text || -1 === parseInt(text)) {
+					text = '{"success":false}';
+				}
+				return JSON.parse(text);
+			})
+			.then(response => {
+				wrapper.classList.remove('loading');
+				if (response.success) {
+					field.classList.add('is-valid');
+					step.classList.add('filled-address');
+					this.setupSaveButton();
+
+					const fields = step.querySelectorAll('.address-field .form-control:not([name=receiver])');
+
+					fields.forEach(field => {
+						field.classList.remove('is-invalid');
+						// if (field.name !== 'receiver') {
+						// 	field.value = '';
+						// 	field.classList.remove('is-valid');
+						// }
+					});
+
+					const data = {
+						...response.data,
+						neighborhood: response.data.neighborhood || '',
+						street: response.data.street || ''
+					};
+					// TODO: Check if response values is equal field, case negative clean.
+					fields.forEach(field => {
+						// field.classList.remove('is-invalid');
+						// if (field.name !== 'receiver') {
+						// 	field.value = '';
+						// 	field.classList.remove('is-valid');
+						// }
+					});
+					Object.keys(data).forEach(name => {
+						let value = data[name];
+						if (name === 'street') {
+							name = 'address1';
+						}
+						let place = this.form.querySelector(`[name=${name}]`);
+						if (!place) {
+							place = this.form.querySelector(`[data-info=${name}]`);
+						}
+
+						if (place.hasAttribute('data-info')) {
+							place.textContent = value;
+						} else {
+							place.value = value;
+							if (value) {
+								place.setAttribute('disabled', '');
+								place.classList.add('is-valid');
+							} else {
+								place.removeAttribute('disabled');
+							}
+						}
+
+						let focus = 'number';
+						if (!data['street']) {
+							focus = 'address1';
+						}
+						this.form.querySelector(`[name=${focus}]`).focus();
+
+						// const mask = field?.dataset.mask;
+						// value = risecheckoutMask.format(value, mask);
+						// let infoPlace;
+						// if (field && field.hasAttribute('data-info-prefix')) {
+						// 	infoPlace = document.querySelector(`#info-${name} span`);
+						// } else {
+						// 	infoPlace = document.getElementById(`info-${name}`);
+						// }
+						// if (infoPlace) {
+						// 	infoPlace.textContent = value;
+						// }
+					});
+
+				} else {
+					field.dataset.invalid = response.data.message;
+					invalidFeedback.textContent = field.dataset.invalid;
+					let currentPattern = field.getAttribute('pattern');
+					if (currentPattern) {
+						const newPattern = `^(?!${field.value}$)${currentPattern}$`;
+						field.setAttribute('pattern', newPattern);
+					}
+					field.classList.add('is-invalid');
+				}
+			});
+			// if (response.success) {
+			// 	// this.responseInfo(response.data);
+
+			// 	// this.nextStep();
+
+			// 	// step.querySelector('.fields').remove();
+			// }
+		}
+	},
+	updatePostcode: function (event) {
+		const field = this.form.querySelector('[name=postcode]');
+		if (!field.hasAttribute('data-mask') || field.dataset.mask !== 'postcode-br') {
+			return;
+		}
+		let postcode;
+		if (event.target) {
+			postcode = event.target.value;
+		} else {
+			postcode = (event.clipboardData || window.clipboardData).getData('text');
+		}
+		risecheckoutForm.fillAddress(postcode);
+
+		// e.preventDefault();
+		// let pastedData = (e.clipboardData || window.clipboardData).getData('text');
+		// this.postcode.value = risecheckoutMask.formatPostcodeBr(pastedData);
+
+		// console.log(this.postcode.value);
+
+		// const postcode = this.postcode();
+		// if (
+		// 	this.postcode = this.form.querySelector('[data-mask=postcode-br]');)
+		// console.log(this.form);
+		// console.log(this.postcode);
+		// const postcodeBr = this.postcode.value.replace(/\D/g, '');
+		// if (postcodeBr.length === 8) {
+		// 	console.log(postcodeBr);
+		// }
+
+		// console.log(event);
+		// const numericValue = input.value.replace(/\D/g, ""); // Remove tudo que não for número
+
+		// if (numericValue.length === 8) {
+		// 	fetch("?wc-ajax=risecheckout_postcode_br", {
+		// 		method: "POST",
+		// 		headers: {
+		// 			"Content-Type": "application/json",
+		// 		},
+		// 		body: JSON.stringify({ postcode: numericValue }),
+		// 	})
+		// 	.then(response => response.json())
+		// 	.then(data => console.log("Resposta:", data))
+		// 	.catch(error => console.error("Erro:", error));
+		// }
+
+		// fetch(this.params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_postcode_br'), {
+		// 	method: 'POST',
+		// 	body,
+		// 	headers: {
+		// 		'X-WPNONCE': this.params.postcodeBrNonce
+		// 	}
+		// })
+		// .then(response => response.text())
+		// .then(text => {
+		// 	if (!text || -1 === parseInt(text)) {
+		// 		text = '{"success":false}';
+		// 	}
+		// 	return JSON.parse(text);
+		// })
+		// .then(response => {
+
+		// 	if (response.success) {
+		// 		console.log(response.data);
+		// 	}
+		// });
+
+		// https://viacep.com.br/ws/89220120/json/ 200
+		// {
+		// 	"cep": "89220-120",
+		// 	"logradouro": "Rua Araquã",
+		// 	"complemento": "",
+		// 	"unidade": "",
+		// 	"bairro": "Costa e Silva",
+		// 	"localidade": "Joinville",
+		// 	"uf": "SC",
+		// 	"estado": "Santa Catarina",
+		// 	"regiao": "Sul",
+		// 	"ibge": "4209102",
+		// 	"gia": "",
+		// 	"ddd": "47",
+		// 	"siafi": "8179"
+		//   }
+		// https://viacep.com.br/ws/89220999/json/ 200
+		// {
+		// 	"erro": "true"
+		//   }
+		// https://seguro.mrmaverick.com.br/shipping/zipcode?zipcode=89237342 400
+		// {"error":true,"message":"CEP inv\u00e1lido"}
+		// https://seguro.mrmaverick.com.br/shipping/zipcode?zipcode=89237452 200
+		// {
+		// 	"zipcode": "89237452",
+		// 	"street": "Rua Ant\u00f4nio Meras Sagas",
+		// 	"neighborhood": "Vila Nova",
+		// 	"city": "Joinville",
+		// 	"uf": "SC",
+		// 	"source": "database",
+		// 	"city_id": 189
+		//   }
+		// https://viacep.com.br/ws/89240000/json/ 200
+		// {
+		// 	"cep": "89240-000",
+		// 	"logradouro": "",
+		// 	"complemento": "",
+		// 	"unidade": "",
+		// 	"bairro": "",
+		// 	"localidade": "São Francisco do Sul",
+		// 	"uf": "SC",
+		// 	"estado": "Santa Catarina",
+		// 	"regiao": "Sul",
+		// 	"ibge": "4216206",
+		// 	"gia": "",
+		// 	"ddd": "47",
+		// 	"siafi": "8319"
+		//   }
+		// https://seguro.mrmaverick.com.br/shipping/zipcode?zipcode=89240000 200
+		// {
+		// 	"zipcode": "89240000",
+		// 	"street": "",
+		// 	"neighborhood": "",
+		// 	"city": "S\u00e3o Francisco do Sul",
+		// 	"uf": "SC",
+		// 	"source": "database",
+		// 	"city_id": 1258
+		//   }
 	},
 	checkMail: function () {
 		// fetch(this.params.wcAjaxUrl.replace('%%endpoint%%', 'risecheckout_check_email'), {
@@ -210,19 +494,30 @@ const risecheckoutForm = {
 	},
 	toggleStep: function (selector, isActive) {
 		const step = document.querySelector(selector);
+		const postcode = step.querySelector(`[name=postcode]`);
 		step.classList.toggle('done', !isActive);
 		step.classList.toggle('active', isActive);
 		step.toggleAttribute('disabled', !isActive);
 		if (isActive) {
-			const firstField = step.querySelector('.form-control');
+			this.setupContinueButton();
+			if (!step.dataset.save) {
+				this.appendOverlaySpinner();
+			}
+			if (postcode) {
+				this.fillAddress(postcode.value);
+			}
+			const firstField = step.querySelector('.form-control:empty');
 			firstField?.classList.remove('is-invalid');
 			firstField?.focus();
+		} else {
+			step.querySelector('.btn').remove();
 		}
 	},
-	appendOverlaySpinner: function (fieldset) {
+	appendOverlaySpinner: function () {
+		const step = this.currentStep();
 		const overlay = this.createElement('div', 'overlay-spinner overlay-spinner-box');
 		overlay.appendChild(this.createElement('div', 'spinner spinner-grey'));
-		fieldset.appendChild(overlay);
+		step.appendChild(overlay);
 	},
 	createElement: function (tag, className, textContent = '', attributes = {}) {
 		const el = document.createElement(tag);
@@ -243,6 +538,70 @@ const risecheckoutForm = {
 
 		svg.appendChild(path);
 		return svg;
+	},
+	setupLoadingFields: function () {
+		this.form.querySelectorAll('[data-loading]').forEach(field => {
+			if (field.parentNode.classList.contains('holder-input')) {
+				return;
+			}
+
+			const holderDiv = this.createElement('div', 'holder-input');
+			const spinnerDiv = this.createElement('div', 'spinner spinner-grey spinner-form');
+
+			const parent = field.parentNode;
+
+			parent.insertBefore(holderDiv, field);
+
+			holderDiv.appendChild(field);
+
+			const invalidFeedback = parent.querySelector('.invalid-feedback');
+			if (invalidFeedback) {
+				holderDiv.appendChild(invalidFeedback);
+			}
+
+			holderDiv.appendChild(spinnerDiv);
+		});
+	},
+	setupCityStateInfo: function () {
+		if (this.form.querySelector('#cityStateInfo')) {
+			return;
+		}
+
+		const fields = this.form.querySelectorAll('[name=city], [name=state]');
+
+		let classList = fields[0].parentNode.classList;
+		classList.add('city-state-info');
+		classList = Array.from(classList);
+
+		const cityStateInfoWrapper = this.createElement('div', classList.join(' ').replace('col-8', 'col-5'));
+
+		const cityStateInfoDiv = this.createElement('div', 'city-state-info-text', '', { id: 'cityStateInfo' });
+
+		fields.forEach((field, index) => {
+			if (index > 0) {
+				cityStateInfoDiv.appendChild(document.createTextNode(' / '));
+			}
+			const span = this.createElement('span', field.id, field.value, { 'data-info': field.id });
+			cityStateInfoDiv.appendChild(span);
+		});
+
+		cityStateInfoWrapper.appendChild(cityStateInfoDiv);
+
+		if (fields[0]) {
+			const parent = fields[0].parentNode;
+
+			if (parent && parent.parentNode) {
+				parent.parentNode.insertBefore(cityStateInfoWrapper, parent);
+			}
+		}
+
+		const cityStateInfoParts = this.form.querySelectorAll('#cityStateInfo span');
+		cityStateInfoParts.forEach(part => {
+			const id = part.classList[0];
+			this.form.querySelector(`#${id}`).parentNode.remove();
+			part.classList.remove(id);
+			part.id = id;
+		});
 	}
 };
 

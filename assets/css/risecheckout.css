@@ -174,7 +174,16 @@ fieldset {
 }
 
 .fields {
+	--bs-gutter-x: .875rem;
 	--bs-gutter-y: 1.125rem;
+
+	& .loading .spinner {
+		display: block;
+	}
+
+	& > .w-100 {
+		margin-top: 0;
+	}
 }
 
 .card-title,
@@ -228,6 +237,17 @@ legend {
 		margin-bottom: var(--card-header-mb);
 	}
 
+	& .btn {
+		display: block;
+		width: 100%;
+		padding-right: 0;
+		padding-left: 0;
+		border-radius: var(--default-radius);
+		position: relative;
+		transition: all 0s;
+		margin-top: 1.5rem;
+	}
+
 	&.active {
 		--bs-card-border-color: #999;
 		--bs-card-title-color: var(--bs-dark);
@@ -240,7 +260,7 @@ legend {
 			display: none;
 		}
 
-		.info {
+		.infos {
 			display: none;
 		}
 	}
@@ -272,7 +292,7 @@ legend {
 				}
 			}
 
-			& .info {
+			& .infos {
 				display: none;
 			}
 
@@ -290,7 +310,11 @@ legend {
 		border-color: transparent;
 
 		& .desc-form,
-		& .row-form, {
+		& .row-form {
+			display: none;
+		}
+
+		& .btn {
 			display: none;
 		}
 	}
@@ -325,12 +349,20 @@ legend {
 			display: none !important;
 		}
 
-		& .info {
+		& .infos {
 			display: block;
 		}
 
 		.btn-edit {
 			display: block;
+		}
+	}
+
+	&.shipping-step:not(.filled-address) {
+
+		.address-field,
+		.btn {
+			display: none;
 		}
 	}
 }
@@ -383,6 +415,10 @@ legend {
 	color: #333;
 	line-height: 1;
 	margin-bottom: .25rem;
+
+	& .text-body-secondary {
+		text-transform: lowercase;
+	}
 }
 
 .form-control {
@@ -497,10 +533,11 @@ legend {
 	}
 }
 
-.info {
+.infos {
 	color: #333;
 	line-height: 1.3;
 	font-size: 1.07692308em;
+	margin-bottom: 0;
 
 	& p {
 		margin-bottom: .3125rem;
@@ -514,6 +551,19 @@ legend {
 		font-size: 1.14285714em;
 		font-weight: var(--texts-font-medium);
 		margin-bottom: .625rem;
+	}
+
+	& dt::after {
+		content: ":";
+	}
+
+	& dd {
+		margin-top: 0.3125rem;
+		margin-bottom: 0;
+	}
+
+	& dd + dt {
+		margin-top: .9375rem;
 	}
 }
 
@@ -541,9 +591,20 @@ legend {
 		width: 68.2192557%;
 	}
 
-	.zip {
+	.postcode-field {
 		width: 57%;
 	}
+
+	.city-state-info {
+		--bs-gutter-y: 2rem;
+
+		width: 43%;
+	}
+}
+
+.city-state-info-text {
+	margin-left: -5px;
+	line-height: 1;
 }
 
 .tooltip {
@@ -561,4 +622,62 @@ legend {
 	font-weight: 700;
 	line-height: 13px;
 	box-shadow: 0 2px 5px rgba(95, 95, 95, .3);
+}
+
+.box-address {
+	position: relative;
+
+	& .inner-box {
+		background: #fff;
+		border: 1px solid #d0d0d0;
+		border-radius: 5px;
+		box-sizing: border-box;
+		color: #333;
+		cursor: pointer;
+		display: block;
+		font-size: 11px;
+		line-height: 14px;
+		margin: 0 0 10px;
+		padding: 11px 15px;
+	}
+
+	&.selected .inner-box {
+	  background: #f4f6f8;
+	  border-color: #333;
+	}
+
+	& .inner-label {
+		box-sizing: border-box;
+		display: block;
+		margin-top: -16px;
+		padding-left: 29px;
+		padding-right: 60px;
+		width: 100%;
+		font-size: 11px;
+		color: #333;
+
+		& .medium {
+			font-weight: 500;
+		}
+	}
+}
+
+
+.container-shipment .option {
+	background: #fff;
+	border: 1px solid #d0d0d0;
+	border-radius: 5px;
+	box-sizing: border-box;
+	color: #333;
+	cursor: pointer;
+	display: block;
+	line-height: 15px;
+	margin: 0 0 10px;
+	padding: 11px 15px 9px;
+	position: relative;
+
+	&.selected {
+		background: #f4f6f8;
+		border-color: #333;
+	}
 }
