@@ -276,13 +276,15 @@ function risecheckout_fields() {
 			'city' => array(
 				'class' => array( 'col-8', 'address-field' ),
 				'priority' => 60,
-				// 'value'    => 'São Francisco do Sul',
 				'column_break' => true,
+				// 'value'    => 'São Francisco do Sul',
+				'value'    => 'Dourados',
 			),
 			'state' => array(
 				'class' => array( 'col-4', 'address-field'  ),
 				'priority' => 65,
 				// 'value'    => 'SC',
+				'value'    => 'MS',
 			),
 			'address1' => array(
 				'class' => array( 'col-12', 'address-field'  ),

@@ -228,11 +228,12 @@ const risecheckoutForm = {
 		const field = this.form.querySelector('[name=postcode]');
 		const wrapper = field.parentNode.parentNode;
 		const invalidFeedback = wrapper.querySelector('.invalid-feedback');
+		const previous = step.dataset.postcode;
 		postcode = postcode.replace(/\D/g, '');
 		if (postcode.length !== 8) {
 			step.classList.remove('filled-address');
 			field.focus();
-		} else {
+		} else if (postcode !== previous) {
 			field.classList.remove('is-valid');
 			wrapper.classList.add('loading');
 			const params = risecheckoutParams;
@@ -256,72 +257,103 @@ const risecheckoutForm = {
 				if (response.success) {
 					field.classList.add('is-valid');
 					step.classList.add('filled-address');
+					step.dataset.postcode = postcode;
 					this.setupSaveButton();
 
 					const fields = step.querySelectorAll('.address-field .form-control:not([name=receiver])');
 
-					fields.forEach(field => {
-						field.classList.remove('is-invalid');
-						// if (field.name !== 'receiver') {
-						// 	field.value = '';
-						// 	field.classList.remove('is-valid');
-						// }
-					});
+					let data = response.data;
 
-					const data = {
-						...response.data,
-						neighborhood: response.data.neighborhood || '',
-						street: response.data.street || ''
-					};
-					// TODO: Check if response values is equal field, case negative clean.
-					fields.forEach(field => {
-						// field.classList.remove('is-invalid');
-						// if (field.name !== 'receiver') {
-						// 	field.value = '';
-						// 	field.classList.remove('is-valid');
-						// }
-					});
+					let same = true;
 					Object.keys(data).forEach(name => {
 						let value = data[name];
 						if (name === 'street') {
 							name = 'address1';
 						}
+
 						let place = this.form.querySelector(`[name=${name}]`);
+						console.log(place);
 						if (!place) {
-							place = this.form.querySelector(`[data-info=${name}]`);
+							place = this.form.querySelector(`[data-info="${name}"]`);
+							console.log(place);
+							console.log(place.textContent.trim());
+							console.log(place.innerHTML);
+							console.log(place.className);
+							console.log(place.id);
 						}
 
+						let filledValue;
 						if (place.hasAttribute('data-info')) {
-							place.textContent = value;
+							filledValue = place.textContent.trim();
 						} else {
-							place.value = value;
-							if (value) {
-								place.setAttribute('disabled', '');
-								place.classList.add('is-valid');
-							} else {
-								place.removeAttribute('disabled');
-							}
+							filledValue = place.value;
 						}
-
-						let focus = 'number';
-						if (!data['street']) {
-							focus = 'address1';
+						console.log('value: ' + value,'filledValue: ' + filledValue);
+						if (value !== filledValue) {
+							same = false;
 						}
-						this.form.querySelector(`[name=${focus}]`).focus();
-
-						// const mask = field?.dataset.mask;
-						// value = risecheckoutMask.format(value, mask);
-						// let infoPlace;
-						// if (field && field.hasAttribute('data-info-prefix')) {
-						// 	infoPlace = document.querySelector(`#info-${name} span`);
-						// } else {
-						// 	infoPlace = document.getElementById(`info-${name}`);
-						// }
-						// if (infoPlace) {
-						// 	infoPlace.textContent = value;
-						// }
 					});
 
+					if (same) {
+						step.dataset.postcode = postcode;
+						previous = step.dataset.postcode;
+					}
+
+					fields.forEach(field => {
+						field.classList.remove('is-invalid');
+						field.classList.remove('is-valid');
+					});
+
+					if (postcode !== previous) {
+						fields.forEach(field => {
+							field.value = '';
+						});
+						data = {
+							...data,
+							neighborhood: data.neighborhood || '',
+							street: data.street || ''
+						};
+						Object.keys(data).forEach(name => {
+							let value = data[name];
+							if (name === 'street') {
+								name = 'address1';
+							}
+							let place = this.form.querySelector(`[name=${name}]`);
+							if (!place) {
+								place = this.form.querySelector(`[data-info=${name}]`);
+							}
+
+							if (place.hasAttribute('data-info')) {
+								place.textContent = value;
+							} else {
+								place.value = value;
+								if (value) {
+									place.setAttribute('disabled', '');
+									place.classList.add('is-valid');
+								} else {
+									place.removeAttribute('disabled');
+								}
+							}
+
+							let focus = 'number';
+							if (!data['street']) {
+								focus = 'address1';
+							}
+							this.form.querySelector(`[name=${focus}]`).focus();
+
+							// const mask = field?.dataset.mask;
+							// value = risecheckoutMask.format(value, mask);
+							// let infoPlace;
+							// if (field && field.hasAttribute('data-info-prefix')) {
+							// 	infoPlace = document.querySelector(`#info-${name} span`);
+							// } else {
+							// 	infoPlace = document.getElementById(`info-${name}`);
+							// }
+							// if (infoPlace) {
+							// 	infoPlace.textContent = value;
+							// }
+						});
+					}
 				} else {
 					field.dataset.invalid = response.data.message;
 					invalidFeedback.textContent = field.dataset.invalid;
@@ -340,6 +372,8 @@ const risecheckoutForm = {
 
 			// 	// step.querySelector('.fields').remove();
 			// }
+		} else {
+			step.classList.add('filled-address');
 		}
 	},
 	updatePostcode: function (event) {
@@ -598,8 +632,9 @@ const risecheckoutForm = {
 		const cityStateInfoParts = this.form.querySelectorAll('#cityStateInfo span');
 		cityStateInfoParts.forEach(part => {
 			const id = part.classList[0];
-			this.form.querySelector(`#${id}`).parentNode.remove();
+			document.getElementById(id).parentNode.remove();
 			part.classList.remove(id);
+			part.removeAttribute('class');
 			part.id = id;
 		});
 	}
