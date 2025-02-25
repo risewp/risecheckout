@@ -59,50 +59,50 @@ function risecheckout_wc_fields( $fields ) {
 
 	$fields['billing']['billing_email']['priority'] = 21;
 
-	$fields['billing']['billing_cpf']['class'][] = 'cpf-field';
-	$fields['billing']['billing_cpf']['required'] = true;
+	$fields['billing']['billing_cpf']['class'][]     = 'cpf-field';
+	$fields['billing']['billing_cpf']['required']    = true;
 	$fields['billing']['billing_cpf']['placeholder'] = '000.000.000-00';
 
-	$fields['billing']['billing_phone']['priority'] = 24;
-	// $fields['billing']['billing_phone']['placeholder'] = '(00) 00000-0000';
+	$fields['billing']['billing_phone']['priority']    = 24;
+	$fields['billing']['billing_phone']['placeholder'] = '(00) 00000-0000';
 
 	$fields['billing']['billing_postcode']['class'][] = 'postcode-field';
 
 	$fields['billing']['billing_state']['class'][] = 'state-field';
-	$fields['billing']['billing_state']['priority'] = 46;
+	// $fields['billing']['billing_state']['priority'] = 46;
 	$fields['billing']['billing_state']['break'] = true;
 
 	$fields['billing']['billing_city']['class'][] = 'city-field';
-	$fields['billing']['billing_city']['priority'] = 47;
+	// $fields['billing']['billing_city']['priority'] = 47;
 
 	$fields['billing']['billing_number']['class'][] = 'number-field';
 
-	$fields['billing']['billing_neighborhood']['class'][] = 'neighborhood-field';
+	$fields['billing']['billing_neighborhood']['class'][]  = 'neighborhood-field';
 	$fields['billing']['billing_neighborhood']['priority'] = 56;
 
 	$fields['shipping']['shipping_postcode']['class'][] = 'postcode-field';
 
 	$fields['shipping']['shipping_state']['class'][] = 'state-field';
-	$fields['shipping']['shipping_state']['priority'] = 46;
+	// $fields['shipping']['shipping_state']['priority'] = 46;
 	$fields['shipping']['shipping_state']['break'] = true;
 
 	$fields['shipping']['shipping_city']['class'][] = 'city-field';
-	$fields['shipping']['shipping_city']['priority'] = 47;
+	// $fields['shipping']['shipping_city']['priority'] = 47;
 
-	$fields['shipping']['shipping_address_1']['class'] = array_diff(
+	$fields['shipping']['shipping_address_1']['class']   = array_diff(
 		$fields['shipping']['shipping_address_1']['class'],
-		array('form-row-last')
+		array( 'form-row-last' )
 	);
 	$fields['shipping']['shipping_address_1']['class'][] = 'form-row-wide';
 
 	$fields['shipping']['shipping_number']['class'][] = 'number-field';
 
 	$fields['shipping']['shipping_neighborhood']['class'][] = 'neighborhood-field';
-	$fields['shipping']['shipping_neighborhood']['priority'] = 56;
+	// $fields['shipping']['shipping_neighborhood']['priority'] = 56;
 
-	$fields['shipping']['shipping_address_2']['class'] = array_diff(
+	$fields['shipping']['shipping_address_2']['class']   = array_diff(
 		$fields['shipping']['shipping_address_2']['class'],
-		array('form-row-last')
+		array( 'form-row-last' )
 	);
 	$fields['shipping']['shipping_address_2']['class'][] = 'form-row-wide';
 
@@ -111,17 +111,47 @@ function risecheckout_wc_fields( $fields ) {
 	}
 
 	// unset(
-	// 	$fields['billing']['billing_first_name'],
-	// 	$fields['billing']['billing_last_name'],
-	// 	$fields['billing']['billing_email'],
-	// 	$fields['billing']['billing_cpf'],
-	// 	$fields['billing']['billing_phone']
+	//  $fields['billing']['billing_first_name'],
+	//  $fields['billing']['billing_last_name'],
+	//  $fields['billing']['billing_email'],
+	//  $fields['billing']['billing_cpf'],
+	//  $fields['billing']['billing_phone']
 	// );
 	// echo '<pre>';
 	// print_r($fields);
 	// die;
 	return $fields;
 }
+
+function risecheckout_wc_get_country_locale( $locale ) {
+	foreach ( $locale as $county_code => $fields ) {
+		if ( 'BR' !== $county_code ) {
+			$locale[ $county_code ]['phone']['placeholder'] = '';
+			$locale[ $county_code ]['cpf']['placeholder']   = '';
+			$locale[ $county_code ]['cpf']['required']      = false;
+			$locale[ $county_code ]['cpf']['hidden']        = true;
+		}
+	}
+	if ( ! isset( $locale['BR'] ) ) {
+		$locale['BR'] = array();
+	}
+	$locale['BR'] = array_merge(
+		$locale['BR'],
+		array(
+			'state' => array(
+				'priority' => 70,
+			),
+			'city'  => array(
+				'priority' => 80,
+			),
+		)
+	);
+	// echo '<pre>';
+	// print_r($locale);
+	// die;
+	return $locale;
+}
+add_filter( 'woocommerce_get_country_locale', 'risecheckout_wc_get_country_locale', 11 );
 
 function risecheckout_wc_fields_shippingpartial( $fields ) {
 	$new_fields = array();
@@ -544,6 +574,10 @@ function risecheckout_steps_rewrite_rule() {
 	}
 }
 add_action( 'init', 'risecheckout_steps_rewrite_rule' );
+
+if ( is_admin() ) {
+	require __DIR__ . '/includes/settings.php';
+}
 
 require __DIR__ . '/includes/conditionals.php';
 require __DIR__ . '/includes/performance.php';

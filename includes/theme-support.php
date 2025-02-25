@@ -21,7 +21,7 @@ if ( ! function_exists( 'risecheckout_dequeue_styles' ) ) {
 	}
 }
 
-if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
+if ( ! function_exists( 'risecheckout_dequeue_script' ) ) {
 	function risecheckout_dequeue_script( $script, $prefix = '' ) {
 		if ( ! risecheckout_is_checkout() || risecheckout_is_order_received_page() ) {
 			return;
@@ -31,7 +31,7 @@ if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
 	}
 }
 
-if ( ! function_exists( 'risecheckout_dequeue_script' ) ) {
+if ( ! function_exists( 'risecheckout_dequeue_scripts' ) ) {
 	function risecheckout_dequeue_scripts( $scripts, $prefix = '' ) {
 		foreach ( $scripts as $script ) {
 			risecheckout_dequeue_script( $script, $prefix );
@@ -65,3 +65,17 @@ function risecheckout_theme_support_includes() {
 	}
 }
 risecheckout_theme_support_includes();
+
+function risecheckout_theme_support_body_class( $classes ) {
+	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() ) {
+		$classes = array_diff(
+			$classes,
+			array(
+				sprintf( 'theme-%s', get_template() ),
+			)
+		);
+		$classes = 'themed-risecheckout';
+	}
+	return $classes;
+}
+add_action( 'body_class', 'risecheckout_theme_support_body_class' );

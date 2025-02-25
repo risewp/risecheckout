@@ -338,20 +338,18 @@ function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 	$field           = '';
 	$label_id        = $args['id'];
 	$sort            = $args['priority'] ? $args['priority'] : '';
-	$field_container = '<div class="form-row %1$s" id="%2$s" data-priority="' . esc_attr( $sort ) . '">%3$s</div>';
+	$field_container = '<p class="form-row %1$s" id="%2$s" data-priority="' . esc_attr( $sort ) . '">%3$s</p>';
 
 	switch ( $args['type'] ) {
 		case 'country':
 			$countries = 'shipping_country' === $key ? WC()->countries->get_shipping_countries() : WC()->countries->get_allowed_countries();
 
 			if ( 1 === count( $countries ) ) {
-
 				$args['class'][] = 'unique-country';
 
 				$field .= '<input type="text" value="' . current( array_values( $countries ) ) . '" readonly="readonly" />';
 
 				$field .= '<input type="hidden" name="' . esc_attr( $key ) . '" id="' . esc_attr( $args['id'] ) . '" value="' . current( array_keys( $countries ) ) . '" ' . implode( ' ', $custom_attributes ) . ' class="country_to_state" readonly="readonly" />';
-
 			} else {
 				$data_label = ! empty( $args['label'] ) ? 'data-label="' . esc_attr( $args['label'] ) . '"' : '';
 
@@ -364,7 +362,6 @@ function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 				$field .= '</select>';
 
 				$field .= '<noscript><button type="submit" name="woocommerce_checkout_update_totals" value="' . esc_attr__( 'Update country / region', 'woocommerce' ) . '">' . esc_html__( 'Update country / region', 'woocommerce' ) . '</button></noscript>';
-
 			}
 
 			break;
@@ -374,11 +371,9 @@ function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 			$states      = WC()->countries->get_states( $for_country );
 
 			if ( is_array( $states ) && empty( $states ) ) {
-
 				$field_container = '<p class="form-row %1$s" id="%2$s" style="display: none">%3$s</p>';
 
 				$field .= '<input type="hidden" class="hidden" name="' . esc_attr( $key ) . '" id="' . esc_attr( $args['id'] ) . '" value="" ' . implode( ' ', $custom_attributes ) . ' placeholder="' . esc_attr( $args['placeholder'] ) . '" readonly="readonly" data-input-classes="' . esc_attr( implode( ' ', $args['input_class'] ) ) . '"/>';
-
 			} elseif ( ! is_null( $for_country ) && is_array( $states ) ) {
 				$data_label = ! empty( $args['label'] ) ? 'data-label="' . esc_attr( $args['label'] ) . '"' : '';
 
@@ -390,11 +385,8 @@ function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 				}
 
 				$field .= '</select>';
-
 			} else {
-
 				$field .= '<input type="text" class="input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) . '" value="' . esc_attr( $value ) . '"  placeholder="' . esc_attr( $args['placeholder'] ) . '" name="' . esc_attr( $key ) . '" id="' . esc_attr( $args['id'] ) . '" ' . implode( ' ', $custom_attributes ) . ' data-input-classes="' . esc_attr( implode( ' ', $args['input_class'] ) ) . '"/>';
-
 			}
 
 			break;

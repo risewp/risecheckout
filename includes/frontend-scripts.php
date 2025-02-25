@@ -30,10 +30,11 @@ function risecheckout_frontend_scripts() {
 
 function risecheckout_frontend_styles() {
 	$deps = array(
-		'twbs',
+		// 'twbs',
+		'woocommerce-general',
 	);
 	if ( 'yes' === get_option( 'risecheckout_gfonts', 'yes' ) ) {
-		$deps[] = 'fonts';
+		$deps[] = 'risecheckout-fonts';
 	}
 	return array(
 		array(
@@ -46,7 +47,7 @@ function risecheckout_frontend_styles() {
 			'src'    => risecheckoutgoogle_fonts(),
 		),
 		array(
-			// 'deps' => $deps,
+			'deps' => $deps,
 		),
 	);
 }
@@ -76,7 +77,7 @@ function risecheckout_frontend_load_scripts() {
 	$l10n = array_merge(
 		$l10n,
 		array(
-			'customerNonce' => wp_create_nonce( 'risecheckout-customer' ),
+			'customerNonce'   => wp_create_nonce( 'risecheckout-customer' ),
 			'postcodeBrNonce' => wp_create_nonce( 'risecheckout-postcode-br' ),
 		)
 	);
@@ -84,15 +85,72 @@ function risecheckout_frontend_load_scripts() {
 
 	wp_enqueue_script( 'risecheckout' );
 }
-add_action( 'wp_enqueue_scripts', 'risecheckout_frontend_load_scripts' );
+add_action( 'wp_enqueue_scripts', 'risecheckout_frontend_load_scripts', 11 );
+
+/**
+ * Add query arguments to a URL, allowing arrays to be expanded as repeated keys.
+ *
+ * @param mixed ...$args Query arguments.
+ *
+ * @return string URL with query arguments.
+ */
+function risecheckout_add_query_arg( ...$args ) {
+	if ( is_array( $args[0] ) ) {
+		$arg_data = $args[0];
+		$url      = $args[1] ?? $_SERVER['REQUEST_URI'];
+	} else {
+		$arg_data = array( $args[0] => $args[1] );
+		$url      = $args[2] ?? $_SERVER['REQUEST_URI'];
+	}
+
+	$has_array   = false;
+	$query_parts = array();
+
+	// Check if any argument is an array.
+	foreach ( $arg_data as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$has_array = true;
+			break;
+		}
+	}
+
+	// If no array is found, use the default add_query_arg.
+	if ( ! $has_array ) {
+		return add_query_arg( $arg_data, $url );
+	}
+
+	// Process each argument.
+	foreach ( $arg_data as $key => $value ) {
+		if ( is_array( $value ) ) {
+			foreach ( $value as $sub_value ) {
+				$query_parts[] = $key . '=' . urlencode( $sub_value );
+			}
+		} else {
+			$query_parts[] = $key . '=' . urlencode( $value );
+		}
+	}
+
+	// Build the final URL.
+	$separator = ( strpos( $url, '?' ) === false ) ? '?' : '&';
+	return $url . $separator . implode( '&', $query_parts );
+}
 
 function risecheckoutgoogle_fonts() {
-	$query_args = array(
-		'family'  => 'Rubik:ital,wght@0,300..900;1,300..900',
-		'display' => 'swap',
+	$families = array(
+		// 'Rubik'      => 'Rubik:ital,wght@0,300..900;1,300..900',
+		'quicksand'  => 'Quicksand:wght@300..700',
+		'montserrat' => 'Montserrat:ital,wght@0,100..900;1,100..900',
 	);
 
-	$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css2' );
+	$fonts_url = urldecode(
+		risecheckout_add_query_arg(
+			array(
+				'family'  => array_values( $families ),
+				'display' => 'swap',
+			),
+			'https://fonts.googleapis.com/css2'
+		)
+	);
 
 	return $fonts_url;
 }
@@ -150,9 +208,9 @@ function risecheckout_register_asset( $asset, $type ) {
 	if ( ! filter_var( $src, FILTER_VALIDATE_URL ) ) {
 		$src = risecheckout_plugin_url() . "/assets/{$extension}/" . $src;
 	}
-	foreach ( $deps as &$dep ) {
-		$dep = 'risecheckout-' . $dep;
-	}
+	// foreach ( $deps as &$dep ) {
+	//  $dep = 'risecheckout-' . $dep;
+	// }
 	if ( 'style' === $type ) {
 		wp_register_style( $handle, $src, $deps, $version );
 	} else {
