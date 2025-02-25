@@ -1,5 +1,5 @@
 <!doctype html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> class="xlook-a-like">
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,8 +17,8 @@ wp_body_open();
 
 ?>
 
-<nav class="navbar navbar-dark bg-dark" style="margin-bottom:1.5625rem;">
-	<div class="container justify-content-center">
+<nav class="navbar navbar-dark bg-dark">
+	<div class="container">
 		<?php risecheckout_site_title_or_logo(); ?>
 	</div>
 </nav>

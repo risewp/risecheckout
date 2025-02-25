@@ -50,10 +50,10 @@ function risecheckout_wc_load_scripts() {
 	risecheckout_dequeue_scripts( $scripts );
 
 	$styles = array(
-		'select2'                 => false,
-		'woocommerce-layout'      => false,
-		'woocommerce-smallscreen' => false,
-		'woocommerce-general'     => false,
+		'select2'                 => true,
+		'woocommerce-layout'      => true,
+		'woocommerce-smallscreen' => true,
+		'woocommerce-general'     => true,
 	);
 	risecheckout_dequeue_styles( $styles );
 }

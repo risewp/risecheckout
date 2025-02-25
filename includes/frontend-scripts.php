@@ -20,9 +20,9 @@ function risecheckout_frontend_scripts() {
 		),
 		array(
 			'deps' => array(
-				'twbs',
-				'mask',
-				'validation',
+				// 'twbs',
+				// 'mask',
+				// 'validation',
 			),
 		),
 	);
@@ -46,10 +46,7 @@ function risecheckout_frontend_styles() {
 			'src'    => risecheckoutgoogle_fonts(),
 		),
 		array(
-			'deps' => array(
-				'twbs',
-				'fonts',
-			),
+			// 'deps' => $deps,
 		),
 	);
 }
@@ -73,9 +70,6 @@ function risecheckout_frontend_load_scripts() {
 	}
 
 	$l10n = array();
-	// if ( function_exists( 'WC' ) ) {
-	// 	$l10n['ajaxUrl'] = WC()->ajax_url();
-	// }
 	if ( class_exists( 'WC_AJAX' ) ) {
 		$l10n['wcAjaxUrl'] = WC_AJAX::get_endpoint( '%%endpoint%%' );
 	}
@@ -86,7 +80,7 @@ function risecheckout_frontend_load_scripts() {
 			'postcodeBrNonce' => wp_create_nonce( 'risecheckout-postcode-br' ),
 		)
 	);
-	wp_localize_script( 'risecheckout', 'risecheckoutParams', $l10n );
+	// wp_localize_script( 'risecheckout', 'risecheckoutParams', $l10n );
 
 	wp_enqueue_script( 'risecheckout' );
 }

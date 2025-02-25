@@ -11,27 +11,139 @@
 
 defined( 'ABSPATH' ) || exit;
 
+function risecheckout_wc__default_address_fields( $fields ) {
+	$fields['first_name']['placeholder'] = sprintf(
+		/* translators: %s: Example */
+		__( 'e.g.: %s', 'risecheckout' ),
+		__( 'Mary', 'risecheckout' )
+	);
+
+	$fields['last_name']['placeholder'] = sprintf(
+		/* translators: %s: Example */
+		__( 'e.g.: %s', 'risecheckout' ),
+		__( 'Johnson', 'risecheckout' )
+	);
+
+	$fields['postcode']['class'][] = 'postcode-field';
+
+	$fields['state']['class'][] = 'state-field';
+
+	$fields['city']['class'][] = 'city-field';
+
+	unset( $fields['address_1']['placeholder'] );
+
+	$fields['address_2']['label'] = __( 'Address line 2', 'risecheckout' );
+	unset( $fields['address_2']['label_class'] );
+	unset( $fields['address_2']['placeholder'] );
+	unset( $fields['address_2']['required'] );
+
+	// echo '<pre>';
+	// print_r($fields);
+	// die;
+	return $fields;
+}
+add_filter( 'woocommerce_default_address_fields', 'risecheckout_wc__default_address_fields', 11 );
+
+function risecheckout_wc_billing_fields( $fields ) {
+	$fields['billing_email']['label'] = __( 'Email', 'risecheckout' );
+
+	if ( isset( $fields['billing_phone'] ) ) {
+		$fields['billing_phone']['label'] = __( 'Mobile', 'risecheckout' );
+	}
+
+	return $fields;
+}
+add_filter( 'woocommerce_billing_fields', 'risecheckout_wc_billing_fields' );
+
 function risecheckout_wc_fields( $fields ) {
+
+	$fields['billing']['billing_email']['priority'] = 21;
+
+	$fields['billing']['billing_cpf']['class'][] = 'cpf-field';
+	$fields['billing']['billing_cpf']['required'] = true;
+	$fields['billing']['billing_cpf']['placeholder'] = '000.000.000-00';
+
+	$fields['billing']['billing_phone']['priority'] = 24;
+	// $fields['billing']['billing_phone']['placeholder'] = '(00) 00000-0000';
+
+	$fields['billing']['billing_postcode']['class'][] = 'postcode-field';
+
+	$fields['billing']['billing_state']['class'][] = 'state-field';
+	$fields['billing']['billing_state']['priority'] = 46;
+	$fields['billing']['billing_state']['break'] = true;
+
+	$fields['billing']['billing_city']['class'][] = 'city-field';
+	$fields['billing']['billing_city']['priority'] = 47;
+
+	$fields['billing']['billing_number']['class'][] = 'number-field';
+
+	$fields['billing']['billing_neighborhood']['class'][] = 'neighborhood-field';
+	$fields['billing']['billing_neighborhood']['priority'] = 56;
+
+	$fields['shipping']['shipping_postcode']['class'][] = 'postcode-field';
+
+	$fields['shipping']['shipping_state']['class'][] = 'state-field';
+	$fields['shipping']['shipping_state']['priority'] = 46;
+	$fields['shipping']['shipping_state']['break'] = true;
+
+	$fields['shipping']['shipping_city']['class'][] = 'city-field';
+	$fields['shipping']['shipping_city']['priority'] = 47;
+
+	$fields['shipping']['shipping_address_1']['class'] = array_diff(
+		$fields['shipping']['shipping_address_1']['class'],
+		array('form-row-last')
+	);
+	$fields['shipping']['shipping_address_1']['class'][] = 'form-row-wide';
+
+	$fields['shipping']['shipping_number']['class'][] = 'number-field';
+
+	$fields['shipping']['shipping_neighborhood']['class'][] = 'neighborhood-field';
+	$fields['shipping']['shipping_neighborhood']['priority'] = 56;
+
+	$fields['shipping']['shipping_address_2']['class'] = array_diff(
+		$fields['shipping']['shipping_address_2']['class'],
+		array('form-row-last')
+	);
+	$fields['shipping']['shipping_address_2']['class'][] = 'form-row-wide';
+
+	foreach ( $fields as $type => $type_fields ) {
+		uasort( $fields[ $type ], 'wc_checkout_fields_uasort_comparison' );
+	}
+
+	// unset(
+	// 	$fields['billing']['billing_first_name'],
+	// 	$fields['billing']['billing_last_name'],
+	// 	$fields['billing']['billing_email'],
+	// 	$fields['billing']['billing_cpf'],
+	// 	$fields['billing']['billing_phone']
+	// );
+	// echo '<pre>';
+	// print_r($fields);
+	// die;
+	return $fields;
+}
+
+function risecheckout_wc_fields_shippingpartial( $fields ) {
 	$new_fields = array();
 
 	$renames = array(
-		'billing_country' => 'country',
-		'billing_name' => 'name',
-		'billing_first_name' => 'firstname',
-		'billing_last_name' => 'lastname',
-		'billing_email' => 'email',
-		'billing_cpf' => 'cpf',
-		'billing_phone' => 'phone',
-		'shipping_postcode' => 'postcode',
-		'shipping_city' => 'city',
-		'shipping_state' => 'state',
-		'shipping_address_1' => 'address1',
-		'shipping_number' => 'number',
+		'billing_country'       => 'country',
+		'billing_name'          => 'name',
+		'billing_first_name'    => 'firstname',
+		'billing_last_name'     => 'lastname',
+		'billing_email'         => 'email',
+		'billing_cpf'           => 'cpf',
+		'billing_phone'         => 'phone',
+		'shipping_postcode'     => 'postcode',
+		'shipping_city'         => 'city',
+		'shipping_state'        => 'state',
+		'shipping_address_1'    => 'address1',
+		'shipping_number'       => 'number',
 		'shipping_neighborhood' => 'neighborhood',
-		'shipping_address_2' => 'address2',
-		'shipping_name' => 'receiver',
-		'shipping_first_name' => 'receiver_firstname',
-		'shipping_last_name' => 'receiver_lastname',
+		'shipping_address_2'    => 'address2',
+		'shipping_name'         => 'receiver',
+		'shipping_first_name'   => 'receiver_firstname',
+		'shipping_last_name'    => 'receiver_lastname',
 	);
 
 	$steps = array(
@@ -67,9 +179,9 @@ function risecheckout_wc_fields( $fields ) {
 
 	foreach ( $fields as $type => $type_fields ) {
 		foreach ( $type_fields as $name => $field ) {
-			if ( isset( $renames[$name] ) ) {
+			if ( isset( $renames[ $name ] ) ) {
 				$field['renamed'] = $name;
-				$name = $renames[$name];
+				$name             = $renames[ $name ];
 			}
 			foreach ( $steps as $step => $step_fields ) {
 				if ( in_array( $name, $step_fields, true ) ) {
@@ -77,7 +189,7 @@ function risecheckout_wc_fields( $fields ) {
 					break;
 				}
 			}
-			$new_fields[$name] = $field;
+			$new_fields[ $name ] = $field;
 		}
 	}
 	$fields = $new_fields;
@@ -85,8 +197,8 @@ function risecheckout_wc_fields( $fields ) {
 	$merge_fields = risecheckout_fields();
 
 	foreach ( $fields as $name => &$field ) {
-		if ( isset( $merge_fields[$name] ) ) {
-			$field = array_merge( $field, $merge_fields[$name] );
+		if ( isset( $merge_fields[ $name ] ) ) {
+			$field = array_merge( $field, $merge_fields[ $name ] );
 		}
 	}
 
@@ -96,7 +208,7 @@ function risecheckout_wc_fields( $fields ) {
 		if ( isset( $field['step'] ) ) {
 			$field_step = $field['step'];
 			unset( $field['step'] );
-			$new_fields[$field_step][$name] = $field;
+			$new_fields[ $field_step ][ $name ] = $field;
 		}
 	}
 
@@ -104,7 +216,7 @@ function risecheckout_wc_fields( $fields ) {
 	unset( $field );
 
 	foreach ( $fields as $field_step => $step_fields ) {
-		uasort( $fields[$field_step], 'wc_checkout_fields_uasort_comparison' );
+		uasort( $fields[ $field_step ], 'wc_checkout_fields_uasort_comparison' );
 	}
 
 	return $fields;
@@ -139,48 +251,48 @@ function risecheckout_fields() {
 			$fields,
 			array(
 				'firstname' => array(
-					'class' => array( 'col-6' ),
-					'label'         => __( 'First name', 'risecheckout' ),
-					'placeholder'   => sprintf(
+					'class'       => array( 'col-6' ),
+					'label'       => __( 'First name', 'risecheckout' ),
+					'placeholder' => sprintf(
 						/* translators: %s: Example */
 						__( 'e.g.: %s', 'risecheckout' ),
 						__( 'Mary', 'risecheckout' )
 					),
-					'minlength'     => 2,
-					'pattern'       => '([A-Za-zÀ-ÖØ-öø-ÿ]{2,}(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*)',
-					'invalid'       => sprintf(
+					'minlength'   => 2,
+					'pattern'     => '([A-Za-zÀ-ÖØ-öø-ÿ]{2,}(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*)',
+					'invalid'     => sprintf(
 						/* translators: %s: Field label */
 						__( 'Enter your %s', 'risecheckout' ),
 						mb_strtolower( __( 'First name', 'risecheckout' ) )
 					),
-					'required'      => true,
-					'value'         => __( 'Mary', 'risecheckout' ),
-					'step'          => 'customer',
-					'priority'      => 5,
-					'info'          => 'name',
-					'info_label'    => __( 'Full name', 'risecheckout' ),
+					'required'    => true,
+					'value'       => __( 'Mary', 'risecheckout' ),
+					'step'        => 'customer',
+					'priority'    => 5,
+					'info'        => 'name',
+					'info_label'  => __( 'Full name', 'risecheckout' ),
 				),
 				'lastname'  => array(
-					'class' => array( 'col-6' ),
-					'label'         => __( 'Last name', 'risecheckout' ),
-					'placeholder'   => sprintf(
+					'class'       => array( 'col-6' ),
+					'label'       => __( 'Last name', 'risecheckout' ),
+					'placeholder' => sprintf(
 						/* translators: %s: Example */
 						__( 'e.g.: %s', 'risecheckout' ),
 						__( 'Johnson', 'risecheckout' )
 					),
-					'minlength'     => 2,
-					'pattern'       => '([A-Za-zÀ-ÖØ-öø-ÿ]{2,}(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*)',
-					'invalid'       => sprintf(
+					'minlength'   => 2,
+					'pattern'     => '([A-Za-zÀ-ÖØ-öø-ÿ]{2,}(?: [A-Za-zÀ-ÖØ-öø-ÿ]+)*)',
+					'invalid'     => sprintf(
 						/* translators: %s: Field label */
 						__( 'Enter your %s', 'risecheckout' ),
 						mb_strtolower( __( 'Last name', 'risecheckout' ) )
 					),
-					'required'      => true,
-					'value'         => __( 'Johnson', 'risecheckout' ),
-					'step'          => 'customer',
-					'priority'      => 10,
-					'info'          => 'name',
-					'info_label'    => __( 'Full name', 'risecheckout' ),
+					'required'    => true,
+					'value'       => __( 'Johnson', 'risecheckout' ),
+					'step'        => 'customer',
+					'priority'    => 10,
+					'info'        => 'name',
+					'info_label'  => __( 'Full name', 'risecheckout' ),
 				),
 			)
 		);
@@ -188,9 +300,9 @@ function risecheckout_fields() {
 	$fields = array_merge(
 		$fields,
 		array(
-			'email'  => array(
+			'email'        => array(
 				'label'       => __( 'Email', 'risecheckout' ),
-				'class' => array( 'col-12' ),
+				'class'       => array( 'col-12' ),
 				'type'        => 'email',
 				'placeholder' => sprintf(
 					/* translators: %s: Example */
@@ -212,14 +324,14 @@ function risecheckout_fields() {
 				'priority'    => 20,
 				'info'        => true,
 			),
-			'cpf'    => array(
+			'cpf'          => array(
 				'label'       => 'CPF',
-				'class' => array( 'col-12' ),
+				'class'       => array( 'col-12' ),
 				'placeholder' => '000.000.000-00',
 				'minlength'   => 11,
 				'maxlength'   => 14,
 				'pattern'     => '\d{3}\.?\d{3}\.?\d{3}-?\d{2}',
-				'validate'  => array( 'cpf' ),
+				'validate'    => array( 'cpf' ),
 				'mask'        => 'cpf',
 				'clean'       => 'numbers',
 				'invalid'     => sprintf(
@@ -233,9 +345,9 @@ function risecheckout_fields() {
 				'priority'    => 30,
 				'info_prefix' => true,
 			),
-			'phone' => array(
+			'phone'        => array(
 				'label'       => __( 'Mobile', 'risecheckout' ),
-				'class' => array( 'col-12' ),
+				'class'       => array( 'col-12' ),
 				'prefix'      => '+55',
 				'placeholder' => '(00) 000000-0000',
 				'minlength'   => 11,
@@ -254,63 +366,64 @@ function risecheckout_fields() {
 				'step'        => 'customer',
 				'priority'    => 40,
 			),
-			'postcode'    => array(
-				'class' => array( 'col-7', 'postcode-field' ),
+			'postcode'     => array(
+				'class'     => array( 'col-7', 'postcode-field' ),
 				// 'label'         => __( 'Postcode', 'risecheckout' ),
-				'minlength'     => 8,
-				'maxlength'     => 9,
-				'pattern'       => '\d{5}-?\d{3}',
-				'mask'          => 'postcode-br',
-				'invalid'       => sprintf(
+				'minlength' => 8,
+				'maxlength' => 9,
+				'pattern'   => '\d{5}-?\d{3}',
+				'mask'      => 'postcode-br',
+				'invalid'   => sprintf(
 					/* translators: %s: Field label */
 					__( 'Enter a valid %s', 'risecheckout' ),
 					mb_strtolower( __( 'Zip', 'risecheckout' ) )
 				),
-				'required'      => true,
-				'step'          => 'shipping',
-				'priority'      => 50,
-				'loading'       => true,
+				'required'  => true,
+				'step'      => 'shipping',
+				'priority'  => 50,
+				'loading'   => true,
 				// 'value'         => '89240-000',
-				'value'         => '79814-054',
+				'value'     => '79814-054',
 			),
-			'city' => array(
-				'class' => array( 'col-8', 'address-field' ),
-				'priority' => 60,
+			'city'         => array(
+				'class'        => array( 'col-8', 'address-field' ),
+				'priority'     => 60,
 				'column_break' => true,
 				// 'value'    => 'São Francisco do Sul',
-				'value'    => 'Dourados',
+				'value'        => 'Dourados',
 			),
-			'state' => array(
-				'class' => array( 'col-4', 'address-field'  ),
+			'state'        => array(
+				'class'    => array( 'col-4', 'address-field' ),
 				'priority' => 65,
 				// 'value'    => 'SC',
 				'value'    => 'MS',
 			),
-			'address1' => array(
-				'class' => array( 'col-12', 'address-field'  ),
+			'address1'     => array(
+				'class'       => array( 'col-12', 'address-field' ),
 				'placeholder' => '',
-				'priority' => 70,
-				'value' => 'Rua Edgar Xavier de Matos',
+				'priority'    => 70,
+				'value'       => 'Rua Edgar Xavier de Matos',
 			),
-			'number' => array(
-				'class' => array( 'col-4', 'address-field'  ),
+			'number'       => array(
+				'class'    => array( 'col-4', 'address-field' ),
 				'priority' => 80,
-				'value' => 256,
+				'value'    => 256,
 			),
 			'neighborhood' => array(
-				'class' => array( 'col-8', 'address-field'  ),
+				'class'    => array( 'col-8', 'address-field' ),
 				'priority' => 85,
-				'value' => 'Jardim Itália',
+				'value'    => 'Jardim Itália',
 			),
-			'address2' => array(
-				'class' => array( 'col-12', 'address-field'  ),
+			'address2'     => array(
+				'class'       => array( 'col-12', 'address-field' ),
 				'placeholder' => '',
-				'priority' => 90,
-				'value' => 'Ap101',
+				'priority'    => 90,
+
+				// 'value'    => 'SC',  'value' => 'Ap101',
 			),
-			'receiver' => array(
+			'receiver'     => array(
 				'label'       => __( 'Receiver', 'risecheckout' ),
-				'class' => array( 'col-12', 'address-field'  ),
+				'class'       => array( 'col-12', 'address-field' ),
 				'placeholder' => sprintf(
 					/* translators: %s: Example */
 					__( 'e.g.: %s', 'risecheckout' ),
@@ -356,8 +469,8 @@ function risecheckout_steps() {
 		'shipping' => array(
 			'title'       => __( 'Shipping', 'risecheckout' ),
 			// 'description' => __(
-			// 	'Register or select an address',
-			// 	'risecheckout'
+			//  'Register or select an address',
+			//  'risecheckout'
 			// ),
 			'description' => __(
 				'Register an address',
@@ -367,7 +480,7 @@ function risecheckout_steps() {
 				'Fill in your personal information to continue',
 				'risecheckout'
 			),
-			'save'    => __( 'Save', 'risecheckout' ),
+			'save'        => __( 'Save', 'risecheckout' ),
 		),
 		'payment'  => array(
 			'title'       => __( 'Payment', 'risecheckout' ),
