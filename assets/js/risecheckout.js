@@ -35,7 +35,6 @@ class RisecheckoutBlockUI {
             // Apply styles dynamically
             Object.assign(overlay.style, styles);
 
-            // Ensure the parent element has position: relative
             if (window.getComputedStyle(element).position === 'static') {
                 element.style.position = 'relative';
             }
@@ -60,8 +59,25 @@ class RisecheckoutBlockUI {
 
 // Adding to risecheckout namespace
 const risecheckout = {
-    Block: RisecheckoutBlockUI
+    BlockUI: RisecheckoutBlockUI
 };
+
+// jQuery Plugin Support
+if (typeof jQuery !== 'undefined') {
+    (function($) {
+        $.fn.block = function(options) {
+			// options.message and options.overlayCSS are ignored but received
+            new risecheckout.BlockUI(this.selector);
+            return this;
+        };
+
+        $.fn.unblock = function() {
+			// Use getInstance() to retrieve and unblock
+            risecheckout.BlockUI.getInstance(this.selector).unblock();
+            return this;
+        };
+    })(jQuery);
+}
 
 const risecheckoutUi = {
 	init: function () {

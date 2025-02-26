@@ -4,7 +4,7 @@
 	</main>
 	<footer class="footer">
 		<div class="container">
-			<span class="text-body-secondary">Place sticky footer content here.</span>
+			<?php echo wp_kses_post( risecheckout_footer_text() ); ?>
 		</div>
 	</footer>
 </body>

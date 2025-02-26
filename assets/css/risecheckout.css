@@ -132,6 +132,8 @@ body {
 	--risecheckout-navbar-padding-x: 0;
 	--risecheckout-navbar-brand-font-size: 1.25rem;
 	--py: var(--risecheckout-navbar-padding-y, .5rem);
+	--risecheckout-navbar-brand-color: #fff;
+
 	position: relative;
 	display: flex;
 	flex-wrap: wrap;
@@ -147,6 +149,9 @@ body {
 	transition-property: height, padding;
     transition-duration: .3s;
     transition-timing-function: cubic-bezier(.78,.13,.15,.86);
+	color: #fff;
+	background-color: var(--risecheckout-dark);
+
 
 	.look-a-like & {
 		--risecheckout-navbar-padding-y: .75rem;
@@ -156,6 +161,14 @@ body {
 
 	.themed-risecheckout.scrolled & {
 		--py: 0;
+	}
+
+
+	& .navbar-brand {
+
+		& svg, & img {
+			filter: invert(100%);
+		}
 	}
 }
 
@@ -181,22 +194,6 @@ body {
 	}
 }
 
-.navbar-dark {
-	--risecheckout-navbar-brand-color: #fff;
-
-	& .navbar-brand {
-
-		& svg, & img {
-			filter: invert(100%);
-		}
-	}
-}
-
-.bg-dark {
-	--risecheckout-bg-opacity: 1;
-	background-color: rgba(var(--risecheckout-dark-rgb), var(--risecheckout-bg-opacity)) !important;
-}
-
 .container {
 	--risecheckout-gutter-x: 1.5rem;
 	--risecheckout-gutter-y: 0;
@@ -208,9 +205,30 @@ body {
 
 	.navbar > & {
 		display: flex;
-		flex-wrap: inherit;
+		flex-wrap: wrap;
 		align-items: center;
-		justify-content: center;
+
+		&::before {
+			content: "";
+			display: block;
+		}
+
+		&::before,
+		> * {
+			flex: 1 0 0%;
+			width: 100%;
+			max-width: 100%;
+		}
+
+		.navbar-brand {
+			flex: 0 0 auto;
+			width: auto;
+		}
+
+		& > div {
+			text-align: right;
+			flex-wrap: wrap;
+		}
 	}
 
 	main > & {
@@ -861,7 +879,7 @@ input.button {
 
 	.themed-risecheckout & {
 		border: 0;
-		margin: 0 0 1.5rem;
+		margin: 0 0 1.6875rem;
 		border-collapse: collapse;
 		border-spacing: 0;
 		width: 100%;
@@ -913,6 +931,9 @@ input.button {
 }
 
 .woocommerce ul#shipping_method {
+	display: flex;
+	flex-direction: column;
+	gap: .5625rem;
 	margin-left: -134.84%;
 
 	& .amount {
@@ -922,7 +943,7 @@ input.button {
 	& li {
 		font-size: 1rem;
 		line-height: 1.25;
-		margin-bottom: .5625rem;
+		margin-bottom: 0;
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
@@ -1013,7 +1034,7 @@ label[for], input[type=checkbox], input[type=radio] {
 }
 
 input[type=checkbox], input[type=radio] {
-	--risecheckout-form-check-bg: var(--risecheckout-body-bg);
+	--risecheckout-form-check-bg: var(--risecheckout-form-control-bg);
 	--margin-top: 0;
 	--margin-end: .307692308em;
 
@@ -1070,7 +1091,7 @@ input[type=checkbox], input[type=radio] {
 
 	&:checked {
 		background-color: var(--risecheckout-form-check-bg);
-		border-color: var(--risecheckout-form-check-bg);
+		border-color: var(--risecheckout-body-color);
 	}
 
 	&:checked[type=checkbox] {
@@ -1149,16 +1170,99 @@ input[type=checkbox], input[type=radio] {
 	}
 }
 
+.navbar,
 .footer {
 	font-size: 0.875rem;
 	line-height: 1.57142857;
+
+	& p {
+		margin-bottom: 0;
+	}
+}
+
+.navbar .container > div,
+.footer .container {
+	display: flex;
+	flex-direction: column;
+	gap: .3125rem;
+}
+
+.navbar .container > div {
+	transition-property: gap;
+	transition-duration: .3s;
+	transition-timing-function: cubic-bezier(.78,.13,.15,.86);
+
+	.themed-risecheckout.scrolled & {
+		gap: 0;
+	}
+}
+
+
+.footer {
 	margin-top: auto;
 	padding: 2rem;
 	background-color: var(--risecheckout-tertiary-bg);
 	color: var(--risecheckout-secondary);
+	text-align: center;
+}
 
-	& .container {
-		display: flex;
-		justify-content: center;
+.fal {
+	display: inline-block;
+	line-height: 1;
+	font-family: "fontawesome";
+	font-weight: 400;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-family: fontawesome;
+	font-weight: 300;
+}
+
+.fa-envelope:before {
+	content: "\f0e0"
+}
+
+.fa-phone:before {
+	content: "\f095"
+}
+
+.fa-store:before {
+	content: "\f54e"
+}
+
+.fa-map-marker-alt:before {
+	content: "\f3c5"
+}
+
+.order-review-text {
+	--risecheckout-gutter-x: 1.25rem;
+
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
+	margin-top: 1.125rem;
+	margin-right: calc(-.5* var(--risecheckout-gutter-x));
+	margin-left: calc(-.5* var(--risecheckout-gutter-x));
+
+	& >  * {
+		flex-shrink: 0;
+		width: 100%;
+		max-width: 100%;
+		padding-right: calc(var(--risecheckout-gutter-x)* .5);
+		padding-left: calc(var(--risecheckout-gutter-x)* .5);
+		margin-top: var(--risecheckout-gutter-y);
+		margin-bottom: 0;
+		flex: 0 0 auto;
+		width: auto;
+
+		flex: 1 0 0%;
+		width: 100%;
+		max-width: 100%;
+	}
+
+	& a {
+		display: block;
 	}
 }

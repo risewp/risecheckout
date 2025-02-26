@@ -17,9 +17,11 @@ wp_body_open();
 
 ?>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar">
 	<div class="container">
 		<?php risecheckout_site_title_or_logo(); ?>
+
+		<div><?php echo wp_kses_post( risecheckout_header_text() ); ?></div>
 	</div>
 </nav>
 

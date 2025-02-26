@@ -575,6 +575,45 @@ function risecheckout_steps_rewrite_rule() {
 }
 add_action( 'init', 'risecheckout_steps_rewrite_rule' );
 
+function risecheckout_replace_emojis_with_font_awesome( $text ) {
+	$replacements = array(
+		'🏬'  => '<i class="fal fa-store"></i>',
+		'📍'  => '<i class="fal fa-map-marker-alt"></i>',
+		'✉️' => '<i class="fal fa-envelope"></i>',
+		'📞'  => '<i class="fal fa-phone"></i>',
+	);
+
+	foreach ( $replacements as $emoji => $faIcon ) {
+		$text = str_replace( $emoji, $faIcon, $text );
+	}
+
+	return $text;
+}
+
+function risecheckout_header_text() {
+	return risecheckout_replace_emojis_with_font_awesome( wpautop( get_option( 'risecheckout_header_text' ) ) );
+}
+
+function risecheckout_order_review_text() {
+	echo wp_kses_post( '<div class="order-review-text">' . wpautop( get_option( 'risecheckout_order_review_text' ) ) . '</div>' );
+}
+add_action( 'woocommerce_checkout_order_review', 'risecheckout_order_review_text', 21 );
+
+function risecheckout_footer_text() {
+	return risecheckout_replace_emojis_with_font_awesome( wpautop( get_option( 'risecheckout_footer_text' ) ) );
+}
+
+function risecheckout_plugin_action_links( $links ) {
+	if ( class_exists( 'WooCommerce' ) ) {
+		$plugin_links   = array();
+		$plugin_links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=risecheckout' ) ) . '">' . __( 'Settings', 'risecheckout' ) . '</a>';
+
+		$links = array_merge( $plugin_links, $links );
+	}
+	return $links;
+}
+add_filter( 'plugin_action_links_' . plugin_basename( RISECHECKOUT_PLUGIN_FILE ), 'risecheckout_plugin_action_links' );
+
 if ( is_admin() ) {
 	require __DIR__ . '/includes/settings.php';
 }

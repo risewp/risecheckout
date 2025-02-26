@@ -19,15 +19,21 @@ function risecheckout_svg_allowed_tags() {
 			'stroke'  => array(),
 		),
 		'g'        => array(
+			'id'     => array(),
+			'class'  => array(),
 			'fill'   => array(),
 			'stroke' => array(),
 		),
 		'path'     => array(
+			'id'     => array(),
+			'class'  => array(),
 			'd'      => array(),
 			'fill'   => array(),
 			'stroke' => array(),
 		),
 		'rect'     => array(
+			'id'     => array(),
+			'class'  => array(),
 			'x'      => array(),
 			'y'      => array(),
 			'width'  => array(),
@@ -36,6 +42,8 @@ function risecheckout_svg_allowed_tags() {
 			'stroke' => array(),
 		),
 		'circle'   => array(
+			'id'     => array(),
+			'class'  => array(),
 			'cx'     => array(),
 			'cy'     => array(),
 			'r'      => array(),
@@ -43,6 +51,8 @@ function risecheckout_svg_allowed_tags() {
 			'stroke' => array(),
 		),
 		'ellipse'  => array(
+			'id'     => array(),
+			'class'  => array(),
 			'cx'     => array(),
 			'cy'     => array(),
 			'rx'     => array(),
@@ -51,6 +61,8 @@ function risecheckout_svg_allowed_tags() {
 			'stroke' => array(),
 		),
 		'line'     => array(
+			'id'     => array(),
+			'class'  => array(),
 			'x1'     => array(),
 			'y1'     => array(),
 			'x2'     => array(),
@@ -58,16 +70,22 @@ function risecheckout_svg_allowed_tags() {
 			'stroke' => array(),
 		),
 		'polyline' => array(
+			'id'     => array(),
+			'class'  => array(),
 			'points' => array(),
 			'fill'   => array(),
 			'stroke' => array(),
 		),
 		'polygon'  => array(
+			'id'     => array(),
+			'class'  => array(),
 			'points' => array(),
 			'fill'   => array(),
 			'stroke' => array(),
 		),
 		'text'     => array(
+			'id'        => array(),
+			'class'     => array(),
 			'x'         => array(),
 			'y'         => array(),
 			'font-size' => array(),

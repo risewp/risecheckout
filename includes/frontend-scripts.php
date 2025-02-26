@@ -184,7 +184,7 @@ function risecheckout_style_loader_tag( $tag, $handle, $href ) {
 		$tag->href = preg_replace( '/&ver=[^&]+/', '', html_entity_decode( urldecode( $tag->href ) ) );
 	}
 
-	if ('risecheckout-fonts-css' === $tag->id) {
+	if ( 'risecheckout-fonts-css' === $tag->id ) {
 		$tag->href = risecheckoutgoogle_fonts();
 	}
 
