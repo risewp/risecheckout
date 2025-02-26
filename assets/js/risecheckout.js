@@ -1,82 +1,100 @@
 class RisecheckoutBlockUI {
-    constructor(selector) {
-        this.elements = document.querySelectorAll(selector);
+	constructor(selectorOrElements) {
+		// Check if it's a jQuery object or NodeList
+		if (typeof selectorOrElements === 'string') {
+			this.elements = document.querySelectorAll(selectorOrElements);
+		} else if (selectorOrElements instanceof NodeList || Array.isArray(selectorOrElements)) {
+			this.elements = selectorOrElements;
+		} else if (selectorOrElements instanceof Element) {
+			this.elements = [selectorOrElements];
+		} else {
+			this.elements = [];
+		}
 
-        if (this.elements.length === 0) {
-            return;
-        }
+		if (this.elements.length === 0) return;
+		this.block();
+	}
 
-        this.block();
-    }
+	block() {
+		this.elements.forEach(element => {
+			if (element.querySelector('.blockUI')) return; // Prevent duplicate overlays
 
-    block() {
-        this.elements.forEach(element => {
-            if (element.querySelector('.blockUI')) return; // Prevent duplicate overlays
+			const overlay = document.createElement('div');
+			overlay.classList.add('risecheckout-block-ui', 'blockUI', 'blockOverlay');
 
-            const overlay = document.createElement('div');
-            overlay.classList.add('risecheckout-block-ui', 'blockUI', 'blockOverlay');
+			// Default overlay styles
+			const styles = {
+				zIndex: "1000",
+				border: "none",
+				margin: "0px",
+				padding: "0px",
+				width: "100%",
+				height: "100%",
+				top: "0px",
+				left: "0px",
+				background: "rgb(255, 255, 255)",
+				opacity: "0.6",
+				cursor: "default",
+				position: "absolute"
+			};
 
-            // CSS styles as an object
-            const styles = {
-                zIndex: '1000',
-                border: 'none',
-                margin: '0px',
-                padding: '0px',
-                width: '100%',
-                height: '100%',
-                top: '0px',
-                left: '0px',
-                background: 'rgb(255, 255, 255)',
-                opacity: '0.6',
-                cursor: 'default',
-                position: 'absolute'
-            };
+			// Apply styles dynamically
+			Object.assign(overlay.style, styles);
 
-            // Apply styles dynamically
-            Object.assign(overlay.style, styles);
+			if (window.getComputedStyle(element).position === "static") {
+				element.style.position = "relative";
+			}
 
-            if (window.getComputedStyle(element).position === 'static') {
-                element.style.position = 'relative';
-            }
+			element.appendChild(overlay);
+		});
+	}
 
-            element.appendChild(overlay);
-        });
-    }
+	unblock() {
+		this.elements.forEach(element => {
+			const overlay = element.querySelector('.blockUI');
+			if (overlay) {
+				overlay.remove();
+			}
+		});
+	}
 
-    unblock() {
-        this.elements.forEach(element => {
-            const overlay = element.querySelector('.risecheckout-block-ui');
-            if (overlay) {
-                overlay.remove();
-            }
-        });
-    }
-
-    static getInstance(selector) {
-        return new RisecheckoutBlockUI(selector);
-    }
+	static getInstance(selectorOrElements) {
+		return new RisecheckoutBlockUI(selectorOrElements);
+	}
 }
 
-// Adding to risecheckout namespace
+// Add to risecheckout namespace
 const risecheckout = {
-    BlockUI: RisecheckoutBlockUI
+	BlockUI: RisecheckoutBlockUI
 };
 
 // jQuery Plugin Support
 if (typeof jQuery !== 'undefined') {
-    (function($) {
-        $.fn.block = function(options) {
-			// options.message and options.overlayCSS are ignored but received
-            new risecheckout.BlockUI(this.selector);
-            return this;
-        };
+	(function($) {
+		if (!$.blockUI) {
+			$.blockUI = {
+				defaults: {
+					overlayCSS: {}
+				}
+			};
+		}
 
-        $.fn.unblock = function() {
+		$.fn.block = function(options) {
+			// options.message and options.overlayCSS are ignored but received
+			this.each(function() {
+				new risecheckout.BlockUI(this);
+			});
+			return this;
+		};
+
+		$.fn.unblock = function() {
 			// Use getInstance() to retrieve and unblock
-            risecheckout.BlockUI.getInstance(this.selector).unblock();
-            return this;
-        };
-    })(jQuery);
+			this.each(function() {
+				risecheckout.BlockUI.getInstance(this).unblock();
+			});
+			return this;
+		};
+	})(jQuery);
 }
 
 const risecheckoutUi = {

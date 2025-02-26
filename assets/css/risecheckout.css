@@ -152,6 +152,9 @@ body {
 	color: #fff;
 	background-color: var(--risecheckout-dark);
 
+	a {
+		color: inherit;
+	}
 
 	.look-a-like & {
 		--risecheckout-navbar-padding-y: .75rem;
@@ -214,26 +217,52 @@ body {
 		}
 
 		&::before,
-		> * {
+		& .navbar-brand,
+		& .col {
 			flex: 1 0 0%;
 			width: 100%;
 			max-width: 100%;
 		}
 
-		.navbar-brand {
+		& .navbar-brand {
 			flex: 0 0 auto;
 			width: auto;
 		}
 
-		& > div {
+		& .col {
+			display: flex;
+			justify-content: end;
+		}
+
+		& .btn {
+			color: inherit;
+		}
+
+		& .navbar-toggler {
+			border-color: transparent;
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+		& .btn:first-child,
+		& :not(.btn-check)+.btn {
+
+			&:active {
+				border-color: transparent;
+			}
+		}
+
+		/* & > div {
 			text-align: right;
 			flex-wrap: wrap;
-		}
+		} */
 	}
 
 	main > & {
 		padding-top: calc(var(--risecheckout-navbar-padding-y) * 2 + var(--risecheckout-navbar-brand-padding-y) * 2 + var(--risecheckout-navbar-brand-height) + var(--risecheckout-navbar-margin-bottom));
-		padding-bottom: 2.25rem;
+		padding-bottom: .5625rem;
 	}
 }
 
@@ -409,6 +438,7 @@ a {
 		padding-right: calc(var(--risecheckout-gutter-x)* .5);
 		padding-left: calc(var(--risecheckout-gutter-x)* .5);
 		margin-top: var(--risecheckout-gutter-y);
+		margin-bottom: 1.6875rem;
 	}
 }
 
@@ -1180,14 +1210,14 @@ input[type=checkbox], input[type=radio] {
 	}
 }
 
-.navbar .container > div,
+.navbar-text,
 .footer .container {
 	display: flex;
 	flex-direction: column;
 	gap: .3125rem;
 }
 
-.navbar .container > div {
+.navbar-text {
 	transition-property: gap;
 	transition-duration: .3s;
 	transition-timing-function: cubic-bezier(.78,.13,.15,.86);
@@ -1266,3 +1296,111 @@ input[type=checkbox], input[type=radio] {
 		display: block;
 	}
 }
+
+.btn-group {
+	position: relative;
+	display: inline-flex;
+	vertical-align: middle;
+	justify-content: flex-end;
+	display: flex;
+}
+.btn-group > .btn {
+	position: relative;
+	flex: 0 1 auto;
+}
+.btn-group > .btn-check:checked + .btn,
+.btn-group > .btn-check:focus + .btn,
+.btn-group > .btn:hover,
+.btn-group > .btn:focus,
+.btn-group > .btn:active,
+.btn-group > .btn.active,
+.btn-group-vertical > .btn-check:checked + .btn,
+.btn-group-vertical > .btn-check:focus + .btn,
+.btn-group-vertical > .btn:hover,
+.btn-group-vertical > .btn:focus,
+.btn-group-vertical > .btn:active,
+.btn-group-vertical > .btn.active {
+  z-index: 1;
+}
+
+.dropdown-menu {
+	--risecheckout-dropdown-zindex: 1000;
+	--risecheckout-dropdown-min-width: 10rem;
+	--risecheckout-dropdown-padding-x: 0;
+	--risecheckout-dropdown-padding-y: 0.5rem;
+	--risecheckout-dropdown-spacer: 0.125rem;
+	--risecheckout-dropdown-font-size: 1rem;
+	--risecheckout-dropdown-color: var(--risecheckout-body-color);
+	--risecheckout-dropdown-bg: var(--risecheckout-body-bg);
+	--risecheckout-dropdown-border-color: var(--risecheckout-border-color-translucent);
+	--risecheckout-dropdown-border-radius: var(--risecheckout-border-radius);
+	--risecheckout-dropdown-border-width: var(--risecheckout-border-width);
+	--risecheckout-dropdown-inner-border-radius: calc(var(--risecheckout-border-radius) - var(--risecheckout-border-width));
+	--risecheckout-dropdown-divider-bg: var(--risecheckout-border-color-translucent);
+	--risecheckout-dropdown-divider-margin-y: 0.5rem;
+	--risecheckout-dropdown-box-shadow: var(--risecheckout-box-shadow);
+	--risecheckout-dropdown-link-color: var(--risecheckout-body-color);
+	--risecheckout-dropdown-link-hover-color: var(--risecheckout-body-color);
+	--risecheckout-dropdown-link-hover-bg: var(--risecheckout-tertiary-bg);
+	--risecheckout-dropdown-link-active-color: #fff;
+	--risecheckout-dropdown-link-active-bg: #0d6efd;
+	--risecheckout-dropdown-link-disabled-color: var(--risecheckout-tertiary-color);
+	--risecheckout-dropdown-item-padding-x: 1rem;
+	--risecheckout-dropdown-item-padding-y: 0.25rem;
+	--risecheckout-dropdown-header-color: #6c757d;
+	--risecheckout-dropdown-header-padding-x: 1rem;
+	--risecheckout-dropdown-header-padding-y: 0.5rem;
+	position: absolute;
+	z-index: var(--risecheckout-dropdown-zindex);
+	display: none;
+	min-width: var(--risecheckout-dropdown-min-width);
+	padding: var(--risecheckout-dropdown-padding-y) var(--risecheckout-dropdown-padding-x);
+	margin: 0;
+	font-size: var(--risecheckout-dropdown-font-size);
+	color: var(--risecheckout-dropdown-color);
+	text-align: left;
+	list-style: none;
+	background-color: var(--risecheckout-dropdown-bg);
+	background-clip: padding-box;
+	border: var(--risecheckout-dropdown-border-width) solid var(--risecheckout-dropdown-border-color);
+	border-radius: var(--risecheckout-dropdown-border-radius);
+}
+
+.dropdown-menu[data-bs-popper] {
+	top: 100%;
+	left: 0;
+	margin-top: var(--risecheckout-dropdown-spacer);
+}
+
+.dropdown-menu.show {
+	display: block;
+  }
+
+.visually-hidden {
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+
+.visually-hidden:not(caption) {
+	position: absolute !important;
+}
+
+.navbar-text {
+	text-align: right;
+	color: inherit;
+}
+
+.navbar-brand {
+	margin-right: 0;
+}
+
+/* .navbar > .container {
+	display: flex;
+	justify-content: center;
+} */

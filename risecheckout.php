@@ -590,8 +590,54 @@ function risecheckout_replace_emojis_with_font_awesome( $text ) {
 	return $text;
 }
 
+/**
+ * Function to automatically convert emails, URLs, and phone numbers into clickable links.
+ *
+ * This function uses WordPress' native make_clickable() to auto-link emails and URLs.
+ * It then processes phone numbers by removing any characters that are not digits,
+ * except for a leading '+' (for international country codes), and wraps them in a clickable tel: link.
+ *
+ * @param string $content The content to process.
+ * @return string The processed content with clickable links.
+ */
+function risecheckout_make_clickable($content) {
+    // First, use WordPress' built-in function to link emails and URLs
+    $content = make_clickable($content);
+
+    // Regex pattern to match phone numbers with various formatting (spaces, dashes, parentheses)
+    // This pattern matches a phone number that starts optionally with '+' followed by digits and allowed characters.
+    $pattern = '/(\+?[0-9\-\s\(\)]{7,}[0-9])/';
+
+    // Process each matched phone number using a callback function
+    $content = preg_replace_callback($pattern, function ($matches) {
+        $phone = $matches[0];
+        // Clean the phone number: remove all characters except digits,
+        // while preserving a '+' if it's at the beginning.
+        $cleaned_phone = preg_replace('/(?!^\+)[^\d]/', '', $phone);
+        // Return the original phone number wrapped in a clickable tel: link with the cleaned number
+        return '<a href="tel:' . $cleaned_phone . '">' . $phone . '</a>';
+    }, $content);
+
+    return $content;
+}
+
 function risecheckout_header_text() {
-	return risecheckout_replace_emojis_with_font_awesome( wpautop( get_option( 'risecheckout_header_text' ) ) );
+	ob_start();
+	?>
+	<div class="btn-group">
+		<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="#navbar">
+			<span class="btn"><i class="fal fa-envelope"></i> <span class="visually-hidden">E-mail</span></span><span class="btn"><i class="fal fa-phone"></i> <span class="visually-hidden">Telefone</span></span>
+		</button>
+		<ul class="dropdown-menu dropdown-menu-end">
+			<li><a href="mailto:atendimento@elevacalcados.com.br"><i class="fal fa-envelope"></i> atendimento@elevacalcados.com.br</a></li>
+			<li><a href="tel:+5521964801937"><i class="fal fa-phone"></i> +55 21 96480 1937</a></li>
+		</ul>
+	</div>
+</div>
+	<?php
+	$output = ob_get_clean();
+	// return $output;
+	return risecheckout_replace_emojis_with_font_awesome( wpautop( risecheckout_make_clickable( get_option( 'risecheckout_header_text' ) ) ) );
 }
 
 function risecheckout_order_review_text() {

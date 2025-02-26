@@ -44,10 +44,12 @@ function risecheckout_wc_load_scripts() {
 		// 'wc-add-to-cart',
 		'selectWoo',
 		'select2',
+		// 'jquery-blockui',
 		// 'wc-checkout',
 		// 'woocommerce',
 	);
 	risecheckout_dequeue_scripts( $scripts );
+	// wp_deregister_script( 'jquery-blockui' );
 
 	$styles = array(
 		'select2' => true,
