@@ -91,12 +91,10 @@ if ( ! function_exists( 'root_class' ) ) {
 
 require __DIR__ . '/includes/fields.php';
 require __DIR__ . '/includes/conditionals.php';
-// require __DIR__ . '/includes/performance.php';
 require __DIR__ . '/includes/theme-support.php';
 require __DIR__ . '/includes/template.php';
 require __DIR__ . '/includes/frontend-scripts.php';
 require __DIR__ . '/includes/ajax.php';
-// require __DIR__ . '/includes/svg.php';
 
 if ( is_admin() ) {
 	require __DIR__ . '/includes/settings.php';
