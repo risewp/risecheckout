@@ -152,10 +152,12 @@ function risecheckoutgoogle_fonts() {
 		)
 	);
 
+	// var_dump($fonts_url);
+	// die;
 	return $fonts_url;
 }
 
-function risecheckout_style_loader_tag( $tag ) {
+function risecheckout_style_loader_tag( $tag, $handle, $href ) {
 	preg_match_all( '/(rel|id|title|href|media)=\'([^\']+)\'\s+/', $tag, $matches );
 	$tag = (object) array_combine( $matches[1], $matches[2] );
 
@@ -182,6 +184,10 @@ function risecheckout_style_loader_tag( $tag ) {
 		$tag->href = preg_replace( '/&ver=[^&]+/', '', html_entity_decode( urldecode( $tag->href ) ) );
 	}
 
+	if ('risecheckout-fonts-css' === $tag->id) {
+		$tag->href = risecheckoutgoogle_fonts();
+	}
+
 	return sprintf(
 		"<link href=\"%s\" rel=\"%s\" id=\"%s\"%s%s>\n",
 		$tag->href,
@@ -191,7 +197,7 @@ function risecheckout_style_loader_tag( $tag ) {
 		'all' !== $tag->media ? sprintf( ' media="%s"', $tag->media ) : ''
 	);
 }
-add_filter( 'style_loader_tag', 'risecheckout_style_loader_tag' );
+add_filter( 'style_loader_tag', 'risecheckout_style_loader_tag', 10, 3 );
 
 function risecheckout_register_asset( $asset, $type ) {
 	if ( ! in_array( $type, array( 'script', 'style' ), true ) ) {
