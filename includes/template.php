@@ -624,3 +624,12 @@ function risecheckout_body_class( $classes ) {
 	return $classes;
 }
 add_filter( 'body_class', 'risecheckout_body_class' );
+
+function risecheckout_root_class( $classes ) {
+	$look_a_like = 'yes' === get_option( 'risecheckout_look_a_like', 'no' );
+	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() && $look_a_like ) {
+		$classes[] = 'look_a_like';
+	}
+	return $classes;
+}
+add_filter( 'root_class', 'risecheckout_root_class' );

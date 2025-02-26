@@ -825,45 +825,45 @@ label {
 }
 
 input.input-text,
+select,
 textarea {
-	--padding-y: var(--risecheckout-form-control-padding-y, .375rem);
-	--padding-x: var(--risecheckout-form-control-padding-x, .75rem);
-	--font-size: var(--risecheckout-form-control-font-size, 1rem);
-	--color: var(--risecheckout-form-control-color);
-	--bg: var(--risecheckout-form-control-bg);
-	--border-color: var(--risecheckout-form-control-border-color);
-	--border-radius: var(--risecheckout-form-control-border-radius);
-	--line-height: var(--risecheckout-form-control-line-height, 1.5);
-
-	display: block;
-	width: 100%;
-	padding: var(--padding-y) var(--padding-x);
-	font-size: var(--font-size);
-	font-weight: 400;
-	line-height: var(--line-height);
-	color: var(--color);
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	background-color: var(--bg);
-	background-clip: padding-box;
-	border: var(--risecheckout-border-width) solid var(--border-color);
-	border-radius: var(--border-radius);
-	transition: border-color .15sease-in-out, box-shadow .15sease-in-out;
-
-	&:focus {
-		background-color: var(--bg);
-		border-color: var(--border-color);
-		outline: 0;
-
-		.look-a-like & {
-			--bg: #f4f6f8;
-			--border-color: #333;
-		}
-	}
 
 	.woocommerce form .form-row & {
+		--padding-y: var(--risecheckout-form-control-padding-y, .375rem);
+		--padding-x: var(--risecheckout-form-control-padding-x, .75rem);
+		--font-size: var(--risecheckout-form-control-font-size, 1rem);
+		--color: var(--risecheckout-form-control-color);
+		--bg: var(--risecheckout-form-control-bg);
+		--border-color: var(--risecheckout-form-control-border-color);
+		--border-radius: var(--risecheckout-form-control-border-radius);
+		--line-height: var(--risecheckout-form-control-line-height, 1.5);
+
+		display: block;
+		width: 100%;
+		padding: var(--padding-y) var(--padding-x);
+		font-size: var(--font-size);
+		font-weight: 400;
 		line-height: var(--line-height);
+		color: var(--color);
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		background-color: var(--bg);
+		background-clip: padding-box;
+		border: var(--risecheckout-border-width) solid var(--border-color);
+		border-radius: var(--border-radius);
+		transition: border-color .15sease-in-out, box-shadow .15sease-in-out;
+
+		&:focus {
+			background-color: var(--bg);
+			border-color: var(--border-color);
+			outline: 0;
+
+			.look-a-like & {
+				--bg: #f4f6f8;
+				--border-color: #333;
+			}
+		}
 	}
 }
 

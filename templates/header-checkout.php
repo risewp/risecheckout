@@ -1,5 +1,5 @@
 <!doctype html>
-<html <?php language_attributes(); ?> class="xlook-a-like">
+<html <?php language_attributes(); ?> <?php root_class(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,3 +33,6 @@ wp_body_open();
 
 <main>
 	<div class="container">
+
+		<?php
+		the_title( '<h1>', '</h1>' );
