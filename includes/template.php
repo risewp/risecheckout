@@ -724,3 +724,10 @@ function risecheckout_wc_dequeue_select2() {
 	wp_dequeue_style( 'select2' );
 }
 add_action( 'wp_enqueue_scripts', 'risecheckout_wc_dequeue_select2', 11 );
+
+if ( ! function_exists( 'root_class' ) ) {
+	function root_class( $classes = array() ) {
+		$classes = apply_filters('root_class', $classes);
+		echo esc_attr( 'class' ) . '="' . implode( ' ', $classes ) . '"';
+	}
+}
