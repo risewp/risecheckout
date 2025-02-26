@@ -3,7 +3,7 @@
 		</div>
 	</main>
 	<footer class="footer">
-		<div class="container">
+		<div class="container footer-text">
 			<?php echo wp_kses_post( risecheckout_footer_text() ); ?>
 		</div>
 	</footer>

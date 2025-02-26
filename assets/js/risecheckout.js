@@ -43,6 +43,7 @@ class RisecheckoutBlockUI {
 
 			if (window.getComputedStyle(element).position === "static") {
 				element.style.position = "relative";
+				element.style.zoom = 1;
 			}
 
 			element.appendChild(overlay);

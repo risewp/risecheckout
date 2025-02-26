@@ -30,7 +30,7 @@ function risecheckout_frontend_scripts() {
 
 function risecheckout_frontend_styles() {
 	$deps = array(
-		'risecheckout-twbs',
+		// 'risecheckout-twbs',
 		'woocommerce-general',
 	);
 	if ( 'yes' === get_option( 'risecheckout_gfonts', 'yes' ) ) {
