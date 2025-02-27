@@ -545,6 +545,9 @@ function risecheckout_header_toggler_icon() {
  * Display the order review text on the WooCommerce checkout page.
  */
 function risecheckout_order_review_text() {
+	if ( ! risecheckout_option( 'multistep' ) || risecheckout_get_steps() ) {
+		return;
+	}
 	echo wp_kses_post( '<div class="order-review-text">' . wpautop( get_option( 'risecheckout_order_review_text' ) ) . '</div>' );
 }
 add_action( 'woocommerce_checkout_order_review', 'risecheckout_order_review_text', 21 );

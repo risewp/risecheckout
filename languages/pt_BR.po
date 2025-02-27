@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rise Checkout 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/risecheckout\n"
-"POT-Creation-Date: 2025-02-27T19:52:28+00:00\n"
-"PO-Revision-Date: 2025-02-27 16:54-0300\n"
+"POT-Creation-Date: 2025-02-27T23:22:07+00:00\n"
+"PO-Revision-Date: 2025-02-27 20:22-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -100,6 +100,28 @@ msgstr "E-mail"
 #: partialshipping/templates/checkout-full.php:162
 msgid "Mobile"
 msgstr "Celular / WhatsApp"
+
+#: includes/multistep.php:34
+#: partialshipping/includes/fields-steps-partialshipping.php:336
+#: partialshipping/templates/checkout-full.php:84
+msgid "Identify yourself"
+msgstr "Identifique-se"
+
+#: includes/multistep.php:44
+#: partialshipping/includes/fields-steps-partialshipping.php:346
+msgid "Shipping"
+msgstr "Entrega"
+
+#: includes/multistep.php:56
+#: partialshipping/includes/fields-steps-partialshipping.php:362
+#: partialshipping/templates/checkout-full.php:253
+msgid "Payment"
+msgstr "Pagamento"
+
+#: includes/multistep.php:95
+msgctxt "order"
+msgid "Resume"
+msgstr "Resumo"
 
 #: includes/settings.php:23 includes/settings.php:123
 msgid "RiseCheckout"
@@ -257,11 +279,6 @@ msgstr "Destinatário"
 msgid "Enter %s"
 msgstr "Digite o %s"
 
-#: partialshipping/includes/fields-steps-partialshipping.php:336
-#: partialshipping/templates/checkout-full.php:84
-msgid "Identify yourself"
-msgstr "Identifique-se"
-
 #: partialshipping/includes/fields-steps-partialshipping.php:337
 #: partialshipping/templates/checkout-full.php:85
 msgid ""
@@ -280,10 +297,6 @@ msgstr "Continuar"
 msgid "Edit"
 msgstr "Editar"
 
-#: partialshipping/includes/fields-steps-partialshipping.php:346
-msgid "Shipping"
-msgstr "Entrega"
-
 #: partialshipping/includes/fields-steps-partialshipping.php:351
 msgid "Register an address"
 msgstr "Cadastre um endereço"
@@ -296,11 +309,6 @@ msgstr "Preencha suas informações pessoais para continuar"
 #: partialshipping/includes/fields-steps-partialshipping.php:359
 msgid "Save"
 msgstr "Salvar"
-
-#: partialshipping/includes/fields-steps-partialshipping.php:362
-#: partialshipping/templates/checkout-full.php:253
-msgid "Payment"
-msgstr "Pagamento"
 
 #: partialshipping/includes/fields-steps-partialshipping.php:363
 #: partialshipping/templates/checkout-full.php:254

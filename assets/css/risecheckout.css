@@ -1507,11 +1507,14 @@ input[type="checkbox"] {
 .footer {
 	margin-top: auto;
 	padding: 2rem;
-	background-color: var(--risecheckout-tertiary-bg);
 	color: var(--risecheckout-secondary);
 	text-align: center;
-}
 
+	:not(.risecheckout-multistep) & {
+		background-color: var(--risecheckout-tertiary-bg);
+	}
+}
+footer
 .order-review-text {
 	--risecheckout-gutter-x: 1.25rem;
 

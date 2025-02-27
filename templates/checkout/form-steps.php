@@ -18,6 +18,8 @@
 
 				<?php endif; ?>
 
+				<?php do_action( $id ); ?>
+
 				<?php if ( isset( $step->fields ) && $step->fields ) : ?>
 
 					<div class="step-fields">

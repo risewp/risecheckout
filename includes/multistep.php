@@ -20,7 +20,11 @@ function risecheckout_remove_billing_shipping_forms() {
 
 	remove_action( 'woocommerce_checkout_billing', array( WC()->checkout(), 'checkout_form_billing' ) );
 	remove_action( 'woocommerce_checkout_shipping', array( WC()->checkout(), 'checkout_form_shipping' ) );
+
 	add_action( 'woocommerce_checkout_billing', 'risecheckout_checkout_form_steps', 11 );
+
+	remove_action( 'woocommerce_checkout_order_review', 'woocommerce_checkout_payment', 20 );
+	add_action( 'risecheckout_step_payment', 'woocommerce_checkout_payment' );
 }
 add_action( 'woocommerce_init', 'risecheckout_remove_billing_shipping_forms' );
 
@@ -87,3 +91,14 @@ function risecheckout_order_review_inner_close() {
 	echo '</div><!-- /.order-review-inner -->';
 }
 add_action( 'woocommerce_checkout_after_order_review', 'risecheckout_order_review_inner_close' );
+
+function risecheckout_order_review_heading( $translation, $text ) {
+	$multistep = risecheckout_option( 'multistep' ) && risecheckout_get_steps();
+
+	if ( $multistep && 'Your order' === $text ) {
+		$translation = _x( 'Resume', 'order', 'risecheckout' );
+	}
+
+	return $translation;
+}
+add_filter( 'gettext_woocommerce', 'risecheckout_order_review_heading', 10, 2 );

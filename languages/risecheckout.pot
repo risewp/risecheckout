@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-27T19:52:28+00:00\n"
+"POT-Creation-Date: 2025-02-27T23:22:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: risecheckout\n"
@@ -94,6 +94,28 @@ msgstr ""
 #: partialshipping/templates/checkout-full.php:155
 #: partialshipping/templates/checkout-full.php:162
 msgid "Mobile"
+msgstr ""
+
+#: includes/multistep.php:34
+#: partialshipping/includes/fields-steps-partialshipping.php:336
+#: partialshipping/templates/checkout-full.php:84
+msgid "Identify yourself"
+msgstr ""
+
+#: includes/multistep.php:44
+#: partialshipping/includes/fields-steps-partialshipping.php:346
+msgid "Shipping"
+msgstr ""
+
+#: includes/multistep.php:56
+#: partialshipping/includes/fields-steps-partialshipping.php:362
+#: partialshipping/templates/checkout-full.php:253
+msgid "Payment"
+msgstr ""
+
+#: includes/multistep.php:95
+msgctxt "order"
+msgid "Resume"
 msgstr ""
 
 #: includes/settings.php:23
@@ -247,11 +269,6 @@ msgstr ""
 msgid "Enter %s"
 msgstr ""
 
-#: partialshipping/includes/fields-steps-partialshipping.php:336
-#: partialshipping/templates/checkout-full.php:84
-msgid "Identify yourself"
-msgstr ""
-
 #: partialshipping/includes/fields-steps-partialshipping.php:337
 #: partialshipping/templates/checkout-full.php:85
 msgid "We will use your email to: Identify your profile, purchase history, order notification and shopping cart."
@@ -266,10 +283,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: partialshipping/includes/fields-steps-partialshipping.php:346
-msgid "Shipping"
-msgstr ""
-
 #: partialshipping/includes/fields-steps-partialshipping.php:351
 msgid "Register an address"
 msgstr ""
@@ -281,11 +294,6 @@ msgstr ""
 
 #: partialshipping/includes/fields-steps-partialshipping.php:359
 msgid "Save"
-msgstr ""
-
-#: partialshipping/includes/fields-steps-partialshipping.php:362
-#: partialshipping/templates/checkout-full.php:253
-msgid "Payment"
 msgstr ""
 
 #: partialshipping/includes/fields-steps-partialshipping.php:363
