@@ -822,6 +822,10 @@ label {
 		font-size: inherit;
 		font-weight: inherit;
 	}
+
+	& .optional {
+		font-weight: 400;
+	}
 }
 
 input.input-text,

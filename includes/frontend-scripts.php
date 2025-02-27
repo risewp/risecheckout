@@ -83,7 +83,7 @@ function risecheckout_frontend_load_scripts() {
 			'postcodeBrNonce' => wp_create_nonce( 'risecheckout-postcode-br' ),
 		)
 	);
-	// wp_localize_script( 'risecheckout', 'risecheckoutParams', $l10n );
+	wp_localize_script( 'risecheckout', 'risecheckoutParams', $l10n );
 
 	wp_enqueue_script( 'risecheckout' );
 }
@@ -97,12 +97,16 @@ add_action( 'wp_enqueue_scripts', 'risecheckout_frontend_load_scripts', 11 );
  * @return string URL with query arguments.
  */
 function risecheckout_add_query_arg( ...$args ) {
+	$request_uri = false;
+	if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+		$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+	}
 	if ( is_array( $args[0] ) ) {
 		$arg_data = $args[0];
-		$url      = $args[1] ?? $_SERVER['REQUEST_URI'];
+		$url      = $args[1] ?? $request_uri;
 	} else {
 		$arg_data = array( $args[0] => $args[1] );
-		$url      = $args[2] ?? $_SERVER['REQUEST_URI'];
+		$url      = $args[2] ?? $request_uri;
 	}
 
 	$has_array   = false;
@@ -125,10 +129,10 @@ function risecheckout_add_query_arg( ...$args ) {
 	foreach ( $arg_data as $key => $value ) {
 		if ( is_array( $value ) ) {
 			foreach ( $value as $sub_value ) {
-				$query_parts[] = $key . '=' . urlencode( $sub_value );
+				$query_parts[] = $key . '=' . rawurlencode( $sub_value );
 			}
 		} else {
-			$query_parts[] = $key . '=' . urlencode( $value );
+			$query_parts[] = $key . '=' . rawurlencode( $value );
 		}
 	}
 
@@ -139,7 +143,7 @@ function risecheckout_add_query_arg( ...$args ) {
 
 function risecheckoutgoogle_fonts() {
 	$families = array(
-		// 'Rubik'      => 'Rubik:ital,wght@0,300..900;1,300..900',
+		'Rubik'      => 'Rubik:ital,wght@0,300..900;1,300..900',
 		'quicksand'  => 'Quicksand:wght@300..700',
 		'montserrat' => 'Montserrat:ital,wght@0,100..900;1,100..900',
 	);
@@ -154,16 +158,14 @@ function risecheckoutgoogle_fonts() {
 		)
 	);
 
-	// var_dump($fonts_url);
-	// die;
 	return $fonts_url;
 }
 
-function risecheckout_style_loader_tag( $tag, $handle, $href ) {
+function risecheckout_style_loader_tag( $tag ) {
 	preg_match_all( '/(rel|id|title|href|media)=\'([^\']+)\'\s+/', $tag, $matches );
 	$tag = (object) array_combine( $matches[1], $matches[2] );
 
-	if ( 'fonts.googleapis.com' === parse_url( $tag->href, PHP_URL_HOST ) ) {
+	if ( 'fonts.googleapis.com' === wp_parse_url( $tag->href, PHP_URL_HOST ) ) {
 		$preconnects = array(
 			array(
 				'href' => 'https://fonts.googleapis.com',
@@ -178,7 +180,7 @@ function risecheckout_style_loader_tag( $tag, $handle, $href ) {
 			$preconnect = (object) $preconnect;
 			printf(
 				"<link rel=\"preconnect\" href=\"%s\"%s>\n",
-				$preconnect->href,
+				esc_url( $preconnect->href ),
 				isset( $preconnect->crossorigin ) && $preconnect->crossorigin ? ' crossorigin' : ''
 			);
 		}
@@ -199,7 +201,7 @@ function risecheckout_style_loader_tag( $tag, $handle, $href ) {
 		'all' !== $tag->media ? sprintf( ' media="%s"', $tag->media ) : ''
 	);
 }
-add_filter( 'style_loader_tag', 'risecheckout_style_loader_tag', 10, 3 );
+add_filter( 'style_loader_tag', 'risecheckout_style_loader_tag', 10 );
 
 function risecheckout_register_asset( $asset, $type ) {
 	if ( ! in_array( $type, array( 'script', 'style' ), true ) ) {

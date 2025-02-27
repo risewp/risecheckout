@@ -6,7 +6,7 @@
 	<file>.</file>
 	<exclude-pattern>/vendor/</exclude-pattern>
 	<exclude-pattern>/node_modules/</exclude-pattern>
-	<exclude-pattern>/includes/</exclude-pattern>
+	<exclude-pattern>/partialshipping/</exclude-pattern>
 	<exclude-pattern>/templates/</exclude-pattern>
 
 	<!-- How to scan -->
@@ -30,7 +30,6 @@
 	<config name="minimum_supported_wp_version" value="4.6"/>
 	<rule ref="WordPress">
 		<exclude name="Squiz.Commenting"/>
-		<exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents"/>
 	</rule>
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>

@@ -8,6 +8,6 @@ risecheckout_define_constants();
 
 function risecheckout_define( $name, $value ) {
 	if ( ! defined( $name ) ) {
-		define( $name, $value );
+		define( $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
 	}
 }

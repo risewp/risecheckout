@@ -23,13 +23,13 @@ function risecheckout_us_theme_dequeue_scripts( $scripts ) {
 	risecheckout_dequeue_scripts( $scripts, $prefix = 'us-fallback-' );
 }
 
-function custom_fontawesome_styles() {
+function risecheckout_us_theme_fontawesome() {
 	if ( ! risecheckout_is_checkout() || risecheckout_is_order_received_page() ) {
 		return;
 	}
 	$path = '/fonts/fa-light-300.woff2';
 	if ( file_exists( get_template_directory() . $path ) ) {
-		wp_register_style( 'rcfontawesome', false );
+		wp_register_style( 'rcfontawesome', false, array(), RISECHECKOUT_VERSION );
 		wp_add_inline_style(
 			'rcfontawesome',
 			sprintf(
@@ -40,4 +40,4 @@ function custom_fontawesome_styles() {
 		wp_enqueue_style( 'rcfontawesome' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'custom_fontawesome_styles' );
+add_action( 'wp_enqueue_scripts', 'risecheckout_us_theme_fontawesome' );

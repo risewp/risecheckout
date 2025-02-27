@@ -99,17 +99,12 @@ function risecheckout_get_settings() {
 	);
 }
 
-function risecheckout_toggle_order_comments( $enabled ) {
-	return get_option( 'woocommerce_enable_order_comments', 'yes' ) === 'yes';
-}
-add_filter( 'woocommerce_enable_order_notes_field', 'risecheckout_toggle_order_comments' );
-
 function risecheckout_render_wysiwyg_field( $value ) {
 	$option_value = get_option( $value['id'], $value['default'] );
 	echo '<tr valign="top">';
 	echo '<th scope="row"><label for="' . esc_attr( $value['id'] ) . '">' . esc_html( $value['title'] ) . '</label></th>';
 	echo '<td>';
-	echo "<div style='width:400px;" . $value['css'] . "'>";
+	echo "<div style='width:400px;" . esc_attr( $value['css'] ) . "'>";
 	wp_editor(
 		$option_value,
 		esc_attr( $value['id'] ),

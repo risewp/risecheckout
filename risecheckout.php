@@ -9,6 +9,8 @@
  * Domain Path: /languages/
  * Requires at least: 6.7
  * Requires PHP: 7.4
+ *
+ * @package RiseCheckout
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -17,6 +19,11 @@ if ( ! defined( 'RISECHECKOUT_PLUGIN_FILE' ) ) {
 	define( 'RISECHECKOUT_PLUGIN_FILE', __FILE__ );
 }
 
+/**
+ * Includes necessary plugin files.
+ *
+ * @return void
+ */
 function risecheckout_includes() {
 	require __DIR__ . '/includes/constants.php';
 	require __DIR__ . '/includes/i18n.php';
@@ -37,11 +44,21 @@ function risecheckout_includes() {
 }
 risecheckout_includes();
 
+/**
+ * Includes frontend-related files.
+ *
+ * @return void
+ */
 function risecheckout_frontend_includes() {
 	require __DIR__ . '/includes/template.php';
 	require __DIR__ . '/includes/frontend-scripts.php';
 }
 
+/**
+ * Determines if the current request is a REST API request.
+ *
+ * @return bool
+ */
 function risecheckout_is_rest_api_request() {
 	if ( empty( $_SERVER['REQUEST_URI'] ) ) {
 		return false;
@@ -51,6 +68,11 @@ function risecheckout_is_rest_api_request() {
 	return ( false !== strpos( $_SERVER['REQUEST_URI'], $rest_prefix ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 }
 
+/**
+ * Determines if the current request is a frontend request.
+ *
+ * @return bool
+ */
 function risecheckout_is_request_frontend() {
 	return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! risecheckout_is_rest_api_request();
 }

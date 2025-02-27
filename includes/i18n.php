@@ -3,7 +3,7 @@
 function risecheckout_load_plugin_textdomain() {
 	$locale = determine_locale();
 
-	$locale = apply_filters( 'plugin_locale', $locale, 'risecheckout' );
+	$locale = apply_filters( 'plugin_locale', $locale, 'risecheckout' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
 	unload_textdomain( 'risecheckout', true );
 	load_textdomain( 'risecheckout', dirname( RISECHECKOUT_PLUGIN_FILE ) . '/languages/' . $locale . '.mo' );
