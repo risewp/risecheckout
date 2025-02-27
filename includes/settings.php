@@ -1,5 +1,18 @@
 <?php
+/**
+ * RiseCheckout Settings - This file contains all settings-related functions for RiseCheckout.
+ *
+ * @package RiseCheckout
+ */
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Adds a custom settings tab to the WooCommerce settings page.
+ *
+ * @param array $tabs The existing tabs on the settings page.
+ * @return array Modified tabs array including the RiseCheckout tab.
+ */
 function risecheckout_add_settings_tab( $tabs ) {
 	$has_checkout_label = false;
 	foreach ( $tabs as $key => $label ) {
@@ -13,16 +26,27 @@ function risecheckout_add_settings_tab( $tabs ) {
 }
 add_filter( 'woocommerce_settings_tabs_array', 'risecheckout_add_settings_tab', 50 );
 
+/**
+ * Displays the settings page for RiseCheckout.
+ */
 function risecheckout_settings_page() {
 	woocommerce_admin_fields( risecheckout_get_settings() );
 }
 add_action( 'woocommerce_settings_tabs_risecheckout', 'risecheckout_settings_page' );
 
+/**
+ * Saves the settings for RiseCheckout.
+ */
 function risecheckout_save_settings() {
 	woocommerce_update_options( risecheckout_get_settings() );
 }
 add_action( 'woocommerce_update_options_risecheckout', 'risecheckout_save_settings' );
 
+/**
+ * Retrieves the settings for RiseCheckout.
+ *
+ * @return array An array of settings for RiseCheckout.
+ */
 function risecheckout_get_settings() {
 	return array(
 		array(
@@ -99,6 +123,11 @@ function risecheckout_get_settings() {
 	);
 }
 
+/**
+ * Renders the WYSIWYG field on the settings page.
+ *
+ * @param array $value The field settings.
+ */
 function risecheckout_render_wysiwyg_field( $value ) {
 	$option_value = get_option( $value['id'], $value['default'] );
 	echo '<tr valign="top">';
@@ -125,6 +154,14 @@ function risecheckout_render_wysiwyg_field( $value ) {
 }
 add_action( 'woocommerce_admin_field_wysiwyg', 'risecheckout_render_wysiwyg_field' );
 
+/**
+ * Sanitizes the WYSIWYG field data before saving.
+ *
+ * @param string $value The current field value.
+ * @param array  $option The field option array.
+ * @param string $raw_value The raw submitted value.
+ * @return string Sanitized value.
+ */
 function risecheckout_sanitize_wysiwyg( $value, $option, $raw_value ) {
 	if ( 'wysiwyg' === $option['type'] ) {
 		$value = wp_kses_post( $raw_value );
@@ -133,6 +170,9 @@ function risecheckout_sanitize_wysiwyg( $value, $option, $raw_value ) {
 }
 add_filter( 'woocommerce_admin_settings_sanitize_option', 'risecheckout_sanitize_wysiwyg', 10, 3 );
 
+/**
+ * Adds JavaScript to the admin footer to enable the save button when TinyMCE content changes.
+ */
 function risecheckout_admin_footer_script() {
 	?>
 	<script type="text/javascript">

@@ -1,5 +1,18 @@
 <?php
+/**
+ * Admin Functions for RiseCheckout Plugin
+ *
+ * @package RiseCheckout
+ */
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Add action links to the plugin list page.
+ *
+ * @param array $links Existing plugin action links.
+ * @return array Modified plugin action links.
+ */
 function risecheckout_plugin_action_links( $links ) {
 	if ( class_exists( 'WooCommerce' ) ) {
 		$plugin_links   = array();

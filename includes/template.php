@@ -1,7 +1,20 @@
 <?php
+/**
+ * RiseCheckout Template Functions
+ *
+ * This file contains functions related to template loading and customization.
+ *
+ * @package RiseCheckout
+ */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Loads the custom checkout template if applicable.
+ *
+ * @param string $template The path to the template file.
+ * @return string Modified template path if conditions are met.
+ */
 function risecheckout_template_loader( $template ) {
 	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() ) {
 		$template = risecheckout_plugin_path() . '/templates/checkout.php';
@@ -10,6 +23,13 @@ function risecheckout_template_loader( $template ) {
 }
 add_filter( 'template_include', 'risecheckout_template_loader' );
 
+/**
+ * Retrieves the WooCommerce template from the plugin if available.
+ *
+ * @param string $template The current template file.
+ * @param string $template_name The template name.
+ * @return string The modified template path if found.
+ */
 function risecheckout_wc_get_template( $template, $template_name ) {
 	$plugin_template = risecheckout_plugin_path() . '/templates/' . $template_name;
 
@@ -21,6 +41,13 @@ function risecheckout_wc_get_template( $template, $template_name ) {
 }
 add_filter( 'wc_get_template', 'risecheckout_wc_get_template', 10, 2 );
 
+/**
+ * Loads the header template.
+ *
+ * @param string|null $name Optional. Name of the specific header template.
+ * @param array       $args Optional. Arguments to pass to the template.
+ * @return bool False if template is not found.
+ */
 function risecheckout_get_header( $name = null, $args = array() ) {
 	$templates = array();
 	$name      = (string) $name;
@@ -35,6 +62,13 @@ function risecheckout_get_header( $name = null, $args = array() ) {
 	}
 }
 
+/**
+ * Loads the footer template.
+ *
+ * @param string|null $name Optional. Name of the specific footer template.
+ * @param array       $args Optional. Arguments to pass to the template.
+ * @return bool False if template is not found.
+ */
 function risecheckout_get_footer( $name = null, $args = array() ) {
 	$templates = array();
 	$name      = (string) $name;
@@ -49,6 +83,17 @@ function risecheckout_get_footer( $name = null, $args = array() ) {
 	}
 }
 
+/**
+ * Locate template file.
+ *
+ * This function searches for a template file within the plugin, child theme, or parent theme directories.
+ *
+ * @param array|string $template_names Template file name(s).
+ * @param bool         $load Whether to load the template file.
+ * @param bool         $load_once Whether to load the template file once.
+ * @param array        $args Optional arguments to pass to the template file.
+ * @return string Located template file path.
+ */
 function risecheckout_locate_template( $template_names, $load = false, $load_once = true, $args = array() ) {
 	global $wp_stylesheet_path, $wp_template_path;
 
@@ -87,6 +132,11 @@ function risecheckout_locate_template( $template_names, $load = false, $load_onc
 	return $located;
 }
 
+/**
+ * Outputs the site title or custom logo.
+ *
+ * Displays the custom logo if available, otherwise falls back to the site title.
+ */
 function risecheckout_site_title_or_logo() {
 	ob_start();
 	?>
@@ -115,6 +165,18 @@ function risecheckout_site_title_or_logo() {
 	echo wp_kses_post( ob_get_clean() );
 }
 
+/**
+ * Customizes the WooCommerce form fields output.
+ *
+ * This function modifies the HTML output of WooCommerce form fields by filtering the default
+ * field structure and allowing customizations via WordPress filters.
+ *
+ * @param string $field HTML output of the field.
+ * @param string $key Field key.
+ * @param array  $args Field arguments.
+ * @param mixed  $value Field value.
+ * @return string Modified HTML output.
+ */
 function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 	$defaults = array(
 		'type'              => 'text',
@@ -369,6 +431,15 @@ function risecheckout_wc_form_field( $field, $key, $args, $value ) {
 }
 add_filter( 'woocommerce_form_field', 'risecheckout_wc_form_field', 10, 4 );
 
+/**
+ * Adds a custom class to the root element if the "look_a_like" option is enabled.
+ *
+ * This function checks if the custom option 'risecheckout_look_a_like' is enabled and adds
+ * a CSS class to the body element accordingly.
+ *
+ * @param array $classes Array of body classes.
+ * @return array Modified array of body classes.
+ */
 function risecheckout_root_class_look_a_like( $classes ) {
 	$look_a_like = 'yes' === get_option( 'risecheckout_look_a_like', 'no' );
 	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() && $look_a_like ) {
@@ -378,6 +449,12 @@ function risecheckout_root_class_look_a_like( $classes ) {
 }
 add_filter( 'risecheckout_root_class', 'risecheckout_root_class_look_a_like' );
 
+/**
+ * Replace emojis with Font Awesome icons in text.
+ *
+ * @param string $text The input text containing emojis.
+ * @return string The text with emojis replaced by Font Awesome icons.
+ */
 function risecheckout_replace_emojis_with_font_awesome( $text ) {
 	$replacements = array(
 		'🏬'  => '<i class="fal fa-store"></i>',
@@ -404,14 +481,14 @@ function risecheckout_replace_emojis_with_font_awesome( $text ) {
  * @return string The processed content with clickable links.
  */
 function risecheckout_make_clickable( $content ) {
-	// First, use WordPress' built-in function to link emails and URLs
+	// First, use WordPress' built-in function to link emails and URLs.
 	$content = make_clickable( $content );
 
 	// Regex pattern to match phone numbers with various formatting (spaces, dashes, parentheses)
 	// This pattern matches a phone number that starts optionally with '+' followed by digits and allowed characters.
 	$pattern = '/(\+?[0-9\-\s\(\)]{7,}[0-9])/';
 
-	// Process each matched phone number using a callback function
+	// Process each matched phone number using a callback function.
 	$content = preg_replace_callback(
 		$pattern,
 		function ( $matches ) {
@@ -419,7 +496,7 @@ function risecheckout_make_clickable( $content ) {
 			// Clean the phone number: remove all characters except digits,
 			// while preserving a '+' if it's at the beginning.
 			$cleaned_phone = preg_replace( '/(?!^\+)[^\d]/', '', $phone );
-			// Return the original phone number wrapped in a clickable tel: link with the cleaned number
+			// Return the original phone number wrapped in a clickable tel: link with the cleaned number.
 			return '<a href="tel:' . $cleaned_phone . '">' . $phone . '</a>';
 		},
 		$content
@@ -428,6 +505,11 @@ function risecheckout_make_clickable( $content ) {
 	return $content;
 }
 
+/**
+ * Get and process the header text option.
+ *
+ * @return string The processed header text with clickable links and icons.
+ */
 function risecheckout_header_text() {
 	$text = get_option( 'risecheckout_header_text' );
 	if ( 'yes' === get_option( 'risecheckout_text_make_clickable', 'no' ) ) {
@@ -444,6 +526,11 @@ function risecheckout_header_text() {
 	return $text;
 }
 
+/**
+ * Get the toggler icon for the header.
+ *
+ * @return string The toggler icon HTML.
+ */
 function risecheckout_header_toggler_icon() {
 	$icon = '<span class="navbar-toggler-icon"></span>';
 	preg_match_all( '/<i\s+class="fal\s+fa-[^"]+"><\/i>/', risecheckout_header_text(), $icons );
@@ -454,21 +541,37 @@ function risecheckout_header_toggler_icon() {
 	return $icon;
 }
 
+/**
+ * Display the order review text on the WooCommerce checkout page.
+ */
 function risecheckout_order_review_text() {
 	echo wp_kses_post( '<div class="order-review-text">' . wpautop( get_option( 'risecheckout_order_review_text' ) ) . '</div>' );
 }
 add_action( 'woocommerce_checkout_order_review', 'risecheckout_order_review_text', 21 );
 
+/**
+ * Get and process the footer text option.
+ *
+ * @return string The processed footer text with emojis replaced by icons.
+ */
 function risecheckout_footer_text() {
 	return risecheckout_replace_emojis_with_font_awesome( wpautop( get_option( 'risecheckout_footer_text' ) ) );
 }
 
+/**
+ * Dequeue Select2 scripts and styles from WooCommerce.
+ */
 function risecheckout_wc_dequeue_select2() {
 	wp_dequeue_script( 'selectWoo' );
 	wp_dequeue_style( 'select2' );
 }
 add_action( 'wp_enqueue_scripts', 'risecheckout_wc_dequeue_select2', 11 );
 
+/**
+ * Output root element classes.
+ *
+ * @param array $classes Optional. Additional classes to add.
+ */
 function risecheckout_root_class( $classes = array() ) {
 	$classes = apply_filters( 'risecheckout_root_class', $classes );
 	echo esc_attr( 'class' ) . '="' . esc_attr( implode( ' ', $classes ) ) . '"';

@@ -25,22 +25,26 @@ if ( ! defined( 'RISECHECKOUT_PLUGIN_FILE' ) ) {
  * @return void
  */
 function risecheckout_includes() {
-	require __DIR__ . '/includes/constants.php';
-	require __DIR__ . '/includes/i18n.php';
-	require __DIR__ . '/includes/locations.php';
-	require __DIR__ . '/includes/fields.php';
-	require __DIR__ . '/includes/conditionals.php';
+	if ( ! defined( 'RISECHECKOUT_ABSPATH' ) ) {
+		define( 'RISECHECKOUT_ABSPATH', dirname( RISECHECKOUT_PLUGIN_FILE ) . '/' );
+	}
+
+	require RISECHECKOUT_ABSPATH . 'includes/constants.php';
+	require RISECHECKOUT_ABSPATH . 'includes/i18n.php';
+	require RISECHECKOUT_ABSPATH . 'includes/locations.php';
+	require RISECHECKOUT_ABSPATH . 'includes/fields.php';
+	require RISECHECKOUT_ABSPATH . 'includes/conditionals.php';
 
 	if ( is_admin() ) {
-		require __DIR__ . '/includes/admin.php';
-		require __DIR__ . '/includes/settings.php';
+		require RISECHECKOUT_ABSPATH . 'includes/admin.php';
+		require RISECHECKOUT_ABSPATH . 'includes/settings.php';
 	}
 
 	if ( risecheckout_is_request_frontend() || risecheckout_is_rest_api_request() ) {
 		risecheckout_frontend_includes();
 	}
 
-	require __DIR__ . '/includes/theme-support.php';
+	require RISECHECKOUT_ABSPATH . 'includes/theme-support.php';
 }
 risecheckout_includes();
 
@@ -50,8 +54,8 @@ risecheckout_includes();
  * @return void
  */
 function risecheckout_frontend_includes() {
-	require __DIR__ . '/includes/template.php';
-	require __DIR__ . '/includes/frontend-scripts.php';
+	require RISECHECKOUT_ABSPATH . 'includes/template.php';
+	require RISECHECKOUT_ABSPATH . 'includes/frontend-scripts.php';
 }
 
 /**

@@ -1,7 +1,17 @@
 <?php
+/**
+ * RiseCheckout frontend scripts and styles.
+ *
+ * @package RiseCheckout
+ */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Enqueues frontend scripts for the checkout page.
+ *
+ * @return array Array of script information (handle, src, dependencies, etc.)
+ */
 function risecheckout_frontend_scripts() {
 	return array(
 		array(
@@ -26,6 +36,11 @@ function risecheckout_frontend_scripts() {
 	);
 }
 
+/**
+ * Enqueues frontend styles for the checkout page.
+ *
+ * @return array Array of style information (handle, src, dependencies, etc.)
+ */
 function risecheckout_frontend_styles() {
 	$deps = array(
 		'woocommerce-general',
@@ -54,6 +69,9 @@ function risecheckout_frontend_styles() {
 	);
 }
 
+/**
+ * Loads and enqueues the required scripts and styles for the checkout page.
+ */
 function risecheckout_frontend_load_scripts() {
 	$scripts = risecheckout_frontend_scripts();
 
@@ -141,6 +159,11 @@ function risecheckout_add_query_arg( ...$args ) {
 	return $url . $separator . implode( '&', $query_parts );
 }
 
+/**
+ * Retrieves the URL for Google Fonts.
+ *
+ * @return string The URL for Google Fonts with the specified font families.
+ */
 function risecheckoutgoogle_fonts() {
 	$families = array(
 		'Rubik'      => 'Rubik:ital,wght@0,300..900;1,300..900',
@@ -161,6 +184,13 @@ function risecheckoutgoogle_fonts() {
 	return $fonts_url;
 }
 
+/**
+ * Modify the style loader tag to include preconnect for fonts.googleapis.com.
+ *
+ * @param string $tag The HTML tag for the style.
+ *
+ * @return string The modified HTML tag.
+ */
 function risecheckout_style_loader_tag( $tag ) {
 	preg_match_all( '/(rel|id|title|href|media)=\'([^\']+)\'\s+/', $tag, $matches );
 	$tag = (object) array_combine( $matches[1], $matches[2] );
@@ -203,6 +233,12 @@ function risecheckout_style_loader_tag( $tag ) {
 }
 add_filter( 'style_loader_tag', 'risecheckout_style_loader_tag', 10 );
 
+/**
+ * Registers a script or style asset.
+ *
+ * @param object $asset The asset information (handle, src, etc.).
+ * @param string $type  The type of asset ('script' or 'style').
+ */
 function risecheckout_register_asset( $asset, $type ) {
 	if ( ! in_array( $type, array( 'script', 'style' ), true ) ) {
 		return;
@@ -225,10 +261,20 @@ function risecheckout_register_asset( $asset, $type ) {
 	}
 }
 
+/**
+ * Registers a style asset.
+ *
+ * @param object $style The style asset information.
+ */
 function risecheckout_register_style( $style ) {
 	risecheckout_register_asset( $style, 'style' );
 }
 
+/**
+ * Registers a script asset.
+ *
+ * @param object $script The script asset information.
+ */
 function risecheckout_register_script( $script ) {
 	risecheckout_register_asset( $script, 'script' );
 }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * WooCommerce Fields Customization.
+ *
+ * This file customizes the default WooCommerce billing, shipping, and checkout fields.
+ *
+ * @package RiseCheckout
+ */
+
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Customize default WooCommerce address fields.
@@ -39,9 +48,14 @@ function risecheckout_wc__default_address_fields( $fields ) {
 
 	return $fields;
 }
-
 add_filter( 'woocommerce_default_address_fields', 'risecheckout_wc__default_address_fields', 11 );
 
+/**
+ * Customize WooCommerce billing fields.
+ *
+ * @param array $fields Billing fields.
+ * @return array Modified billing fields.
+ */
 function risecheckout_wc_billing_fields( $fields ) {
 	$fields['billing_email']['label'] = __( 'Email', 'risecheckout' );
 

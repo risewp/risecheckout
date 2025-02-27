@@ -1,5 +1,21 @@
 <?php
+/**
+ * Internationalization functions for RiseCheckout.
+ *
+ * This file handles loading the plugin's textdomain for translations.
+ *
+ * @package RiseCheckout
+ */
 
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Load the plugin textdomain for translations.
+ *
+ * This function sets up the plugin locale and loads the appropriate translation files.
+ *
+ * @return void
+ */
 function risecheckout_load_plugin_textdomain() {
 	$locale = determine_locale();
 
