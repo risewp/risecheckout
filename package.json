@@ -1,0 +1,14 @@
+{
+	"name": "risecheckout",
+	"version": "1.0.0",
+	"author": "RiseWP",
+	"license": "GPL-2.0-or-later",
+	"scripts": {
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style --fix",
+		"lint:js": "wp-scripts lint-js"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.11.0"
+	}
+}

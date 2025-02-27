@@ -1,19 +1,19 @@
 const risecheckoutUi = {
-	init: function () {
+	init() {
 		this.bindEvents();
 	},
 
-	bindEvents: function () {
-		window.addEventListener('scroll', this.windowScrolledToggle);
+	bindEvents() {
+		window.addEventListener( 'scroll', this.windowScrolledToggle );
 	},
 
-	windowScrolledToggle: function () {
+	windowScrolledToggle() {
 		const className = 'scrolled';
-		if (window.scrollY > 30) {
-			document.body.classList.add(className);
+		if ( window.scrollY > 30 ) {
+			document.body.classList.add( className );
 		} else {
-			document.body.classList.remove(className);
+			document.body.classList.remove( className );
 		}
-	}
+	},
 };
-document.addEventListener('DOMContentLoaded', () => risecheckoutUi.init());
+document.addEventListener( 'DOMContentLoaded', () => risecheckoutUi.init() );

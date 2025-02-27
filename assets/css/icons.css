@@ -7,14 +7,13 @@
 	font-style: normal;
 	font-family: fontawesome;
 	font-weight: 900;
-	src: url("../../assets/fonts/fa-solid-900.woff2") format("woff2");
+	src: url(../../assets/fonts/fa-solid-900.woff2) format("woff2");
 }
 
-.fal, .fas {
+.fal,
+.fas {
 	display: inline-block;
 	line-height: 1;
-	font-family: fontawesome;
-	font-weight: 900;
 	font-style: normal;
 	font-variant: normal;
 	text-rendering: auto;
@@ -25,21 +24,21 @@
 }
 
 .fal {
-	font-weight: 300
+	font-weight: 300;
 }
 
-.fa-envelope:before {
-	content: "\f0e0"
+.fa-envelope::before {
+	content: "\f0e0";
 }
 
-.fa-phone:before {
-	content: "\f095"
+.fa-phone::before {
+	content: "\f095";
 }
 
-.fa-store:before {
-	content: "\f54e"
+.fa-store::before {
+	content: "\f54e";
 }
 
-.fa-map-marker-alt:before {
-	content: "\f3c5"
+.fa-map-marker-alt::before {
+	content: "\f3c5";
 }

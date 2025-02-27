@@ -1,0 +1,302 @@
+# Copyright (C) 2025 RiseWP
+# This file is distributed under the same license as the Rise Checkout plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Rise Checkout 1.0.0-dev\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/risecheckout\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-02-27T00:54:19+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.9.0\n"
+"X-Domain: risecheckout\n"
+
+#. Plugin Name of the plugin
+msgid "Rise Checkout"
+msgstr ""
+
+#. Description of the plugin
+msgid "Enhanced WooCommerce checkout with a seamless single-page multi-step with tracking for abandoned carts."
+msgstr ""
+
+#. Author of the plugin
+msgid "RiseWP"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://risewp.github.io"
+msgstr ""
+
+#: includes/admin.php:6
+msgid "Settings"
+msgstr ""
+
+#. translators: %s: Example
+#: includes/fields.php:6
+#: includes/fields.php:12
+#: partialshipping/includes/fields-steps-partialshipping.php:109
+#: partialshipping/includes/fields-steps-partialshipping.php:134
+#: partialshipping/includes/fields-steps-partialshipping.php:156
+#: partialshipping/includes/fields-steps-partialshipping.php:185
+#: partialshipping/includes/fields-steps-partialshipping.php:305
+#: partialshipping/templates/checkout-full.php:96
+#: partialshipping/templates/checkout-full.php:116
+#: partialshipping/templates/checkout-full.php:127
+#: partialshipping/templates/checkout-full.php:141
+msgid "e.g.: %s"
+msgstr ""
+
+#. translators: %s: Example
+#: includes/fields.php:7
+#: partialshipping/includes/fields-steps-partialshipping.php:135
+#: partialshipping/includes/fields-steps-partialshipping.php:145
+#: partialshipping/includes/fields-steps-partialshipping.php:186
+#: partialshipping/includes/fields-steps-partialshipping.php:197
+#: partialshipping/templates/checkout-full.php:116
+#: partialshipping/templates/checkout-full.php:141
+#: partialshipping/templates/checkout-full.php:179
+msgid "Mary"
+msgstr ""
+
+#. translators: %s: Example
+#: includes/fields.php:13
+#: partialshipping/includes/fields-steps-partialshipping.php:157
+#: partialshipping/includes/fields-steps-partialshipping.php:167
+#: partialshipping/templates/checkout-full.php:127
+msgid "Johnson"
+msgstr ""
+
+#: includes/fields.php:24
+msgid "Address line 2"
+msgstr ""
+
+#. translators: %s: Field label
+#: includes/fields.php:34
+#: partialshipping/includes/fields-steps-partialshipping.php:180
+#: partialshipping/includes/fields-steps-partialshipping.php:192
+#: partialshipping/templates/checkout-full.php:136
+#: partialshipping/templates/checkout-full.php:149
+#: partialshipping/templates/checkout-full.php:179
+msgid "Email"
+msgstr ""
+
+#. translators: %s: Field label
+#: includes/fields.php:37
+#: partialshipping/includes/fields-steps-partialshipping.php:225
+#: partialshipping/includes/fields-steps-partialshipping.php:238
+#: partialshipping/templates/checkout-full.php:155
+#: partialshipping/templates/checkout-full.php:162
+msgid "Mobile"
+msgstr ""
+
+#: includes/settings.php:6
+#: includes/settings.php:11
+msgid "Checkout"
+msgstr ""
+
+#: includes/settings.php:11
+#: includes/settings.php:34
+msgid "RiseCheckout"
+msgstr ""
+
+#: includes/settings.php:35
+msgid "Two-column form (when desktop)"
+msgstr ""
+
+#: includes/settings.php:36
+msgid "Displays the checkout in three columns in total, two for the form and order review (when desktop)."
+msgstr ""
+
+#: includes/settings.php:44
+msgid "Fullname"
+msgstr ""
+
+#: includes/settings.php:45
+msgid "Full name field"
+msgstr ""
+
+#: includes/settings.php:46
+msgid "Displays first and last name as a single field."
+msgstr ""
+
+#: includes/settings.php:54
+msgid "Fonts"
+msgstr ""
+
+#. translators: %s: Google Fonts
+#: includes/settings.php:56
+msgctxt "Google Fonts"
+msgid "Load %s"
+msgstr ""
+
+#: includes/settings.php:57
+msgid "Keep this option disabled to avoid loading external fonts, which improves performance."
+msgstr ""
+
+#: includes/settings.php:65
+msgid "Header text"
+msgstr ""
+
+#: includes/settings.php:73
+msgid "Order review text"
+msgstr ""
+
+#: includes/settings.php:80
+msgid "Footer text"
+msgstr ""
+
+#: includes/settings.php:88
+msgid "Additional fields"
+msgstr ""
+
+#: includes/settings.php:89
+msgid "Enable order notes"
+msgstr ""
+
+#: includes/template.php:516
+msgid "Optional"
+msgstr ""
+
+#: partialshipping/includes/ajax.php:107
+msgid "Invalid postcode"
+msgstr ""
+
+#. translators: %s: Field label
+#: partialshipping/includes/fields-steps-partialshipping.php:106
+#: partialshipping/includes/fields-steps-partialshipping.php:117
+#: partialshipping/includes/fields-steps-partialshipping.php:149
+#: partialshipping/includes/fields-steps-partialshipping.php:171
+#: partialshipping/templates/checkout-full.php:91
+#: partialshipping/templates/checkout-full.php:104
+#: partialshipping/templates/checkout-full.php:178
+msgid "Full name"
+msgstr ""
+
+#. translators: %s: Example
+#: partialshipping/includes/fields-steps-partialshipping.php:110
+#: partialshipping/includes/fields-steps-partialshipping.php:120
+#: partialshipping/includes/fields-steps-partialshipping.php:306
+#: partialshipping/includes/fields-steps-partialshipping.php:315
+#: partialshipping/templates/checkout-full.php:96
+#: partialshipping/templates/checkout-full.php:178
+msgid "Mary Anne Johnson"
+msgstr ""
+
+#. translators: %s: Field label
+#: partialshipping/includes/fields-steps-partialshipping.php:116
+#: partialshipping/includes/fields-steps-partialshipping.php:141
+#: partialshipping/includes/fields-steps-partialshipping.php:163
+#: partialshipping/templates/checkout-full.php:104
+msgid "Enter your %s"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:131
+#: partialshipping/includes/fields-steps-partialshipping.php:142
+#: partialshipping/templates/checkout-full.php:112
+msgid "First name"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:153
+#: partialshipping/includes/fields-steps-partialshipping.php:164
+#: partialshipping/templates/checkout-full.php:123
+msgid "Last name"
+msgstr ""
+
+#. translators: %s: Field label
+#: partialshipping/includes/fields-steps-partialshipping.php:191
+#: partialshipping/templates/checkout-full.php:149
+msgid "Invalid %s. Please check if you typed it correctly."
+msgstr ""
+
+#. translators: %s: Field label
+#: partialshipping/includes/fields-steps-partialshipping.php:215
+#: partialshipping/includes/fields-steps-partialshipping.php:237
+#: partialshipping/includes/fields-steps-partialshipping.php:254
+#: partialshipping/templates/checkout-full.php:162
+msgid "Enter a valid %s"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:255
+#: partialshipping/templates/checkout-full.php:194
+msgid "Zip"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:301
+#: partialshipping/includes/fields-steps-partialshipping.php:313
+msgid "Receiver"
+msgstr ""
+
+#. translators: %s: Field label
+#: partialshipping/includes/fields-steps-partialshipping.php:312
+msgid "Enter %s"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:336
+#: partialshipping/templates/checkout-full.php:84
+msgid "Identify yourself"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:337
+#: partialshipping/templates/checkout-full.php:85
+msgid "We will use your email to: Identify your profile, purchase history, order notification and shopping cart."
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:342
+#: partialshipping/templates/checkout-full.php:170
+msgid "Continue"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:343
+msgid "Edit"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:346
+msgid "Shipping"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:351
+msgid "Register an address"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:355
+#: partialshipping/templates/checkout-full.php:189
+msgid "Fill in your personal information to continue"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:359
+msgid "Save"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:362
+#: partialshipping/templates/checkout-full.php:253
+msgid "Payment"
+msgstr ""
+
+#: partialshipping/includes/fields-steps-partialshipping.php:363
+#: partialshipping/templates/checkout-full.php:254
+msgid "Fill in your shipping information to continue"
+msgstr ""
+
+#: partialshipping/templates/checkout-full.php:101
+#: partialshipping/templates/checkout-full.php:106
+#: partialshipping/templates/checkout-full.php:119
+#: partialshipping/templates/checkout-full.php:130
+#: partialshipping/templates/checkout-full.php:146
+#: partialshipping/templates/checkout-full.php:151
+#: partialshipping/templates/checkout-full.php:159
+#: partialshipping/templates/checkout-full.php:164
+#: partialshipping/templates/checkout-full.php:196
+#: partialshipping/templates/checkout-shippingpartial.php:8
+msgid "Required field."
+msgstr ""
+
+#: partialshipping/templates/checkout-full.php:188
+msgid "Delivery"
+msgstr ""
+
+#: partialshipping/templates/checkout-full.php:190
+msgid "Register or select an address"
+msgstr ""
