@@ -1,0 +1,89 @@
+<?php
+
+function risecheckout_checkout_steps_remove_default_start() {
+	ob_start();
+}
+
+function risecheckout_checkout_steps_remove_default_clean() {
+	$output = ob_get_clean();
+	$output = preg_replace( '/(class)(=")customer-details(")/', '$1$2checkout-steps-col$3', $output );
+	$output = str_replace( ' id="customer_details"', '', $output );
+	echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+function risecheckout_remove_billing_shipping_forms() {
+	if ( ! risecheckout_get_steps() ) {
+		return;
+	}
+	add_action( 'woocommerce_checkout_before_customer_details', 'risecheckout_checkout_steps_remove_default_start' );
+	add_action( 'woocommerce_checkout_after_customer_details', 'risecheckout_checkout_steps_remove_default_clean' );
+
+	remove_action( 'woocommerce_checkout_billing', array( WC()->checkout(), 'checkout_form_billing' ) );
+	remove_action( 'woocommerce_checkout_shipping', array( WC()->checkout(), 'checkout_form_shipping' ) );
+	add_action( 'woocommerce_checkout_billing', 'risecheckout_checkout_form_steps', 11 );
+}
+add_action( 'woocommerce_init', 'risecheckout_remove_billing_shipping_forms' );
+
+function risecheckout_checkout_form_steps() {
+	wc_get_template( 'checkout/form-steps.php', array( 'checkout' => WC()->checkout() ) );
+}
+
+function risecheckout_get_steps() {
+	$steps = array(
+		'customer' => array(
+			'title'  => __( 'Identify yourself', 'risecheckout' ),
+			'fields' => array(
+				'billing_first_name',
+				'billing_last_name',
+				'billing_email',
+				'billing_cpf',
+				'billing_phone',
+			),
+		),
+		'shipping' => array(
+			'title'  => __( 'Shipping', 'risecheckout' ),
+			'fields' => array(
+				'billing_postcode',
+				'billing_city',
+				'billing_state',
+				'billing_address_1',
+				'billing_number',
+				'billing_neighborhood',
+				'billing_address_2',
+			),
+		),
+		'payment'  => array(
+			'title' => __( 'Payment', 'risecheckout' ),
+		),
+	);
+
+	$steps = apply_filters( 'risecheckout_steps', $steps );
+
+	foreach ( $steps as $id => $step ) {
+		unset( $steps[ $id ] );
+
+		$id = 'risecheckout_step_' . str_replace( '-', '_', sanitize_title( $id ) );
+
+		$steps[ $id ] = (object) $step;
+	}
+
+	return $steps;
+}
+
+function risecheckout_multistep_body_class( $classes ) {
+	if ( risecheckout_option( 'multistep' ) && risecheckout_get_steps() ) {
+		$classes[] = 'risecheckout-multistep';
+	}
+	return $classes;
+}
+add_action( 'body_class', 'risecheckout_multistep_body_class' );
+
+function risecheckout_order_review_inner() {
+	echo '<div class="order-review-inner">';
+}
+add_action( 'woocommerce_checkout_before_order_review_heading', 'risecheckout_order_review_inner' );
+
+function risecheckout_order_review_inner_close() {
+	echo '</div><!-- /.order-review-inner -->';
+}
+add_action( 'woocommerce_checkout_after_order_review', 'risecheckout_order_review_inner_close' );

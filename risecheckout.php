@@ -34,6 +34,7 @@ function risecheckout_includes() {
 	require RISECHECKOUT_ABSPATH . 'includes/locations.php';
 	require RISECHECKOUT_ABSPATH . 'includes/fields.php';
 	require RISECHECKOUT_ABSPATH . 'includes/conditionals.php';
+	require RISECHECKOUT_ABSPATH . 'includes/options.php';
 
 	if ( is_admin() ) {
 		require RISECHECKOUT_ABSPATH . 'includes/admin.php';
@@ -56,6 +57,10 @@ risecheckout_includes();
 function risecheckout_frontend_includes() {
 	require RISECHECKOUT_ABSPATH . 'includes/template.php';
 	require RISECHECKOUT_ABSPATH . 'includes/frontend-scripts.php';
+
+	if ( 'yes' === get_option( 'risecheckout_multistep' ) ) {
+		require RISECHECKOUT_ABSPATH . 'includes/multistep.php';
+	}
 }
 
 /**
