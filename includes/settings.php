@@ -8,41 +8,6 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Adds a custom settings tab to the WooCommerce settings page.
- *
- * @param array $tabs The existing tabs on the settings page.
- * @return array Modified tabs array including the RiseCheckout tab.
- */
-function risecheckout_add_settings_tab( $tabs ) {
-	$has_checkout_label = false;
-	foreach ( $tabs as $key => $label ) {
-		if ( __( 'Checkout', 'risecheckout' ) === $label ) {
-			$has_checkout_label = true;
-			break;
-		}
-	}
-	$tabs['risecheckout'] = $has_checkout_label ? __( 'RiseCheckout', 'risecheckout' ) : __( 'Checkout', 'risecheckout' );
-	return $tabs;
-}
-add_filter( 'woocommerce_settings_tabs_array', 'risecheckout_add_settings_tab', 50 );
-
-/**
- * Displays the settings page for RiseCheckout.
- */
-function risecheckout_settings_page() {
-	woocommerce_admin_fields( risecheckout_get_settings() );
-}
-add_action( 'woocommerce_settings_tabs_risecheckout', 'risecheckout_settings_page' );
-
-/**
- * Saves the settings for RiseCheckout.
- */
-function risecheckout_save_settings() {
-	woocommerce_update_options( risecheckout_get_settings() );
-}
-add_action( 'woocommerce_update_options_risecheckout', 'risecheckout_save_settings' );
-
-/**
  * Retrieves the settings for RiseCheckout.
  *
  * @return array An array of settings for RiseCheckout.
@@ -56,12 +21,30 @@ function risecheckout_get_settings() {
 		),
 		array(
 			'title'         => __( 'RiseCheckout', 'risecheckout' ),
+			'desc'          => __( 'Multi-step', 'risecheckout' ),
+			'id'            => 'risecheckout_multistep',
+			'default'       => 'no',
+			'type'          => 'checkbox',
+			'checkboxgroup' => 'start',
+			'autoload'      => false,
+		),
+		array(
+			'title'         => __( 'Look a like', 'risecheckout' ),
+			'desc'          => __( 'Look a like', 'risecheckout' ),
+			'id'            => 'risecheckout_look_a_like',
+			'default'       => 'no',
+			'type'          => 'checkbox',
+			'checkboxgroup' => '',
+			'autoload'      => false,
+		),
+		array(
+			'title'         => __( 'Two-column form', 'risecheckout' ),
 			'desc'          => __( 'Two-column form (when desktop)', 'risecheckout' ),
 			'desc_tip'      => __( 'Displays the checkout in three columns in total, two for the form and order review (when desktop).', 'risecheckout' ),
 			'id'            => 'risecheckout_form_columns',
 			'default'       => 'no',
 			'type'          => 'checkbox',
-			'checkboxgroup' => 'start',
+			'checkboxgroup' => '',
 			'autoload'      => false,
 		),
 		array(
@@ -122,6 +105,41 @@ function risecheckout_get_settings() {
 		),
 	);
 }
+
+/**
+ * Adds a custom settings tab to the WooCommerce settings page.
+ *
+ * @param array $tabs The existing tabs on the settings page.
+ * @return array Modified tabs array including the RiseCheckout tab.
+ */
+function risecheckout_add_settings_tab( $tabs ) {
+	$has_checkout_label = false;
+	foreach ( $tabs as $key => $label ) {
+		if ( __( 'Checkout', 'risecheckout' ) === $label ) {
+			$has_checkout_label = true;
+			break;
+		}
+	}
+	$tabs['risecheckout'] = $has_checkout_label ? __( 'RiseCheckout', 'risecheckout' ) : __( 'Checkout', 'risecheckout' );
+	return $tabs;
+}
+add_filter( 'woocommerce_settings_tabs_array', 'risecheckout_add_settings_tab', 50 );
+
+/**
+ * Displays the settings page for RiseCheckout.
+ */
+function risecheckout_settings_page() {
+	woocommerce_admin_fields( risecheckout_get_settings() );
+}
+add_action( 'woocommerce_settings_tabs_risecheckout', 'risecheckout_settings_page' );
+
+/**
+ * Saves the settings for RiseCheckout.
+ */
+function risecheckout_save_settings() {
+	woocommerce_update_options( risecheckout_get_settings() );
+}
+add_action( 'woocommerce_update_options_risecheckout', 'risecheckout_save_settings' );
 
 /**
  * Renders the WYSIWYG field on the settings page.

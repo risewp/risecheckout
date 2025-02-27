@@ -443,7 +443,7 @@ add_filter( 'woocommerce_form_field', 'risecheckout_wc_form_field', 10, 4 );
 function risecheckout_root_class_look_a_like( $classes ) {
 	$look_a_like = 'yes' === get_option( 'risecheckout_look_a_like', 'no' );
 	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() && $look_a_like ) {
-		$classes[] = 'look_a_like';
+		$classes[] = 'look-a-like';
 	}
 	return $classes;
 }

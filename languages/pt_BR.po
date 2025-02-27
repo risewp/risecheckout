@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rise Checkout 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/risecheckout\n"
-"POT-Creation-Date: 2025-02-27T00:54:19+00:00\n"
-"PO-Revision-Date: 2025-02-26 21:55-0300\n"
+"POT-Creation-Date: 2025-02-27T19:52:28+00:00\n"
+"PO-Revision-Date: 2025-02-27 16:54-0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -17,10 +17,12 @@ msgstr ""
 "X-Domain: risecheckout\n"
 
 #. Plugin Name of the plugin
+#: risecheckout.php
 msgid "Rise Checkout"
 msgstr "Eleva Checkout"
 
 #. Description of the plugin
+#: risecheckout.php
 msgid ""
 "Enhanced WooCommerce checkout with a seamless single-page multi-step with "
 "tracking for abandoned carts."
@@ -29,19 +31,21 @@ msgstr ""
 "carrinhos abandonados."
 
 #. Author of the plugin
+#: risecheckout.php
 msgid "RiseWP"
 msgstr "Eleva Calçados"
 
 #. Author URI of the plugin
+#: risecheckout.php
 msgid "https://risewp.github.io"
 msgstr "https://risewp.github.io"
 
-#: includes/admin.php:6
+#: includes/admin.php:19
 msgid "Settings"
 msgstr "Configurações"
 
 #. translators: %s: Example
-#: includes/fields.php:6 includes/fields.php:12
+#: includes/fields.php:22 includes/fields.php:26
 #: partialshipping/includes/fields-steps-partialshipping.php:109
 #: partialshipping/includes/fields-steps-partialshipping.php:134
 #: partialshipping/includes/fields-steps-partialshipping.php:156
@@ -55,7 +59,7 @@ msgid "e.g.: %s"
 msgstr "ex.: %s"
 
 #. translators: %s: Example
-#: includes/fields.php:7
+#: includes/fields.php:22
 #: partialshipping/includes/fields-steps-partialshipping.php:135
 #: partialshipping/includes/fields-steps-partialshipping.php:145
 #: partialshipping/includes/fields-steps-partialshipping.php:186
@@ -67,19 +71,19 @@ msgid "Mary"
 msgstr "Maria"
 
 #. translators: %s: Example
-#: includes/fields.php:13
+#: includes/fields.php:26
 #: partialshipping/includes/fields-steps-partialshipping.php:157
 #: partialshipping/includes/fields-steps-partialshipping.php:167
 #: partialshipping/templates/checkout-full.php:127
 msgid "Johnson"
 msgstr "Cruz"
 
-#: includes/fields.php:24
+#: includes/fields.php:46
 msgid "Address line 2"
 msgstr "Complemento"
 
 #. translators: %s: Field label
-#: includes/fields.php:34
+#: includes/fields.php:60
 #: partialshipping/includes/fields-steps-partialshipping.php:180
 #: partialshipping/includes/fields-steps-partialshipping.php:192
 #: partialshipping/templates/checkout-full.php:136
@@ -89,7 +93,7 @@ msgid "Email"
 msgstr "E-mail"
 
 #. translators: %s: Field label
-#: includes/fields.php:37
+#: includes/fields.php:63
 #: partialshipping/includes/fields-steps-partialshipping.php:225
 #: partialshipping/includes/fields-steps-partialshipping.php:238
 #: partialshipping/templates/checkout-full.php:155
@@ -97,49 +101,57 @@ msgstr "E-mail"
 msgid "Mobile"
 msgstr "Celular / WhatsApp"
 
-#: includes/settings.php:6 includes/settings.php:11
-msgid "Checkout"
-msgstr "Checkout"
-
-#: includes/settings.php:11 includes/settings.php:34
+#: includes/settings.php:23 includes/settings.php:123
 msgid "RiseCheckout"
 msgstr "ElevaCheckout"
 
-#: includes/settings.php:35
+#: includes/settings.php:24
+msgid "Multi-step"
+msgstr "Multi-etapa"
+
+#: includes/settings.php:32 includes/settings.php:33
+msgid "Look a like"
+msgstr "Aparência semelhante"
+
+#: includes/settings.php:41
+msgid "Two-column form"
+msgstr "Formulário em duas colunas"
+
+#: includes/settings.php:42
 msgid "Two-column form (when desktop)"
 msgstr "Formulário em duas colunas (quando desktop)"
 
-#: includes/settings.php:36
+#: includes/settings.php:43
 msgid ""
 "Displays the checkout in three columns in total, two for the form and order "
 "review (when desktop)."
 msgstr ""
-"Exibe o checkout ao todo em três colunas, duas para o formulário e revisão "
+"Exibe o checkout ao todo em três colunas, duas para o formulário e a revisão "
 "do pedido (quando desktop)."
 
-#: includes/settings.php:44
+#: includes/settings.php:51
 msgid "Fullname"
 msgstr "Nome completo"
 
-#: includes/settings.php:45
+#: includes/settings.php:52
 msgid "Full name field"
 msgstr "Campo nome completo"
 
-#: includes/settings.php:46
+#: includes/settings.php:53
 msgid "Displays first and last name as a single field."
 msgstr "Exibe o nome e o sobrenome como um único campo."
 
-#: includes/settings.php:54
+#: includes/settings.php:61
 msgid "Fonts"
 msgstr "Fontes de texto"
 
 #. translators: %s: Google Fonts
-#: includes/settings.php:56
+#: includes/settings.php:63
 msgctxt "Google Fonts"
 msgid "Load %s"
 msgstr "Carregar %s"
 
-#: includes/settings.php:57
+#: includes/settings.php:64
 msgid ""
 "Keep this option disabled to avoid loading external fonts, which improves "
 "performance."
@@ -147,29 +159,29 @@ msgstr ""
 "Mantenha esta opção desabilitada para evitar o carregamento de fontes de "
 "texto externas, o que melhora o desempenho."
 
-#: includes/settings.php:65
+#: includes/settings.php:72
 msgid "Header text"
 msgstr "Texto do cabeçalho"
 
-#: includes/settings.php:73
+#: includes/settings.php:80
 msgid "Order review text"
 msgstr "Texto da revisão do pedido"
 
-#: includes/settings.php:80
+#: includes/settings.php:87
 msgid "Footer text"
 msgstr "Texto do rodapé"
 
-#: includes/settings.php:88
+#: includes/settings.php:95
 msgid "Additional fields"
 msgstr "Campos adicionais"
 
-#: includes/settings.php:89
+#: includes/settings.php:96
 msgid "Enable order notes"
 msgstr "Ativar observações do pedido"
 
-#: includes/template.php:516
-msgid "Optional"
-msgstr "Opcional"
+#: includes/settings.php:118 includes/settings.php:123
+msgid "Checkout"
+msgstr "Checkout"
 
 #: partialshipping/includes/ajax.php:107
 msgid "Invalid postcode"
@@ -294,6 +306,10 @@ msgstr "Pagamento"
 #: partialshipping/templates/checkout-full.php:254
 msgid "Fill in your shipping information to continue"
 msgstr "Preencha suas informações de entrega para continuar"
+
+#: partialshipping/includes/fields-steps-partialshipping.php:513
+msgid "Optional"
+msgstr "Opcional"
 
 #: partialshipping/templates/checkout-full.php:101
 #: partialshipping/templates/checkout-full.php:106
