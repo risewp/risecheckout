@@ -49,7 +49,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 
 		<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
-		<p id="order_review_heading" class="h2"><?php esc_html_e( 'Your order', 'woocommerce' ); ?></p>
+		<p id="order_review_heading" class="h3"><?php esc_html_e( 'Your order', 'woocommerce' ); ?></p>
 
 		<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 
