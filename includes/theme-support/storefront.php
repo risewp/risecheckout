@@ -58,3 +58,11 @@ function risecheckout_storefront_wc() {
 	add_action( 'wp_enqueue_scripts', 'risecheckout_storefront_wc_scripts', 21 );
 }
 risecheckout_storefront_wc();
+
+function risecheckout_wc_enqueue_styles( $styles ) {
+	if ( risecheckout_is_checkout() && ! risecheckout_is_order_received_page() ) {
+		remove_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
+	}
+	return $styles;
+}
+add_filter( 'woocommerce_enqueue_styles', 'risecheckout_wc_enqueue_styles', 9 );

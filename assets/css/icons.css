@@ -1,0 +1,45 @@
+/*!
+ * Font Awesome Free 5.13.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+@font-face {
+	font-display: block;
+	font-style: normal;
+	font-family: fontawesome;
+	font-weight: 900;
+	src: url("../../assets/fonts/fa-solid-900.woff2") format("woff2");
+}
+
+.fal, .fas {
+	display: inline-block;
+	line-height: 1;
+	font-family: fontawesome;
+	font-weight: 900;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-family: fontawesome;
+	font-weight: 300;
+}
+
+.fal {
+	font-weight: 300
+}
+
+.fa-envelope:before {
+	content: "\f0e0"
+}
+
+.fa-phone:before {
+	content: "\f095"
+}
+
+.fa-store:before {
+	content: "\f54e"
+}
+
+.fa-map-marker-alt:before {
+	content: "\f3c5"
+}

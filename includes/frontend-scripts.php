@@ -21,8 +21,6 @@ function risecheckout_frontend_scripts() {
 		array(
 			'deps' => array(
 				'risecheckout-twbs',
-				// 'mask',
-				// 'validation',
 			),
 		),
 	);
@@ -30,8 +28,8 @@ function risecheckout_frontend_scripts() {
 
 function risecheckout_frontend_styles() {
 	$deps = array(
-		// 'risecheckout-twbs',
 		'woocommerce-general',
+		'risecheckout-icons',
 	);
 	if ( 'yes' === get_option( 'risecheckout_gfonts', 'yes' ) ) {
 		$deps[] = 'risecheckout-fonts';
@@ -45,6 +43,9 @@ function risecheckout_frontend_styles() {
 		array(
 			'handle' => 'fonts',
 			'src'    => risecheckoutgoogle_fonts(),
+		),
+		array(
+			'handle' => 'icons',
 		),
 		array(
 			'deps' => $deps,
@@ -214,9 +215,6 @@ function risecheckout_register_asset( $asset, $type ) {
 	if ( ! filter_var( $src, FILTER_VALIDATE_URL ) ) {
 		$src = risecheckout_plugin_url() . "/assets/{$extension}/" . $src;
 	}
-	// foreach ( $deps as &$dep ) {
-	//  $dep = 'risecheckout-' . $dep;
-	// }
 	if ( 'style' === $type ) {
 		wp_register_style( $handle, $src, $deps, $version );
 	} else {

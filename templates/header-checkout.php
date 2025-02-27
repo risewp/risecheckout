@@ -35,4 +35,4 @@ wp_body_open();
 	<div class="container">
 
 		<?php
-		the_title( '<h1>', '</h1>' );
+		the_title( '<h1 class="visually-hidden">', '</h1>' );
