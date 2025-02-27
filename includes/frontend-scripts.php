@@ -46,6 +46,7 @@ function risecheckout_frontend_styles() {
 		),
 		array(
 			'handle' => 'icons',
+			'ver'    => '5.13.0',
 		),
 		array(
 			'deps' => $deps,
