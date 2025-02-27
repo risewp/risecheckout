@@ -55,7 +55,7 @@ function risecheckout_wc_fields( $fields ) {
 	$fields['billing']['billing_postcode']['class'][] = 'postcode-field';
 
 	$fields['billing']['billing_state']['class'][] = 'state-field';
-	$fields['billing']['billing_state']['break'] = true;
+	$fields['billing']['billing_state']['break']   = true;
 
 	$fields['billing']['billing_city']['class'][] = 'city-field';
 
@@ -67,7 +67,7 @@ function risecheckout_wc_fields( $fields ) {
 	$fields['shipping']['shipping_postcode']['class'][] = 'postcode-field';
 
 	$fields['shipping']['shipping_state']['class'][] = 'state-field';
-	$fields['shipping']['shipping_state']['break'] = true;
+	$fields['shipping']['shipping_state']['break']   = true;
 
 	$fields['shipping']['shipping_city']['class'][] = 'city-field';
 

@@ -1322,6 +1322,13 @@ input[type=checkbox], input[type=radio] {
 	}
 }
 
+input[type=checkbox] {
+	--size: 0.889em;
+
+	width: var(--size);
+	height: var(--size);
+}
+
 .woocommerce-terms-and-conditions-wrapper {
 	--risecheckout-gutter-x: .75rem;
 	--risecheckout-gutter-y: 1.6875rem;
