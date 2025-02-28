@@ -129,6 +129,7 @@ function risecheckout_get_steps() {
 				'risecheckout'
 			),
 			'fields'      => array(
+				'billing_country',
 				'billing_postcode',
 				'billing_city',
 				'billing_state',
