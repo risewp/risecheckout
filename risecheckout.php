@@ -9,6 +9,7 @@
  * Domain Path: /languages/
  * Requires at least: 6.7
  * Requires PHP: 7.4
+ * Requires Plugins: woocommerce
  *
  * @package RiseCheckout
  */
@@ -35,6 +36,7 @@ function risecheckout_includes() {
 	require RISECHECKOUT_ABSPATH . 'includes/fields.php';
 	require RISECHECKOUT_ABSPATH . 'includes/conditionals.php';
 	require RISECHECKOUT_ABSPATH . 'includes/options.php';
+	require RISECHECKOUT_ABSPATH . 'includes/process.php';
 
 	if ( is_admin() ) {
 		require RISECHECKOUT_ABSPATH . 'includes/admin.php';

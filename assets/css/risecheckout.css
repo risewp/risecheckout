@@ -49,7 +49,6 @@
 		--risecheckout-font-sans-serif: rubik, sans-serif;
 		--risecheckout-body-font-size: 0.8125rem;
 		--risecheckout-body-line-height: 1;
-		--risecheckout-body-color: #000;
 		--risecheckout-dark-rgb: 0, 0, 0;
 		--risecheckout-navbar-brand-height: 3rem;
 		--risecheckout-label-margin-bottom: 0.25rem;
@@ -69,6 +68,7 @@
 
 	&.look-a-like-color {
 		--risecheckout-form-control-border-color: #d0d0d0;
+		--risecheckout-body-color: #000;
 	}
 
 	&.default {
@@ -1781,21 +1781,21 @@ form.woocommerce-form-login {
 	--risecheckout-card-img-overlay-padding: 1rem;
 	--risecheckout-card-group-margin: 0.75rem;
 
-	.look-a-like & {
-		--risecheckout-card-spacer-y: 1.875rem;
-		--risecheckout-card-spacer-x: 1.875rem;
-	}
-
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
 	height: var(--risecheckout-card-height);
-	color: var(--risecheckout-body-color);
+	color: var(--risecheckout-card-color);
 	word-wrap: break-word;
 	background-color: var(--risecheckout-card-bg);
 	background-clip: border-box;
 	border-radius: var(--risecheckout-card-border-radius);
+
+	.look-a-like & {
+		--risecheckout-card-spacer-y: 1.875rem;
+		--risecheckout-card-spacer-x: 1.875rem;
+	}
 
 	&.active {
 		.woocommerce-js & {
@@ -1842,7 +1842,9 @@ form.woocommerce-form-login {
 	.placeholder {
 		margin-bottom: 0;
 	}
+}
 
+.checkout-steps > div {
 	&:not(.active):not(.resume) {
 		.woocommerce-js & {
 			opacity: .5;
