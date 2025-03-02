@@ -9,6 +9,7 @@
 	 * @hooked risecheckout_step_placeholder - 30
 	 * @hooked risecheckout_step_fields      - 40
 	 * @hooked risecheckout_step_button      - 50
+	 * @hooked risecheckout_step_payment     - 60
 	 */
 	do_action( 'risecheckout_step_content', $step );
 	?>
