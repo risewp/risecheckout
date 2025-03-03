@@ -252,7 +252,10 @@ function risecheckout_get_fields( $step_key ) {
 
 	// Merge all fields from different groups into a single array.
 	$merged = array();
-	foreach ( $checkout_fields as $type => $fields ) {
+	foreach ( $checkout_fields as $fieldset => $fields ) {
+		foreach ($fields as $key => $field) {
+			$fields[$key]['fieldset'] = $fieldset;
+		}
 		$merged = array_merge( $merged, $fields );
 	}
 	$checkout_fields = $merged;
@@ -561,7 +564,49 @@ function risecheckout_step_action() {
 		risecheckout_process();
 	}
 }
-// add_action( 'wp_loaded', 'risecheckout_step_action', 20 );
+add_action( 'wp_loaded', 'risecheckout_step_action', 20 );
+
+function risecheckout_get_posted_data() {
+	$data = [
+		'step' => isset( $_POST['risecheckout_place_step'] ) ? wc_clean( wp_unslash( $_POST['risecheckout_place_step'] ) ) : ''
+	];
+	foreach ( risecheckout_get_fields( $data['step'] ) as $key => $field ) {
+		$fieldset_key = isset($field['fieldset']) ? $field['fieldset'] : '';
+
+		$type = sanitize_title( isset( $field['type'] ) ? $field['type'] : 'text' );
+
+		if ( isset( $_POST[ $key ] ) && '' !== $_POST[ $key ] ) {
+			$value = wp_unslash( $_POST[ $key ] );
+		} else {
+			$value = '';
+		}
+
+		if ( '' !== $value ) {
+			switch ( $type ) {
+				case 'checkbox':
+					$value = 1;
+					break;
+				case 'multiselect':
+					$value = implode( ', ', wc_clean( $value ) );
+					break;
+				case 'textarea':
+					$value = wc_sanitize_textarea( $value );
+					break;
+				case 'password':
+					if ( $data['createaccount'] && 'account_password' === $key ) {
+						$value = wp_slash( $value );
+					}
+					break;
+				default:
+					$value = wc_clean( $value );
+					break;
+			}
+		}
+
+		$data[ $key ] = apply_filters( 'risecheckout_process_checkout_' . $type . '_field', apply_filters( 'risecheckout_process_checkout_field_' . $key, $value ) );
+	}
+	return apply_filters( 'risecheckout_checkout_posted_data', $data );
+}
 
 function risecheckout_process() {
 	$checkout = WC()->checkout();
@@ -586,14 +631,21 @@ function risecheckout_process() {
 		}
 
 		$errors      = new WP_Error();
-		$posted_data = $checkout->get_posted_data();
+		$posted_data = risecheckout_get_posted_data();
 
-		risecheckout_wc_checkout_validate_posted_data( $posted_data, $errors );
+		// risecheckout_wc_checkout_validate_posted_data( $posted_data, $errors );
 
-		echo '<pre>';
-		print_r( $posted_data );
-		print_r( wc_notice_count( 'error' ) );
-		die;
+		if ( ! wp_doing_ajax() ) {
+			return;
+		}
+
+		wp_send_json(
+			array(
+				'result'      => 'success',
+				'posted_data' => $posted_data,
+				'fragments'   => [],
+			)
+		);
 	} catch ( Exception $e ) {
 		wc_add_notice( $e->getMessage(), 'error' );
 	}

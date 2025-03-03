@@ -31,6 +31,7 @@ function risecheckout_frontend_scripts() {
 		array(
 			'deps' => array(
 				'risecheckout-twbs',
+				'wc-checkout',
 			),
 		),
 	);

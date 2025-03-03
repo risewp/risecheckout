@@ -1,19 +1,23 @@
-const risecheckoutUi = {
-	init() {
-		this.bindEvents();
-	},
+jQuery( function ( $ ) {
+	const risecheckoutForm = {
+		$checkoutForm: $( 'form.checkout' ),
+		init: function () {
+			this.$checkoutForm.on( 'checkout_place_order', this.submit );
+		},
+		submit: function ( event ) {
+			const $form = $( this );
+			const $steps = $form.find('.checkout-steps > *');
 
-	bindEvents() {
-		window.addEventListener( 'scroll', this.windowScrolledToggle );
-	},
+			if ( $form.is( '.processing' ) ) {
+				return false;
+			}
 
-	windowScrolledToggle() {
-		const className = 'scrolled';
-		if ( window.scrollY > 30 ) {
-			document.body.classList.add( className );
-		} else {
-			document.body.classList.remove( className );
-		}
-	},
-};
-document.addEventListener( 'DOMContentLoaded', () => risecheckoutUi.init() );
+			$form.addClass( 'processing' );
+			return false;
+
+			return true;
+		},
+	};
+
+	risecheckoutForm.init();
+} );

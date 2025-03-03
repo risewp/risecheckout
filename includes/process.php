@@ -3,10 +3,10 @@
 function risecheckout_sanitize_numbers( $text ) {
 	return preg_replace( '/\D/', '', $text );
 }
-add_filter( 'woocommerce_process_checkout_field_billing_cpf', 'risecheckout_sanitize_numbers' );
-add_filter( 'woocommerce_process_checkout_field_billing_phone', 'risecheckout_sanitize_numbers' );
-add_filter( 'woocommerce_process_checkout_field_billing_postcode', 'risecheckout_sanitize_numbers' );
-add_filter( 'woocommerce_process_checkout_field_billing_shipping', 'risecheckout_sanitize_numbers' );
+// add_filter( 'woocommerce_process_checkout_field_billing_cpf', 'risecheckout_sanitize_numbers' );
+// add_filter( 'woocommerce_process_checkout_field_billing_phone', 'risecheckout_sanitize_numbers' );
+// add_filter( 'woocommerce_process_checkout_field_billing_postcode', 'risecheckout_sanitize_numbers' );
+// add_filter( 'woocommerce_process_checkout_field_billing_shipping', 'risecheckout_sanitize_numbers' );
 
 function risecheckout_pay_with_different_address( $data ) {
 	$new_data = array();
