@@ -139,6 +139,12 @@ add_filter( 'woocommerce_checkout_fields', 'risecheckout_wc_fields', 11 );
 
 function risecheckout_wc_fields_grid( $fields ) {
 	$billing_fields = array(
+		'billing_cpf'       => array(
+			'class' => array_merge(
+				$fields['billing']['billing_cpf']['class'],
+				array( 'cpf-field' )
+			),
+		),
 		'billing_number'       => array(
 			'class' => array_merge(
 				array_diff( $fields['billing']['billing_number']['class'], array( 'form-row-wide' ) ),

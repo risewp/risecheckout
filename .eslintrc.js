@@ -5,5 +5,6 @@ module.exports = {
 	},
 	rules: {
 		'object-shorthand': [ 'error', 'never' ],
+		'@wordpress/no-global-active-element': 'off',
 	},
 };

@@ -40,6 +40,7 @@
 	--risecheckout-emphasis-color: #000;
 	--risecheckout-danger-text-emphasis: #58151c;
 	--risecheckout-danger-bg-subtle: #f8d7da;
+	--risecheckout-success: #198754;
 	--risecheckout-success-text-emphasis: #0a3622;
 	--risecheckout-success-bg-subtle: #d1e7dd;
 	--risecheckout-border-radius-xxl: 2rem;
@@ -69,6 +70,7 @@
 	&.look-a-like-color {
 		--risecheckout-form-control-border-color: #d0d0d0;
 		--risecheckout-body-color: #000;
+		--risecheckout-success-bg-subtle: #f9fdf7;
 	}
 
 	&.default {
@@ -867,6 +869,17 @@ a {
 	.woocommerce-page form & {
 		overflow: visible;
 		float: none;
+	}
+}
+
+.cpf-field {
+	.woocommerce form &,
+	.woocommerce-page form & {
+		--width: 66.66666667%;
+
+		.look-a-like & {
+			--width: 63%;
+		}
 	}
 }
 
@@ -1755,7 +1768,7 @@ form.woocommerce-form-login {
 	--risecheckout-card-spacer-y: 2rem;
 	--risecheckout-card-spacer-x: 2rem;
 	--risecheckout-card-title-spacer-y: 0.5rem;
-	--risecheckout-card-title-color: ;
+	--risecheckout-card-title-color: var(--risecheckout-heading-color);
 	--risecheckout-card-subtitle-color: ;
 	--risecheckout-card-desc-color: ;
 	--risecheckout-card-desc-font: quicksand, sans-serif;
@@ -1784,6 +1797,7 @@ form.woocommerce-form-login {
 	background-color: var(--risecheckout-card-bg);
 	background-clip: border-box;
 	border-radius: var(--risecheckout-card-border-radius);
+	overflow: hidden;
 
 	.look-a-like & {
 		--risecheckout-card-spacer-y: 1.875rem;
@@ -1798,6 +1812,10 @@ form.woocommerce-form-login {
 				display: inline-block !important;
 			}
 		}
+
+		.placeholder {
+			display: none;
+		}
 	}
 
 	&:not(.active) {
@@ -1807,6 +1825,11 @@ form.woocommerce-form-login {
 				display: none;
 			}
 		}
+		.woocommerce-js & {
+			.h3 {
+				color: var(--risecheckout-card-title-color);
+			}
+		}
 	}
 
 	:last-child {
@@ -1814,6 +1837,8 @@ form.woocommerce-form-login {
 	}
 
 	button.button {
+		position: relative;
+		transition: all 0s;
 		display: none;
 	}
 
@@ -1835,10 +1860,61 @@ form.woocommerce-form-login {
 	.placeholder {
 		margin-bottom: 0;
 	}
+
+	&.done {
+		--risecheckout-card-bg: var(--risecheckout-success-bg-subtle);
+		--risecheckout-card-title-color: var(--risecheckout-success);
+	}
+}
+
+@keyframes loading-bar-spinner {
+
+	0% {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(1turn);
+	}
+}
+
+.risecheckout-step-customer {
+	&.xhring {
+		.button {
+			z-index: 1001;
+			color: transparent !important;
+			pointer-events: none;
+
+			&::after {
+				animation: loading-bar-spinner 0.4s linear infinite;
+				border: 3px solid transparent;
+				border-left-color: #fff;
+				border-radius: 50%;
+				border-top-color: #fff;
+				content: "";
+				height: 21px;
+				left: 50%;
+				margin: -10.5px 0 0 -10.5px;
+				position: absolute;
+				text-indent: 0;
+				top: 50%;
+				width: 21px;
+				display: block;
+			}
+		}
+
+		.blockUI.blockOverlay {
+			.woocommerce & {
+				&::before, &::after {
+					display: none;
+				}
+			}
+		}
+	}
 }
 
 .checkout-steps > div {
-	&:not(.active):not(.resume) {
+	&:not(.active):not(.done) {
 		.woocommerce-js & {
 			opacity: .5;
 
@@ -1846,16 +1922,15 @@ form.woocommerce-form-login {
 				display: block !important;
 			}
 
+			.h3 {
+				--risecheckout-card-title-color: #666;
+			}
+		}
+	}
+	&:not(.active) {
+		.woocommerce-js & {
 			.desc {
 				display: none;
-			}
-
-			.h3 {
-				color: #666;
-
-				&::before {
-					background-color: #666;
-				}
 			}
 		}
 	}
@@ -1864,12 +1939,13 @@ form.woocommerce-form-login {
 .checkout-steps > div .h3 {
 	position: relative;
 	padding-left: 1.75rem;
+	color: var(--risecheckout-card-title-color);
 
 	&::before {
 		counter-increment: step;
 		content: counter(step);
 		display: inline-block;
-		background-color: var(--risecheckout-heading-color);
+		background-color: var(--risecheckout-card-title-color);
 		border-radius: 50%;
 		color: #fff;
 		font-size: 0.666666667em;
@@ -1920,17 +1996,6 @@ form.woocommerce-form-login {
 		padding-right: calc(var(--risecheckout-gutter-x) * 0.5);
 		padding-left: calc(var(--risecheckout-gutter-x) * 0.5);
 		margin-top: var(--risecheckout-gutter-y);
-	}
-
-	> .cpf-field {
-		--width: 66.66666667%;
-
-		flex: 0 0 auto;
-		width: var(--width);
-
-		.look-a-like & {
-			--width: 63%;
-		}
 	}
 
 	+ button.button {

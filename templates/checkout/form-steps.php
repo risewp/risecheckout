@@ -10,4 +10,6 @@
 
 	<?php endif; ?>
 
+	<?php do_action( 'risecheckout_after_steps' ); ?>
+
 </div>

@@ -1,4 +1,4 @@
-<div class="<?php echo esc_html( implode( ' ', $step->classes ) ); ?>" id="<?php echo esc_html( $step->id ); ?>">
+<div class="<?php echo esc_attr( implode( ' ', $step->classes ) ); ?>" id="<?php echo esc_attr( $step->id ); ?>" data-step="<?php echo esc_attr( $step->key ); ?>">
 
 	<?php
 	/**

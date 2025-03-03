@@ -292,7 +292,7 @@ function risecheckout_checkout_form_step( $step_key ) {
 	foreach ( $steps as $key => $step ) {
 		$step = (object) $step;
 
-		if ( risecheckout_step_done( $step ) ) {
+		if ( risecheckout_step_done( $step ) && 'payment' !== $step_key ) {
 			$step->classes[] = 'done';
 		} elseif ( ! $active ) {
 			$active          = true;
@@ -525,7 +525,7 @@ add_action( 'risecheckout_step_content', 'risecheckout_step_fields', 40 );
  */
 function risecheckout_step_button( $step ) {
 	// Only display the button for 'customer' or 'address' steps.
-	if ( 'payment' === $step->key ) {
+	if ( 'payment' === $step->key) {
 		return;
 	}
 
@@ -534,7 +534,7 @@ function risecheckout_step_button( $step ) {
 
 	// Output a hidden submit button for the step.
 	printf(
-		'<button type="submit" class="button" name="risecheckout_place_step" value="%s" style="display:none">%s</button>',
+		'<button type="submit" class="button" name="risecheckout_place_step" value="%s" style="display:none" disabled>%s</button>',
 		esc_attr( $step->key ),
 		esc_html( $text )
 	);
@@ -559,16 +559,51 @@ function risecheckout_step_action() {
 			exit;
 		}
 
-		wc_maybe_define_constant( 'RISECHECKOUT_STEP', true );
+		risecheckout_define( 'RISECHECKOUT_STEP', true );
 
 		risecheckout_process();
 	}
 }
 add_action( 'wp_loaded', 'risecheckout_step_action', 20 );
 
+function risecheckout_add_ajax_events() {
+	$ajax_events_nopriv = array(
+	);
+
+	$step_keys = array_keys( risecheckout_get_steps() );
+
+	$ajax_events_nopriv = array_merge( $ajax_events_nopriv, $step_keys );
+
+	foreach ( $ajax_events_nopriv as $ajax_event ) {
+		$callback_event = $ajax_event;
+		if ( in_array($callback_event, $step_keys, true)) {
+			$callback_event = 'step';
+		}
+		$callback = 'risecheckout_ajax_' . $callback_event;
+		add_action( 'wp_ajax_woocommerce_risecheckout_' . $ajax_event, $callback );
+		add_action( 'wp_ajax_nopriv_woocommerce_risecheckout_' . $ajax_event, $callback );
+
+		add_action( 'wc_ajax_risecheckout_' . $ajax_event, $callback );
+	}
+}
+risecheckout_add_ajax_events();
+
+function risecheckout_ajax_step() {
+	risecheckout_define( 'RISECHECKOUTCHECKOUT', true );
+	risecheckout_process();
+	wp_die( 0 );
+}
+
+function risecheckout_step_hidden() {
+	?>
+	<input type="hidden" name="risecheckout_step" value="">
+	<?php
+}
+// add_action( 'risecheckout_after_steps', 'risecheckout_step_hidden' );
+
 function risecheckout_get_posted_data() {
 	$data = [
-		'step' => isset( $_POST['risecheckout_place_step'] ) ? wc_clean( wp_unslash( $_POST['risecheckout_place_step'] ) ) : ''
+		'step' => isset( $_POST['risecheckout_step'] ) ? wc_clean( wp_unslash( $_POST['risecheckout_step'] ) ) : ''
 	];
 	foreach ( risecheckout_get_fields( $data['step'] ) as $key => $field ) {
 		$fieldset_key = isset($field['fieldset']) ? $field['fieldset'] : '';
@@ -611,7 +646,7 @@ function risecheckout_get_posted_data() {
 function risecheckout_process() {
 	$checkout = WC()->checkout();
 	try {
-		$step_key = isset( $_POST['risecheckout_place_step'] ) ? sanitize_text_field( $_POST['risecheckout_place_step'] ) : '';
+		$step_key = isset( $_POST['risecheckout_step'] ) ? sanitize_text_field( $_POST['risecheckout_step'] ) : '';
 
 		$nonce_value    = wc_get_var( $_REQUEST[ "risecheckout-process-{$step_key}-nonce" ], wc_get_var( $_REQUEST['_wpnonce'], '' ) );
 		$expiry_message = sprintf(
@@ -633,17 +668,30 @@ function risecheckout_process() {
 		$errors      = new WP_Error();
 		$posted_data = risecheckout_get_posted_data();
 
+		risecheckout_update_session( $posted_data );
+
 		// risecheckout_wc_checkout_validate_posted_data( $posted_data, $errors );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
 		}
 
+		ob_start();
+		risecheckout_checkout_form_step('customer');
+		$step_customer = str_replace(' style="display:none" disaled', '', ob_get_clean());
+
+		ob_start();
+		risecheckout_checkout_form_step('address');
+		$step_address = str_replace(' style="display:none" disaled', '', ob_get_clean());
+
 		wp_send_json(
 			array(
 				'result'      => 'success',
 				'posted_data' => $posted_data,
-				'fragments'   => [],
+				'fragments'   => [
+					'#risecheckout_step_customer' => $step_customer,
+					'#risecheckout_step_address' => $step_address,
+				],
 			)
 		);
 	} catch ( Exception $e ) {
@@ -669,5 +717,51 @@ function risecheckout_send_ajax_failure_response() {
 		unset( WC()->session->refresh_totals, WC()->session->reload_checkout );
 
 		wp_send_json( $response );
+	}
+}
+
+function risecheckout_update_session( $data ) {
+	$address_fields = array(
+		'first_name',
+		'last_name',
+		'company',
+		'email',
+		'phone',
+		'address_1',
+		'address_2',
+		'city',
+		'postcode',
+		'state',
+		'country',
+	);
+
+	array_walk( $address_fields, 'risecheckout_set_customer_address_fields', $data );
+	WC()->customer->save();
+
+	add_action( 'risecheckout_update_session', $data );
+
+	// Update cart totals now we have customer address.
+	WC()->cart->calculate_totals();
+}
+
+function risecheckout_set_customer_address_fields( $field, $key, $data ) {
+	$billing_value  = null;
+	$shipping_value = null;
+
+	if ( isset( $data[ "billing_{$field}" ] ) && is_callable( array( WC()->customer, "set_billing_{$field}" ) ) ) {
+		$billing_value  = $data[ "billing_{$field}" ];
+		$shipping_value = $data[ "billing_{$field}" ];
+	}
+
+	if ( isset( $data[ "shipping_{$field}" ] ) && is_callable( array( WC()->customer, "set_shipping_{$field}" ) ) ) {
+		$shipping_value = $data[ "shipping_{$field}" ];
+	}
+
+	if ( ! is_null( $billing_value ) && is_callable( array( WC()->customer, "set_billing_{$field}" ) ) ) {
+		WC()->customer->{"set_billing_{$field}"}( $billing_value );
+	}
+
+	if ( ! is_null( $shipping_value ) && is_callable( array( WC()->customer, "set_shipping_{$field}" ) ) ) {
+		WC()->customer->{"set_shipping_{$field}"}( $shipping_value );
 	}
 }

@@ -122,7 +122,7 @@ add_filter( 'woocommerce_customer_allowed_session_meta_keys', 'risecheckout_cust
  * @param array $data Checkout posted data
  * @return array Modified posted data
  */
-function risecheckout_update_session( $data ) {
+function risecheckout_update_session_extra( $data ) {
 	$address_fields = array_unique(
 		array_map(
 			function ( $field ) {
@@ -133,14 +133,15 @@ function risecheckout_update_session( $data ) {
 	);
 
 	foreach ( $address_fields as $field ) {
-		risecheckout_set_customer_address_fields( $field, $data );
+		risecheckout_set_customer_address_fields_extra( $field, $data );
 	}
 
 	WC()->customer->save();
 
 	return $data;
 }
-add_filter( 'woocommerce_checkout_posted_data', 'risecheckout_update_session', 11 );
+add_filter( 'woocommerce_checkout_posted_data', 'risecheckout_update_session_extra', 11 );
+add_filter( 'risecheckout_update_session', 'risecheckout_update_session_extra' );
 
 /*
  * Sets customer meta fields for both billing and shipping
@@ -148,7 +149,7 @@ add_filter( 'woocommerce_checkout_posted_data', 'risecheckout_update_session', 1
  * @param string $field Field name without prefix
  * @param array $data Checkout posted data
  */
-function risecheckout_set_customer_address_fields( $field, $data ) {
+function risecheckout_set_customer_address_fields_extra( $field, $data ) {
 	$billing_value  = null;
 	$shipping_value = null;
 
